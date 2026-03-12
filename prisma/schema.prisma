@@ -1,0 +1,51 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+model Candidato {
+  id        Int       @id @default(autoincrement())
+  nombre    String
+  partido   String
+  slug      String    @unique
+  noticias  Noticia[]
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+}
+
+model Noticia {
+  id           Int       @id @default(autoincrement())
+  titulo       String
+  descripcion  String
+  url          String    @unique
+  fuente       String
+  gravedad     String    // MUY_PELIGROSO, PELIGROSO, MODERADO, LEVE, LIMPIO
+  tipo         String    // SENTENCIA, ACUSACION, DENUNCIA, INVESTIGACION, LIMPIO
+  candidatoId  Int
+  candidato    Candidato @relation(fields: [candidatoId], references: [id])
+  fechaNoticia DateTime?
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+
+  @@index([candidatoId])
+  @@index([gravedad])
+  @@index([tipo])
+}
+
+model ScrapingLog {
+  id             Int      @id @default(autoincrement())
+  fuente         String
+  status         String
+  mensaje        String?
+  noticias       Int      @default(0)
+  totalScrapeadas Int     @default(0)
+  urlsNuevas     Int      @default(0)
+  urlsOmitidas   Int      @default(0)
+  duracionMs     Int      @default(0)
+  createdAt      DateTime @default(now())
+}

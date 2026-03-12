@@ -1,36 +1,71 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Versus Electoral Perú 2026
 
-## Getting Started
+Web en Next.js + Prisma que monitorea noticias sobre candidatos presidenciales del Perú y las clasifica por gravedad.
 
-First, run the development server:
+## Stack
+- Next.js 16 (App Router)
+- Prisma
+- TypeScript
+- TailwindCSS 4
 
+## Desarrollo local
+1. Instalar dependencias:
+```bash
+npm install
+```
+2. Configurar variables:
+```bash
+cp .env.example .env
+```
+3. Ejecutar migraciones localmente:
+```bash
+npm run db:migrate:dev
+```
+4. Seed de candidatos:
+```bash
+npm run db:seed
+```
+5. Levantar la app:
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Producción con Supabase + Vercel
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### 1) Crear base Postgres en Supabase
+- Crea un proyecto en Supabase.
+- Copia la URL de conexión Postgres (pooler recomendado para serverless).
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+### 2) Variables de entorno en Vercel
+Configura en `Project Settings -> Environment Variables`:
+- `DATABASE_URL`
+- `DIRECT_URL`
+- `CRON_SECRET`
+- `SCRAPE_API_KEY`
+- `OPENAI_API_KEY` (opcional)
+- `OPENAI_MODEL` (opcional, default: `gpt-4o-mini`)
+- `NEXT_PUBLIC_HOME_NEWS_COUNT` (opcional, contador estático mostrado en home)
 
-## Learn More
+### 3) Aplicar migraciones a Supabase
+Con `DATABASE_URL` (pooler) y `DIRECT_URL` (directa) apuntando a Supabase:
+```bash
+npm run db:migrate:deploy
+npm run db:seed
+```
 
-To learn more about Next.js, take a look at the following resources:
+### 4) Deploy en Vercel
+- Conecta el repositorio.
+- Vercel ejecutará `npm run build`.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Cron automático
+El cron está configurado en `vercel.json`:
+- `path`: `/api/cron`
+- `schedule`: `0 5,17 * * *` (equivale a 00:00 y 12:00 en Perú, UTC-5)
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+El endpoint `/api/cron` valida `Authorization: Bearer <CRON_SECRET>` en producción.
 
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## Scripts útiles
+- `npm run scrape`: dispara scraping manual local vía `/api/scrape`
+- `npm run cron`: ejecuta scraping local por script
+- `npm run db:migrate:deploy`: aplica migraciones en producción
+- `npm run db:seed`: inserta/actualiza candidatos base
