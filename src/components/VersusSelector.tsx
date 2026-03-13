@@ -252,7 +252,7 @@ function WinnerModal({
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center p-4"
+      className="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-0 sm:p-4 overflow-y-auto"
       style={{ transition: "opacity 0.3s", opacity: show ? 1 : 0 }}
     >
       {/* Backdrop */}
@@ -260,7 +260,7 @@ function WinnerModal({
 
       {/* Modal */}
       <div
-        className="relative w-full max-w-lg rounded-2xl border border-gray-700/60 bg-gray-900 overflow-hidden shadow-2xl shadow-black/50"
+        className="relative w-full max-w-lg rounded-t-2xl sm:rounded-2xl border border-gray-700/60 bg-gray-900 overflow-hidden shadow-2xl shadow-black/50 max-h-[90vh] sm:max-h-[85vh] overflow-y-auto"
         style={{
           transition: "transform 0.4s cubic-bezier(0.34,1.56,0.64,1), opacity 0.3s",
           transform: showContent ? "scale(1)" : "scale(0.8)",
@@ -270,17 +270,17 @@ function WinnerModal({
         {/* Red glow top */}
         <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-transparent via-red-500 to-transparent" />
 
-        <div className="p-6 sm:p-8">
+        <div className="p-5 sm:p-8">
           {/* Header */}
-          <p className="text-center text-[10px] uppercase tracking-[0.3em] text-gray-500 mb-4">Veredicto</p>
+          <p className="text-center text-[10px] uppercase tracking-[0.3em] text-gray-500 mb-3">Veredicto</p>
 
           {/* Winner photo + info */}
-          <div className="flex flex-col items-center mb-6">
+          <div className="flex flex-col items-center mb-4 sm:mb-6">
             <div
-              className="relative h-28 w-28 rounded-2xl overflow-hidden border-4 mb-4"
+              className="relative h-20 w-20 sm:h-28 sm:w-28 rounded-xl sm:rounded-2xl overflow-hidden border-3 sm:border-4 mb-3"
               style={{
                 borderColor: winnerInfo?.color || "#dc2626",
-                boxShadow: `0 0 40px ${winnerInfo?.color || "#dc2626"}40`,
+                boxShadow: `0 0 30px ${winnerInfo?.color || "#dc2626"}30`,
               }}
             >
               {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -291,9 +291,9 @@ function WinnerModal({
                 onError={(e) => { (e.target as HTMLImageElement).src = `/candidatos/${winner.slug}.svg`; }}
               />
             </div>
-            <h3 className="text-2xl font-black text-white text-center">{winner.nombre}</h3>
-            <p className="text-sm text-gray-400 mt-1">{winner.partido}</p>
-            <div className="mt-3 flex items-center gap-3">
+            <h3 className="text-lg sm:text-2xl font-black text-white text-center">{winner.nombre}</h3>
+            <p className="text-xs sm:text-sm text-gray-400 mt-0.5">{winner.partido}</p>
+            <div className="mt-2 flex items-center gap-2">
               <GravedadBadge gravedad={winner.peorGravedad} />
               <span className="text-xs text-gray-500">{winner.totalNoticias} noticias</span>
             </div>
@@ -301,13 +301,13 @@ function WinnerModal({
 
           {/* Verdict text */}
           <div
-            className="text-center mb-6 px-4 py-3 rounded-xl"
+            className="text-center mb-4 sm:mb-6 px-3 py-2.5 rounded-lg sm:rounded-xl"
             style={{ backgroundColor: (winnerInfo?.color || "#dc2626") + "15" }}
           >
-            <p className="text-lg font-black uppercase" style={{ color: winnerInfo?.color || "#dc2626" }}>
+            <p className="text-sm sm:text-lg font-black uppercase" style={{ color: winnerInfo?.color || "#dc2626" }}>
               Es mas peligroso que {loser.nombre.split(" ")[0]}
             </p>
-            <p className="text-xs text-gray-400 mt-1">
+            <p className="text-[11px] sm:text-xs text-gray-400 mt-0.5">
               Clasificado como <strong style={{ color: winnerInfo?.color }}>{winnerInfo?.label}</strong> con {winner.totalNoticias} noticias
               vs <strong>{loser.totalNoticias}</strong> de {loser.nombre.split(" ")[0]}
             </p>
@@ -319,22 +319,22 @@ function WinnerModal({
               <p className="text-[10px] uppercase tracking-wider text-gray-500 mb-2 font-bold">
                 Top noticias que lo decretan peligroso
               </p>
-              <div className="space-y-2 max-h-[200px] overflow-y-auto pr-1">
+              <div className="space-y-1.5 max-h-[180px] sm:max-h-[200px] overflow-y-auto pr-1">
                 {topNoticias.slice(0, 5).map((n, i) => (
                   <a
                     key={n.id}
                     href={n.url}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="block rounded-lg border border-gray-700 bg-gray-800/50 p-3 hover:border-gray-500 transition-colors"
+                    className="block rounded-lg border border-gray-700 bg-gray-800/50 p-2.5 sm:p-3 hover:border-gray-500 transition-colors"
                   >
-                    <div className="flex items-center gap-2 mb-1">
+                    <div className="flex items-center gap-1.5 sm:gap-2 mb-1">
                       <span className="text-[10px] font-bold text-gray-500">#{i + 1}</span>
                       <GravedadBadge gravedad={n.gravedad} />
                       <span className="text-[10px] text-gray-500">{TIPO_LABELS[n.tipo] || n.tipo}</span>
                       <span className="text-[10px] text-gray-600 ml-auto">{n.fuente}</span>
                     </div>
-                    <p className="text-sm font-semibold text-white line-clamp-2 leading-snug">{n.titulo}</p>
+                    <p className="text-xs sm:text-sm font-semibold text-white line-clamp-2 leading-snug">{n.titulo}</p>
                   </a>
                 ))}
               </div>
@@ -342,16 +342,16 @@ function WinnerModal({
           )}
 
           {/* Actions */}
-          <div className="mt-6 flex flex-col sm:flex-row gap-3">
+          <div className="mt-4 sm:mt-6 flex flex-col sm:flex-row gap-2 sm:gap-3">
             <a
               href={`/candidato/${winner.slug}`}
-              className="flex-1 text-center py-3 rounded-xl bg-red-600 hover:bg-red-500 text-white font-bold text-sm transition-colors"
+              className="flex-1 text-center py-2.5 sm:py-3 rounded-xl bg-red-600 hover:bg-red-500 text-white font-bold text-sm transition-colors"
             >
               Ver todas las noticias
             </a>
             <button
               onClick={handleClose}
-              className="flex-1 py-3 rounded-xl border border-gray-700 text-gray-300 hover:text-white hover:border-gray-500 hover:bg-white/5 font-semibold text-sm transition-all"
+              className="flex-1 py-2.5 sm:py-3 rounded-xl border border-gray-700 text-gray-300 hover:text-white hover:border-gray-500 hover:bg-white/5 font-semibold text-sm transition-all"
             >
               Cerrar
             </button>
