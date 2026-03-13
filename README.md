@@ -60,9 +60,17 @@ npm run db:seed
 ## Cron automático
 El cron está configurado en `vercel.json`:
 - `path`: `/api/cron`
-- `schedule`: `0 5,17 * * *` (equivale a 00:00 y 12:00 en Perú, UTC-5)
+- `schedule`: `0 5 * * *` (equivale a 00:00 en Perú, UTC-5)
 
 El endpoint `/api/cron` valida `Authorization: Bearer <CRON_SECRET>` en producción.
+
+Para mantener 2 ejecuciones diarias en plan Hobby:
+- Vercel ejecuta la corrida de `00:00` (UTC `05:00`)
+- GitHub Actions ejecuta la corrida de `12:00` (UTC `17:00`) con `.github/workflows/cron-midday.yml`
+
+Configura en GitHub (Repository -> Settings -> Secrets and variables -> Actions):
+- `APP_URL` (ejemplo: `https://tu-app.vercel.app`)
+- `CRON_SECRET` (el mismo valor usado en Vercel)
 
 ## Scripts útiles
 - `npm run scrape`: dispara scraping manual local vía `/api/scrape`
