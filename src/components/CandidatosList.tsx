@@ -70,37 +70,39 @@ export function CandidatosList({ candidatos }: { candidatos: CandidatoItem[] }) 
       </div>
 
       {/* Letter filter */}
-      <div className="mb-6 flex flex-wrap gap-1">
-        <button
-          onClick={() => setLetterFilter(null)}
-          className={`px-2.5 py-1 rounded-lg text-xs font-bold transition-all ${
-            !letterFilter
-              ? "bg-red-600 text-white"
-              : "bg-gray-800/60 text-gray-400 hover:text-white hover:bg-gray-800"
-          }`}
-        >
-          Todos
-        </button>
-        {LETTERS.map((l) => {
-          const available = availableLetters.has(l);
-          const active = letterFilter === l;
-          return (
-            <button
-              key={l}
-              onClick={() => { setLetterFilter(active ? null : l); setSearch(""); }}
-              disabled={!available}
-              className={`w-8 h-8 rounded-lg text-xs font-bold transition-all ${
-                active
-                  ? "bg-red-600 text-white"
-                  : available
-                    ? "bg-gray-800/60 text-gray-400 hover:text-white hover:bg-gray-800"
-                    : "bg-gray-900/30 text-gray-700 cursor-not-allowed"
-              }`}
-            >
-              {l}
-            </button>
-          );
-        })}
+      <div className="mb-6 -mx-1 px-1 overflow-x-auto md:overflow-visible">
+        <div className="flex gap-1 min-w-max md:min-w-0 md:flex-wrap">
+          <button
+            onClick={() => setLetterFilter(null)}
+            className={`px-2.5 py-1 rounded-lg text-xs font-bold transition-all ${
+              !letterFilter
+                ? "bg-red-600 text-white"
+                : "bg-gray-800/60 text-gray-400 hover:text-white hover:bg-gray-800"
+            }`}
+          >
+            Todos
+          </button>
+          {LETTERS.map((l) => {
+            const available = availableLetters.has(l);
+            const active = letterFilter === l;
+            return (
+              <button
+                key={l}
+                onClick={() => { setLetterFilter(active ? null : l); setSearch(""); }}
+                disabled={!available}
+                className={`w-8 h-8 rounded-lg text-xs font-bold transition-all ${
+                  active
+                    ? "bg-red-600 text-white"
+                    : available
+                      ? "bg-gray-800/60 text-gray-400 hover:text-white hover:bg-gray-800"
+                      : "bg-gray-900/30 text-gray-700 cursor-not-allowed"
+                }`}
+              >
+                {l}
+              </button>
+            );
+          })}
+        </div>
       </div>
 
       {/* Results count */}

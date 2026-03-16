@@ -71,9 +71,14 @@ export default async function Home() {
           <span className="bg-white text-red-600 px-3 py-1 text-[11px] font-black uppercase shrink-0 tracking-wider">
             En vivo
           </span>
-          <div className="overflow-hidden whitespace-nowrap flex-1">
+          <div className="overflow-hidden whitespace-nowrap flex-1 hidden sm:block">
             <p className="animate-marquee inline-block text-[11px] font-semibold text-white/95 pl-4 tracking-wide">
               VERSUS ELECTORAL PERÚ 2026 — Monitoreo automático de {stats.candidatos} candidatos presidenciales — {stats.noticias} noticias analizadas de {stats.fuentes} fuentes periodísticas — Actualización automática cada 12 horas (00:00 y 12:00 hrs)
+            </p>
+          </div>
+          <div className="sm:hidden flex-1 overflow-hidden">
+            <p className="text-[11px] font-semibold text-white/95 px-3 truncate">
+              {stats.candidatos} candidatos • {stats.noticias.toLocaleString()} noticias • actualización cada 12h
             </p>
           </div>
         </div>

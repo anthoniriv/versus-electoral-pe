@@ -252,7 +252,7 @@ function WinnerModal({
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-0 sm:p-4 overflow-y-auto"
+      className="fixed inset-0 z-50 flex items-center justify-center p-0 sm:p-4 overflow-y-auto"
       style={{ transition: "opacity 0.3s", opacity: show ? 1 : 0 }}
     >
       {/* Backdrop */}
@@ -260,7 +260,7 @@ function WinnerModal({
 
       {/* Modal */}
       <div
-        className="relative w-full max-w-lg rounded-t-2xl sm:rounded-2xl border border-gray-700/60 bg-gray-900 overflow-hidden shadow-2xl shadow-black/50 max-h-[90vh] sm:max-h-[85vh] overflow-y-auto"
+        className="relative h-[100dvh] sm:h-auto w-full max-w-none sm:max-w-lg rounded-none sm:rounded-2xl border-0 sm:border border-gray-700/60 bg-gray-900 overflow-hidden shadow-2xl shadow-black/50 max-h-[100dvh] sm:max-h-[85vh] overflow-y-auto"
         style={{
           transition: "transform 0.4s cubic-bezier(0.34,1.56,0.64,1), opacity 0.3s",
           transform: showContent ? "scale(1)" : "scale(0.8)",
@@ -305,7 +305,7 @@ function WinnerModal({
             style={{ backgroundColor: (winnerInfo?.color || "#dc2626") + "15" }}
           >
             <p className="text-sm sm:text-lg font-black uppercase" style={{ color: winnerInfo?.color || "#dc2626" }}>
-              Es mas peligroso que {loser.nombre.split(" ")[0]}
+              Es más peligroso que {loser.nombre.split(" ")[0]}
             </p>
             <p className="text-[11px] sm:text-xs text-gray-400 mt-0.5">
               Clasificado como <strong style={{ color: winnerInfo?.color }}>{winnerInfo?.label}</strong> con {winner.totalNoticias} noticias
@@ -332,7 +332,7 @@ function WinnerModal({
                       <span className="text-[10px] font-bold text-gray-500">#{i + 1}</span>
                       <GravedadBadge gravedad={n.gravedad} />
                       <span className="text-[10px] text-gray-500">{TIPO_LABELS[n.tipo] || n.tipo}</span>
-                      <span className="text-[10px] text-gray-600 ml-auto">{n.fuente}</span>
+                      <span className="text-[10px] text-gray-600 ml-auto hidden sm:inline">{n.fuente}</span>
                     </div>
                     <p className="text-xs sm:text-sm font-semibold text-white line-clamp-2 leading-snug">{n.titulo}</p>
                   </a>
@@ -444,7 +444,7 @@ export function VersusSelector() {
     <div>
       {/* ── Selector ── */}
       {!comparing && (
-        <section ref={selectorSectionRef} className="py-10 px-4 scroll-mt-24">
+        <section ref={selectorSectionRef} className="py-8 sm:py-10 px-4 scroll-mt-24">
           <div className="mx-auto max-w-5xl">
             <h1 className="text-3xl font-black text-white text-center uppercase tracking-wider mb-2">
               Versus
@@ -455,30 +455,30 @@ export function VersusSelector() {
 
             {/* Face-off preview */}
             {leftData && rightData && (
-              <div className="relative mb-8 h-[340px] md:h-[420px] rounded-2xl overflow-hidden border border-gray-800">
+              <div className="relative mb-6 sm:mb-8 h-[220px] sm:h-[300px] md:h-[420px] rounded-2xl overflow-hidden border border-gray-800">
                 <div className="absolute inset-y-0 left-0 w-1/2">
                   <VersusPhoto slug={left} nombre={leftData.nombre} side="left" />
-                  <div className="absolute bottom-4 left-4 z-10">
-                    <p className="text-xl md:text-2xl font-black text-white leading-tight drop-shadow-lg">
+                  <div className="absolute bottom-3 sm:bottom-4 left-3 sm:left-4 z-10 max-w-[85%]">
+                    <p className="text-lg sm:text-xl md:text-2xl font-black text-white leading-tight drop-shadow-lg line-clamp-2">
                       {leftData.nombre}
                     </p>
-                    <p className="text-xs text-gray-300 mt-1">{leftData.partido}</p>
-                    <div className="flex items-center gap-2 mt-2">
+                    <p className="hidden sm:block text-xs text-gray-300 mt-1 line-clamp-1">{leftData.partido}</p>
+                    <div className="flex items-center gap-2 mt-1.5 sm:mt-2">
                       <GravedadBadge gravedad={leftData.peorGravedad} />
-                      <span className="text-xs text-gray-400">{leftData.totalNoticias} noticias</span>
+                      <span className="text-[11px] sm:text-xs text-gray-400">{leftData.totalNoticias} noticias</span>
                     </div>
                   </div>
                 </div>
 
                 <div className="absolute inset-y-0 right-0 w-1/2">
                   <VersusPhoto slug={right} nombre={rightData.nombre} side="right" />
-                  <div className="absolute bottom-4 right-4 z-10 text-right">
-                    <p className="text-xl md:text-2xl font-black text-white leading-tight drop-shadow-lg">
+                  <div className="absolute bottom-3 sm:bottom-4 right-3 sm:right-4 z-10 text-right max-w-[85%] ml-auto">
+                    <p className="text-lg sm:text-xl md:text-2xl font-black text-white leading-tight drop-shadow-lg line-clamp-2">
                       {rightData.nombre}
                     </p>
-                    <p className="text-xs text-gray-300 mt-1">{rightData.partido}</p>
-                    <div className="flex items-center gap-2 mt-2 justify-end">
-                      <span className="text-xs text-gray-400">{rightData.totalNoticias} noticias</span>
+                    <p className="hidden sm:block text-xs text-gray-300 mt-1 line-clamp-1">{rightData.partido}</p>
+                    <div className="flex items-center gap-2 mt-1.5 sm:mt-2 justify-end">
+                      <span className="text-[11px] sm:text-xs text-gray-400">{rightData.totalNoticias} noticias</span>
                       <GravedadBadge gravedad={rightData.peorGravedad} />
                     </div>
                   </div>
@@ -486,17 +486,17 @@ export function VersusSelector() {
 
                 <div className="absolute inset-0 flex items-center justify-center z-20 pointer-events-none">
                   <div
-                    className="w-20 h-20 md:w-24 md:h-24 rounded-full bg-red-600 flex items-center justify-center animate-pulse-glow"
+                    className="w-14 h-14 sm:w-20 sm:h-20 md:w-24 md:h-24 rounded-full bg-red-600 flex items-center justify-center animate-pulse-glow"
                     style={{ boxShadow: "0 0 40px rgba(220,38,38,0.7)" }}
                   >
-                    <span className="text-3xl md:text-4xl font-black text-white italic">VS</span>
+                    <span className="text-2xl sm:text-3xl md:text-4xl font-black text-white italic">VS</span>
                   </div>
                 </div>
               </div>
             )}
 
             {/* Dropdowns */}
-            <div className="grid grid-cols-1 md:grid-cols-[1fr_auto_1fr] gap-6 items-start">
+            <div className="grid grid-cols-1 md:grid-cols-[1fr_auto_1fr] gap-4 sm:gap-6 items-start">
               <div>
                 <label className="block text-xs font-bold uppercase tracking-wider text-red-500 mb-2">
                   Candidato 1
@@ -511,7 +511,7 @@ export function VersusSelector() {
                 />
               </div>
 
-              <div className="flex flex-col items-center justify-center py-4">
+              <div className="flex flex-col items-center justify-center py-2 sm:py-4">
                 <span className="text-4xl font-black text-red-500 italic" style={{ textShadow: "0 0 20px rgba(220,38,38,0.5)" }}>
                   VS
                 </span>
@@ -536,7 +536,7 @@ export function VersusSelector() {
               <button
                 onClick={startComparison}
                 disabled={!left || !right || left === right}
-                className="px-10 py-4 bg-red-600 hover:bg-red-500 disabled:bg-gray-800 disabled:text-gray-500 disabled:cursor-not-allowed text-white font-black text-lg uppercase tracking-wider rounded-xl transition-all duration-200 transform hover:scale-[1.03] hover:shadow-[0_0_40px_rgba(220,38,38,0.3)] disabled:hover:scale-100 disabled:hover:shadow-none"
+                className="w-full sm:w-auto px-10 py-4 bg-red-600 hover:bg-red-500 disabled:bg-gray-800 disabled:text-gray-500 disabled:cursor-not-allowed text-white font-black text-lg uppercase tracking-wider rounded-xl transition-all duration-200 transform hover:scale-[1.03] hover:shadow-[0_0_40px_rgba(220,38,38,0.3)] disabled:hover:scale-100 disabled:hover:shadow-none"
               >
                 Comparar
               </button>
