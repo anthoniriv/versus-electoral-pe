@@ -1,17 +1,29 @@
 import { SITE_URL, SITE_NAME } from "@/lib/site";
 import Link from "next/link";
 import { CANDIDATOS } from "@/lib/candidatos";
+import { prisma } from "@/lib/db";
 
-export const dynamic = "force-static";
+export const revalidate = 1800;
 
-const HOME_STATS = {
+const HOME_STATS_BASE = {
   candidatos: CANDIDATOS.length,
-  noticias: Number(process.env.NEXT_PUBLIC_HOME_NEWS_COUNT || "1756"),
   fuentes: 20,
 };
 
-export default function Home() {
-  const stats = HOME_STATS;
+async function obtenerConteoNoticiasHome(): Promise<number> {
+  try {
+    return await prisma.noticia.count();
+  } catch (error) {
+    console.error("[HOME] Error contando noticias en DB, usando fallback estático:", error);
+    return Number(process.env.NEXT_PUBLIC_HOME_NEWS_COUNT || "1756");
+  }
+}
+
+export default async function Home() {
+  const stats = {
+    ...HOME_STATS_BASE,
+    noticias: await obtenerConteoNoticiasHome(),
+  };
 
   const faqData = [
     {
