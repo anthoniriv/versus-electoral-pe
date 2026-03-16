@@ -9,11 +9,12 @@ on:
 jobs:
   trigger-cron-endpoint:
     runs-on: ubuntu-latest
+    environment: Production
     steps:
       - name: Validate required secrets
         run: |
-          if [ -z "${{ secrets.APP_URL }}" ]; then
-            echo "Missing APP_URL secret"
+          if [ -z "${{ vars.APP_URL }}" ] && [ -z "${{ secrets.APP_URL }}" ]; then
+            echo "Missing APP_URL (set vars.APP_URL or secrets.APP_URL in environment/repo)"
             exit 1
           fi
           if [ -z "${{ secrets.CRON_SECRET }}" ]; then
@@ -23,9 +24,14 @@ jobs:
 
       - name: Call /api/cron
         run: |
+          APP_URL="${{ vars.APP_URL }}"
+          if [ -z "$APP_URL" ]; then
+            APP_URL="${{ secrets.APP_URL }}"
+          fi
+
           response=$(curl -sS -w "\n%{http_code}" \
             -H "Authorization: Bearer ${{ secrets.CRON_SECRET }}" \
-            "${{ secrets.APP_URL }}/api/cron")
+            "${APP_URL}/api/cron")
 
           body=$(echo "$response" | sed '$d')
           status=$(echo "$response" | tail -n1)
