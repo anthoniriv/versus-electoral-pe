@@ -2,6 +2,7 @@ import { SITE_URL, SITE_NAME } from "@/lib/site";
 import Link from "next/link";
 import { CANDIDATOS } from "@/lib/candidatos";
 import { prisma } from "@/lib/db";
+import { FaqAccordion } from "@/components/FaqAccordion";
 
 export const revalidate = 1800;
 
@@ -167,25 +168,7 @@ export default async function Home() {
           <h2 className="text-xl font-black mb-10 text-center uppercase tracking-[0.2em] text-gray-400">
             Preguntas Frecuentes
           </h2>
-          <div className="space-y-2">
-            {faqData.map((item, i) => (
-              <details
-                key={i}
-                name="faq"
-                className="group rounded-xl border border-gray-800/60 bg-gray-900/50 hover:border-gray-700 transition-colors"
-              >
-                <summary className="cursor-pointer px-5 py-4 text-sm font-semibold text-white list-none flex items-center justify-between gap-4">
-                  <span>{item.question}</span>
-                  <span className="text-gray-600 group-open:rotate-180 transition-transform duration-200 shrink-0">
-                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" /></svg>
-                  </span>
-                </summary>
-                <p className="px-5 pb-5 text-sm text-gray-400 leading-relaxed -mt-1">
-                  {item.answer}
-                </p>
-              </details>
-            ))}
-          </div>
+          <FaqAccordion items={faqData} />
         </div>
       </section>
     </div>
