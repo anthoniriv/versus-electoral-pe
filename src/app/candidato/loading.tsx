@@ -1,5 +1,5 @@
 import { RouteLoading } from "@/components/RouteLoading";
 
 export default function Loading() {
-  return <RouteLoading message="Cargando informacion..." />;
+  return <RouteLoading message="Cargando información..." />;
 }

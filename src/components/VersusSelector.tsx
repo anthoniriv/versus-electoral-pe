@@ -378,7 +378,7 @@ export function VersusSelector() {
   useEffect(() => {
     fetch("/api/candidatos")
       .then((r) => r.json())
-      .then(setCandidatos)
+      .then((data) => setCandidatos(Array.isArray(data) ? data : []))
       .catch(() => {});
   }, []);
 

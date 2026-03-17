@@ -7,7 +7,7 @@ interface RouteLoadingProps {
   message?: string;
 }
 
-export function RouteLoading({ message = "Cargando informacion..." }: RouteLoadingProps) {
+export function RouteLoading({ message = "Cargando información..." }: RouteLoadingProps) {
   const containerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {

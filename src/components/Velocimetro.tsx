@@ -368,11 +368,11 @@ export function VelocimetroVersus({
 
         {/* Left label */}
         <text x="30" y="170" fontSize="8" fill="#ef4444" fontWeight="700" textAnchor="start" opacity={isLeftWorse ? 1 : 0.4}>
-          MAS PELIGROSO
+          MÁS PELIGROSO
         </text>
         {/* Right label */}
         <text x="270" y="170" fontSize="8" fill="#ef4444" fontWeight="700" textAnchor="end" opacity={isRightWorse ? 1 : 0.4}>
-          MAS PELIGROSO
+          MÁS PELIGROSO
         </text>
         {/* Center label */}
         <text x="150" y="125" fontSize="9" fill="#16a34a" fontWeight="700" textAnchor="middle" opacity={0.5}>

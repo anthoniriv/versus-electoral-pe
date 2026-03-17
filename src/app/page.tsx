@@ -90,7 +90,7 @@ export default async function Home() {
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,rgba(220,38,38,0.08),transparent_70%)]" />
         <div className="relative mx-auto max-w-4xl">
           <p className="text-red-500 text-[11px] font-bold uppercase tracking-[0.35em] mb-3 animate-fade-in">
-            Elecciones Presidenciales Peru 2026
+            Elecciones Presidenciales Perú 2026
           </p>
           <h1 className="text-4xl sm:text-5xl lg:text-7xl font-black tracking-tight leading-[1.05]">
             <span className="text-white">Versus</span>
@@ -171,6 +171,7 @@ export default async function Home() {
             {faqData.map((item, i) => (
               <details
                 key={i}
+                name="faq"
                 className="group rounded-xl border border-gray-800/60 bg-gray-900/50 hover:border-gray-700 transition-colors"
               >
                 <summary className="cursor-pointer px-5 py-4 text-sm font-semibold text-white list-none flex items-center justify-between gap-4">

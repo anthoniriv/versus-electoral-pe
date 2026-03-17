@@ -1,5 +1,5 @@
 import { RouteLoading } from "@/components/RouteLoading";
 
 export default function Loading() {
-  return <RouteLoading message="Preparando comparacion..." />;
+  return <RouteLoading message="Preparando comparación..." />;
 }
