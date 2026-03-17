@@ -116,10 +116,10 @@ export async function clasificarConIA(
 
   const prompt = `Clasifica esta noticia sobre el candidato "${nombreCandidato}":
 
-TITULO: ${titulo}
-DESCRIPCION: ${descripcion || "(sin descripcion)"}
+TÍTULO: ${titulo}
+DESCRIPCIÓN: ${descripcion || "(sin descripción)"}
 
-El candidato es AFECTADO por la noticia o es el quien ACTUA/OPINA? Clasifica la gravedad.`;
+El candidato es AFECTADO por la noticia o es él quien ACTÚA/OPINA? Clasifica la gravedad.`;
 
   try {
     const text = await clasificarConOpenAI(prompt, apiKey);

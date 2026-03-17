@@ -604,6 +604,26 @@ export function VersusSelector() {
               </div>
             </div>
 
+            {/* Botón ver veredicto */}
+            {showResults && winnerData && (
+              <div className="mb-8 text-center animate-fade-in">
+                <button
+                  onClick={() => setShowModal(true)}
+                  className="inline-flex items-center gap-2 px-6 py-3 rounded-xl font-bold text-sm uppercase tracking-wider transition-all duration-200 hover:scale-[1.03]"
+                  style={{
+                    backgroundColor: `${GRAVEDAD[winnerData.peorGravedad as GravedadKey]?.color || "#dc2626"}20`,
+                    color: GRAVEDAD[winnerData.peorGravedad as GravedadKey]?.color || "#dc2626",
+                    border: `1px solid ${GRAVEDAD[winnerData.peorGravedad as GravedadKey]?.color || "#dc2626"}40`,
+                  }}
+                >
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                  Ver veredicto
+                </button>
+              </div>
+            )}
+
             {/* Desglose por gravedad */}
             {showResults && (
               <div className="mb-8 rounded-2xl border border-gray-800/60 bg-gray-900/40 backdrop-blur-sm p-6 sm:p-8 animate-fade-in">
