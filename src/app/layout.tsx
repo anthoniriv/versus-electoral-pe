@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import { SITE_URL, SITE_NAME, SITE_DESCRIPTION } from "@/lib/site";
+import { NewsBanner } from "@/components/NewsBanner";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -127,6 +128,7 @@ export default function RootLayout({
             </a>
           </div>
         </header>
+        <NewsBanner />
         <main>{children}</main>
         <footer className="border-t border-gray-800/60 py-10 text-center text-xs text-gray-600">
           <div className="mx-auto max-w-7xl px-4 sm:px-6">
