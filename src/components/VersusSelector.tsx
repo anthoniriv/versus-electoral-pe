@@ -117,12 +117,17 @@ function SearchableSelect({
       <button
         type="button"
         onClick={handleOpen}
-        className={`w-full rounded-xl border-2 border-gray-700/80 bg-gray-900/80 text-white p-3.5 text-sm font-semibold text-left flex items-center justify-between ${focusColor} focus:outline-none transition-colors hover:border-gray-600 ${open ? borderColor : ""}`}
+        className={`w-full rounded-xl border-2 border-gray-700/80 bg-gray-900/80 text-white px-3.5 py-2.5 text-left flex items-center justify-between gap-2 min-h-[60px] ${focusColor} focus:outline-none transition-colors hover:border-gray-600 ${open ? borderColor : ""}`}
       >
-        <span className={selected ? "text-white" : "text-gray-500"}>
-          {selected ? `${selected.nombre} — ${selected.partido}` : placeholder}
-        </span>
-        <svg className={`w-4 h-4 text-gray-400 transition-transform ${open ? "rotate-180" : ""}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        {selected ? (
+          <div className="min-w-0 flex-1">
+            <p className="text-sm font-semibold text-white truncate">{selected.nombre}</p>
+            <p className="text-[11px] text-gray-500 truncate">{selected.partido}</p>
+          </div>
+        ) : (
+          <span className="text-sm text-gray-500">{placeholder}</span>
+        )}
+        <svg className={`w-4 h-4 text-gray-400 transition-transform shrink-0 ${open ? "rotate-180" : ""}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
         </svg>
       </button>
