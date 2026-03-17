@@ -372,6 +372,9 @@ export function VersusSelector() {
   const [comparing, setComparing] = useState(false);
   const [showResults, setShowResults] = useState(false);
   const [showModal, setShowModal] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [comparedLeft, setComparedLeft] = useState("");
+  const [comparedRight, setComparedRight] = useState("");
   const selectorSectionRef = useRef<HTMLElement>(null);
   const resultsSectionRef = useRef<HTMLElement>(null);
 
@@ -391,12 +394,14 @@ export function VersusSelector() {
     setTimeout(() => setShowModal(true), 600);
   }, []);
 
+  const hasPendingChanges = comparing && (left !== comparedLeft || right !== comparedRight);
+
   async function startComparison() {
     if (!left || !right || left === right) return;
+    setLoading(true);
     setComparing(true);
     setShowResults(false);
     setShowModal(false);
-    // Scroll to top since the results section replaces the selector
     window.scrollTo({ top: 0, behavior: "smooth" });
 
     const [lRes, rRes] = await Promise.all([
@@ -410,6 +415,9 @@ export function VersusSelector() {
 
     setLeftNoticias((lRes.noticias || []).sort(sortByGravedad));
     setRightNoticias((rRes.noticias || []).sort(sortByGravedad));
+    setComparedLeft(left);
+    setComparedRight(right);
+    setLoading(false);
   }
 
   function reset() {
@@ -551,7 +559,7 @@ export function VersusSelector() {
           <div className="mx-auto max-w-6xl">
 
             {/* Layout: [Left candidate] [Velocímetro] [Right candidate] */}
-            <div className="grid grid-cols-1 md:grid-cols-[1fr_auto_1fr] gap-4 md:gap-6 items-center mb-8">
+            <div className="grid grid-cols-1 md:grid-cols-[1fr_auto_1fr] gap-4 md:gap-6 items-center mb-4">
               {/* Left candidate card */}
               <div className="flex flex-col items-center text-center">
                 <div
@@ -601,6 +609,41 @@ export function VersusSelector() {
                   <GravedadBadge gravedad={rightData.peorGravedad} />
                   <span className="text-xs text-gray-500">{rightData.totalNoticias} noticias</span>
                 </div>
+              </div>
+            </div>
+
+            {/* Cambiar candidatos en línea */}
+            <div className="mb-8 grid grid-cols-1 md:grid-cols-[1fr_auto_1fr] gap-3 md:gap-6 items-end">
+              <div>
+                <label className="block text-[10px] font-bold uppercase tracking-wider text-gray-500 mb-1.5">Cambiar candidato 1</label>
+                <SearchableSelect
+                  value={left}
+                  onChange={setLeft}
+                  options={candidatos}
+                  disabledValue={right}
+                  placeholder="Seleccionar candidato..."
+                  accentColor="red"
+                />
+              </div>
+              <div className="flex justify-center py-1">
+                <button
+                  onClick={startComparison}
+                  disabled={!hasPendingChanges || !left || !right || left === right || loading}
+                  className="px-6 py-3 bg-red-600 hover:bg-red-500 disabled:bg-gray-800 disabled:text-gray-600 disabled:cursor-not-allowed text-white font-black text-sm uppercase tracking-wider rounded-xl transition-all duration-200 hover:scale-[1.03] disabled:hover:scale-100"
+                >
+                  {loading ? "Cargando..." : "Comparar"}
+                </button>
+              </div>
+              <div>
+                <label className="block text-[10px] font-bold uppercase tracking-wider text-gray-500 mb-1.5">Cambiar candidato 2</label>
+                <SearchableSelect
+                  value={right}
+                  onChange={setRight}
+                  options={candidatos}
+                  disabledValue={left}
+                  placeholder="Seleccionar candidato..."
+                  accentColor="blue"
+                />
               </div>
             </div>
 
@@ -727,13 +770,13 @@ export function VersusSelector() {
               </div>
             )}
 
-            {/* Botón volver */}
+            {/* Botón cambiar arriba */}
             <div className="mt-10 text-center">
               <button
-                onClick={reset}
+                onClick={() => resultsSectionRef.current?.scrollIntoView({ behavior: "smooth", block: "start" })}
                 className="px-8 py-3.5 border border-gray-700 text-gray-300 hover:text-white hover:border-gray-500 hover:bg-white/5 rounded-xl font-semibold transition-all duration-200"
               >
-                Nueva comparación
+                Cambiar candidatos
               </button>
             </div>
           </div>
