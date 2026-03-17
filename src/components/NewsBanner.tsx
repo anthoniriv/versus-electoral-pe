@@ -26,7 +26,7 @@ export async function NewsBanner() {
           </p>
         </div>
         <div className="sm:hidden flex-1 overflow-hidden">
-          <p className="text-[11px] font-semibold text-white/95 px-3 truncate">
+          <p className="text-[11px] font-semibold text-white/95 px-3 truncate text-center">
             {candidatos} candidatos • {noticias.toLocaleString()} noticias • actualización cada 12h
           </p>
         </div>
