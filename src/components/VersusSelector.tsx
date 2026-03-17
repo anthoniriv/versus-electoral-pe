@@ -637,7 +637,7 @@ export function VersusSelector() {
             </div>
 
             {/* Cambiar candidatos en línea */}
-            <div className="mb-8 grid grid-cols-1 md:grid-cols-[1fr_auto_1fr] gap-3 md:gap-6 items-end">
+            <div className="mb-8 grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-6 items-end">
               <div>
                 <label className="block text-[10px] font-bold uppercase tracking-wider text-gray-500 mb-1.5">Cambiar candidato 1</label>
                 <SearchableSelect
@@ -648,15 +648,6 @@ export function VersusSelector() {
                   placeholder="Seleccionar candidato..."
                   accentColor="red"
                 />
-              </div>
-              <div className="flex justify-center py-1">
-                <button
-                  onClick={startComparison}
-                  disabled={!hasPendingChanges || !left || !right || left === right || loading}
-                  className="px-6 py-3 bg-red-600 hover:bg-red-500 disabled:bg-gray-800 disabled:text-gray-600 disabled:cursor-not-allowed text-white font-black text-sm uppercase tracking-wider rounded-xl transition-all duration-200 hover:scale-[1.03] disabled:hover:scale-100"
-                >
-                  {loading ? "Cargando..." : "Comparar"}
-                </button>
               </div>
               <div>
                 <label className="block text-[10px] font-bold uppercase tracking-wider text-gray-500 mb-1.5">Cambiar candidato 2</label>
@@ -670,6 +661,17 @@ export function VersusSelector() {
                 />
               </div>
             </div>
+            {hasPendingChanges && (
+              <div className="mb-8 text-center">
+                <button
+                  onClick={startComparison}
+                  disabled={!left || !right || left === right || loading}
+                  className="px-8 py-3 bg-red-600 hover:bg-red-500 disabled:bg-gray-800 disabled:text-gray-600 disabled:cursor-not-allowed text-white font-black text-sm uppercase tracking-wider rounded-xl transition-all duration-200 hover:scale-[1.03] disabled:hover:scale-100"
+                >
+                  {loading ? "Cargando..." : "Comparar"}
+                </button>
+              </div>
+            )}
 
             {/* Botón ver veredicto */}
             {showResults && winnerData && (
