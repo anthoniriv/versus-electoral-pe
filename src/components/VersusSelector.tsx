@@ -459,6 +459,15 @@ export function VersusSelector() {
       {!comparing && (
         <section ref={selectorSectionRef} className="py-8 sm:py-10 px-4 scroll-mt-24">
           <div className="mx-auto max-w-5xl">
+            <a
+              href="/"
+              className="inline-flex items-center gap-1.5 text-sm text-gray-400 hover:text-white transition-colors mb-4"
+            >
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+              </svg>
+              Volver
+            </a>
             <h1 className="text-3xl font-black text-white text-center uppercase tracking-wider mb-2">
               Versus
             </h1>
