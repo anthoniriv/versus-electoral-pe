@@ -5,7 +5,7 @@ import { GRAVEDAD, type GravedadKey } from "@/lib/candidatos";
 import { CandidatoDetalleClient } from "@/components/CandidatoDetalleClient";
 import { SITE_URL, SITE_NAME } from "@/lib/site";
 
-export const revalidate = 300;
+export const revalidate = 1800;
 
 interface PageProps {
   params: Promise<{ slug: string }>;

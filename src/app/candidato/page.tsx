@@ -3,7 +3,7 @@ import { SITE_URL, SITE_NAME } from "@/lib/site";
 import { CandidatosList } from "@/components/CandidatosList";
 import { obtenerResumenCandidatos } from "@/lib/candidatos-resumen";
 
-export const revalidate = 300;
+export const revalidate = 1800;
 
 export const metadata: Metadata = {
   title: "Todos los Candidatos Presidenciales 2026",

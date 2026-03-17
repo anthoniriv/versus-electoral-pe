@@ -156,3 +156,20 @@ section:not(:first-of-type) {
   background-size: 200% 100%;
   animation: shimmer 2s infinite;
 }
+
+/* Respect reduced motion preference */
+@media (prefers-reduced-motion: reduce) {
+  .animate-marquee,
+  .animate-fade-in,
+  .animate-fade-in-up,
+  .animate-pulse-glow,
+  .animate-slide-down,
+  .animate-shimmer {
+    animation: none !important;
+  }
+  *,
+  *::before,
+  *::after {
+    transition-duration: 0.01ms !important;
+  }
+}

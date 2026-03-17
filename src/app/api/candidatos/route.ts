@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { obtenerResumenCandidatos } from "@/lib/candidatos-resumen";
 
-export const revalidate = 300;
+export const revalidate = 1800;
 
 export async function GET() {
   try {

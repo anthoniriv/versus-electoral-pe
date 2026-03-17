@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, memo } from "react";
 import { GRAVEDAD, type GravedadKey } from "@/lib/candidatos";
 
 interface VelocimetroProps {
@@ -77,7 +77,7 @@ function useAnimatedAngle(targetAngle: number, animate: boolean, startAngle: num
   return currentAngle;
 }
 
-function SpeedtestArc({ id, mirror }: { id: string; mirror?: boolean }) {
+const SpeedtestArc = memo(function SpeedtestArc({ id, mirror }: { id: string; mirror?: boolean }) {
   const cx = 150, cy = 150, r = 120;
   const tickR = 105;
   const totalTicks = 40;
@@ -164,7 +164,7 @@ function SpeedtestArc({ id, mirror }: { id: string; mirror?: boolean }) {
       })}
     </>
   );
-}
+});
 
 function Needle({ angle, color, filterId }: { angle: number; color: string; filterId: string }) {
   const cx = 150, cy = 150, len = 88;
