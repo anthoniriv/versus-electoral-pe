@@ -390,8 +390,9 @@ export function VersusSelector() {
       .catch(() => {});
   }, []);
 
-  const leftData = candidatos.find((c) => c.slug === left);
-  const rightData = candidatos.find((c) => c.slug === right);
+  const lista = Array.isArray(candidatos) ? candidatos : [];
+  const leftData = lista.find((c) => c.slug === left);
+  const rightData = lista.find((c) => c.slug === right);
 
   const handleGaugeFinish = useCallback(() => {
     setShowResults(true);
@@ -526,7 +527,7 @@ export function VersusSelector() {
                 <SearchableSelect
                   value={left}
                   onChange={setLeft}
-                  options={candidatos}
+                  options={lista}
                   disabledValue={right}
                   placeholder="Seleccionar candidato..."
                   accentColor="red"
@@ -546,7 +547,7 @@ export function VersusSelector() {
                 <SearchableSelect
                   value={right}
                   onChange={setRight}
-                  options={candidatos}
+                  options={lista}
                   disabledValue={left}
                   placeholder="Seleccionar candidato..."
                   accentColor="blue"
@@ -642,7 +643,7 @@ export function VersusSelector() {
                 <SearchableSelect
                   value={left}
                   onChange={setLeft}
-                  options={candidatos}
+                  options={lista}
                   disabledValue={right}
                   placeholder="Seleccionar candidato..."
                   accentColor="red"
@@ -662,7 +663,7 @@ export function VersusSelector() {
                 <SearchableSelect
                   value={right}
                   onChange={setRight}
-                  options={candidatos}
+                  options={lista}
                   disabledValue={left}
                   placeholder="Seleccionar candidato..."
                   accentColor="blue"
