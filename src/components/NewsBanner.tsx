@@ -17,19 +17,19 @@ export async function NewsBanner() {
   return (
     <div className="bg-red-600/90 overflow-hidden border-b border-red-500/30">
       {/* Desktop: marquee */}
-      <div className="hidden sm:flex items-center h-9">
-        <span className="bg-white text-red-600 px-3 py-1 text-[11px] font-black uppercase shrink-0 tracking-wider">
+      <div className="hidden sm:flex items-center py-2.5">
+        <span className="bg-white text-red-600 px-3 py-1 text-[11px] leading-none font-black uppercase shrink-0 tracking-wider">
           En vivo
         </span>
-        <div className="overflow-hidden whitespace-nowrap flex-1">
-          <p className="animate-marquee inline-block text-[11px] font-semibold text-white/95 pl-4 tracking-wide">
+        <div className="overflow-hidden whitespace-nowrap flex-1 flex items-center">
+          <p className="animate-marquee inline-block text-[11px] font-semibold text-white/95 pl-4 tracking-wide" style={{ lineHeight: '1' }}>
             VERSUS ELECTORAL PERÚ 2026 — Monitoreo automático de {candidatos} candidatos presidenciales — {noticias.toLocaleString()} noticias analizadas de {fuentes} fuentes periodísticas — Actualización automática cada 12 horas (00:00 y 12:00 hrs)
           </p>
         </div>
       </div>
       {/* Mobile: centrado */}
-      <div className="sm:hidden flex items-center justify-center h-9">
-        <p className="text-[11px] font-semibold text-white/95 px-3 truncate text-center">
+      <div className="sm:hidden flex items-center justify-center py-2.5">
+        <p className="text-[11px] leading-none font-semibold text-white/95 px-3 truncate text-center">
           {candidatos} candidatos • {noticias.toLocaleString()} noticias • cada 12h
         </p>
       </div>

@@ -110,7 +110,7 @@ export default async function Home() {
             >
               <div className="absolute inset-0 bg-gradient-to-br from-red-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
               <div className="relative">
-                <div className="text-4xl mb-3">&#9876;</div>
+                <div className="text-4xl mb-3 flex justify-center"><img src="/ic_versus.svg" alt="" className="w-9 h-9" style={{ filter: "brightness(0) invert(1)" }} /></div>
                 <h2 className="text-lg sm:text-xl font-black text-white uppercase tracking-wider">Versus</h2>
                 <p className="mt-2 text-sm text-gray-400 leading-relaxed">
                   Compara cara a cara a dos candidatos y descubre quién tiene más denuncias
@@ -128,7 +128,7 @@ export default async function Home() {
             >
               <div className="absolute inset-0 bg-gradient-to-br from-white/[0.02] to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
               <div className="relative">
-                <div className="text-4xl mb-3">&#128100;</div>
+                <div className="text-4xl mb-3 flex justify-center"><img src="/ic_candidate.svg" alt="" className="w-9 h-9" style={{ filter: "brightness(0) invert(1)" }} /></div>
                 <h2 className="text-lg sm:text-xl font-black text-white uppercase tracking-wider">Candidatos</h2>
                 <p className="mt-2 text-sm text-gray-400 leading-relaxed">
                   Explora los {stats.candidatos} candidatos, sus noticias y nivel de gravedad
@@ -146,7 +146,7 @@ export default async function Home() {
       {/* FAQ */}
       <section className="py-20 px-4 border-t border-gray-800/40">
         <div className="mx-auto max-w-3xl">
-          <h2 className="text-xl font-black mb-10 text-center uppercase tracking-[0.2em] text-gray-400">
+          <h2 className="text-xl font-black mb-10 text-center uppercase tracking-[0.2em] text-white">
             Preguntas Frecuentes
           </h2>
           <FaqAccordion items={faqData} />

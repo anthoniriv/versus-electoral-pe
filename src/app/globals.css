@@ -157,6 +157,27 @@ section:not(:first-of-type) {
   animation: shimmer 2s infinite;
 }
 
+/* Loading dots wave */
+@keyframes dotWave {
+  0%, 60%, 100% {
+    transform: translateY(0);
+    opacity: 0.4;
+  }
+  30% {
+    transform: translateY(-12px);
+    opacity: 1;
+  }
+}
+.dot-wave span {
+  animation: dotWave 1.2s ease-in-out infinite;
+}
+.dot-wave span:nth-child(2) {
+  animation-delay: 0.15s;
+}
+.dot-wave span:nth-child(3) {
+  animation-delay: 0.3s;
+}
+
 /* Respect reduced motion preference */
 @media (prefers-reduced-motion: reduce) {
   .animate-marquee,
