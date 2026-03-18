@@ -402,7 +402,7 @@ export function VersusSelector() {
 
   const hasPendingChanges = comparing && (left !== comparedLeft || right !== comparedRight);
 
-  const startComparisonRef = useRef<(l: string, r: string) => Promise<void>>();
+  const startComparisonRef = useRef<(l: string, r: string) => Promise<void>>(undefined);
   startComparisonRef.current = async (l: string, r: string) => {
     if (!l || !r || l === r) return;
     setLoading(true);
