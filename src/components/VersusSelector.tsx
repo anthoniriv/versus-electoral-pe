@@ -402,8 +402,9 @@ export function VersusSelector() {
 
   const hasPendingChanges = comparing && (left !== comparedLeft || right !== comparedRight);
 
-  async function startComparison() {
-    if (!left || !right || left === right) return;
+  const startComparisonRef = useRef<(l: string, r: string) => Promise<void>>(undefined);
+  startComparisonRef.current = async (l: string, r: string) => {
+    if (!l || !r || l === r) return;
     setLoading(true);
     setComparing(true);
     setShowResults(false);
@@ -411,8 +412,8 @@ export function VersusSelector() {
     window.scrollTo({ top: 0, behavior: "smooth" });
 
     const [lRes, rRes] = await Promise.all([
-      fetch(`/api/noticias?candidato=${left}&limit=50`).then((r) => r.json()),
-      fetch(`/api/noticias?candidato=${right}&limit=50`).then((r) => r.json()),
+      fetch(`/api/noticias?candidato=${l}&limit=50`).then((r) => r.json()),
+      fetch(`/api/noticias?candidato=${r}&limit=50`).then((r) => r.json()),
     ]);
 
     const gravedadOrder = ["MUY_PELIGROSO", "PELIGROSO", "MODERADO", "LEVE", "LIMPIO"];
@@ -421,10 +422,22 @@ export function VersusSelector() {
 
     setLeftNoticias((lRes.noticias || []).sort(sortByGravedad));
     setRightNoticias((rRes.noticias || []).sort(sortByGravedad));
-    setComparedLeft(left);
-    setComparedRight(right);
+    setComparedLeft(l);
+    setComparedRight(r);
     setLoading(false);
+  };
+
+  async function startComparison() {
+    await startComparisonRef.current?.(left, right);
   }
+
+  // Auto-compare when candidates change while in comparing mode
+  useEffect(() => {
+    if (comparing && left && right && left !== right && (left !== comparedLeft || right !== comparedRight)) {
+      startComparisonRef.current?.(left, right);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [left, right, comparing]);
 
   function reset() {
     setLeft("");
@@ -519,7 +532,7 @@ export function VersusSelector() {
             )}
 
             {/* Dropdowns */}
-            <div className="grid grid-cols-1 md:grid-cols-[1fr_auto_1fr] gap-4 sm:gap-6 items-start">
+            <div className="grid grid-cols-1 md:grid-cols-[1fr_auto_1fr] gap-4 sm:gap-6 items-end">
               <div>
                 <label className="block text-xs font-bold uppercase tracking-wider text-red-500 mb-2">
                   Candidato 1
@@ -649,14 +662,10 @@ export function VersusSelector() {
                   accentColor="red"
                 />
               </div>
-              <div className="flex justify-center py-1">
-                <button
-                  onClick={startComparison}
-                  disabled={!hasPendingChanges || !left || !right || left === right || loading}
-                  className="px-6 py-3 bg-red-600 hover:bg-red-500 disabled:bg-gray-800 disabled:text-gray-600 disabled:cursor-not-allowed text-white font-black text-sm uppercase tracking-wider rounded-xl transition-all duration-200 hover:scale-[1.03] disabled:hover:scale-100"
-                >
-                  {loading ? "Cargando..." : "Comparar"}
-                </button>
+              <div className="flex flex-col items-center justify-center py-2 sm:py-4">
+                <span className="text-4xl font-black text-red-500 italic" style={{ textShadow: "0 0 20px rgba(220,38,38,0.5)" }}>
+                  VS
+                </span>
               </div>
               <div>
                 <label className="block text-[10px] font-bold uppercase tracking-wider text-gray-500 mb-1.5">Cambiar candidato 2</label>
@@ -805,6 +814,26 @@ export function VersusSelector() {
             </div>
           </div>
         </section>
+      )}
+
+      {/* Loading overlay */}
+      {loading && (
+        <div className="fixed inset-0 z-[999] flex items-center justify-center bg-black/70 backdrop-blur-sm">
+          <style dangerouslySetInnerHTML={{ __html: `
+            @keyframes dotWaveAnim {
+              0%, 60%, 100% { transform: translateY(0); opacity: 0.4; }
+              30% { transform: translateY(-12px); opacity: 1; }
+            }
+          `}} />
+          <div className="flex flex-col items-center gap-4">
+            <p className="text-white font-bold text-sm uppercase tracking-wider">Comparando</p>
+            <div className="flex gap-3">
+              <span className="block w-4 h-4 bg-white rounded-full" style={{ animation: "dotWaveAnim 1.2s ease-in-out infinite" }} />
+              <span className="block w-4 h-4 bg-white rounded-full" style={{ animation: "dotWaveAnim 1.2s ease-in-out 0.15s infinite" }} />
+              <span className="block w-4 h-4 bg-white rounded-full" style={{ animation: "dotWaveAnim 1.2s ease-in-out 0.3s infinite" }} />
+            </div>
+          </div>
+        </div>
       )}
 
       {/* Winner Modal */}
