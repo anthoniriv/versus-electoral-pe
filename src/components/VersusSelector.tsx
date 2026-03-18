@@ -596,9 +596,9 @@ export function VersusSelector() {
             </button>
 
             {/* Layout: [Left candidate] [Velocímetro] [Right candidate] */}
-            <div className="grid grid-cols-1 md:grid-cols-[1fr_auto_1fr] gap-4 md:gap-6 items-center mb-4">
+            <div className="grid grid-cols-1 md:grid-cols-[1fr_auto_1fr] gap-2 md:gap-6 items-center mb-4">
               {/* Left candidate card */}
-              <div className="flex flex-col items-center text-center min-h-[260px] md:min-h-[300px]">
+              <div className="flex flex-col items-center text-center md:min-h-[300px]">
                 <div
                   className="relative h-32 w-32 md:h-40 md:w-40 rounded-2xl overflow-hidden border-4 mb-3 shrink-0"
                   style={{
@@ -617,7 +617,7 @@ export function VersusSelector() {
               </div>
 
               {/* Center: Velocímetro */}
-              <div className="flex flex-col items-center">
+              <div className="flex flex-col items-center mb-4 md:mb-0">
                 <VelocimetroVersus
                   leftGravedad={leftData.peorGravedad as GravedadKey}
                   rightGravedad={rightData.peorGravedad as GravedadKey}
@@ -630,7 +630,7 @@ export function VersusSelector() {
               </div>
 
               {/* Right candidate card */}
-              <div className="flex flex-col items-center text-center min-h-[260px] md:min-h-[300px]">
+              <div className="flex flex-col items-center text-center md:min-h-[300px]">
                 <div
                   className="relative h-32 w-32 md:h-40 md:w-40 rounded-2xl overflow-hidden border-4 mb-3 shrink-0"
                   style={{
