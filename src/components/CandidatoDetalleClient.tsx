@@ -131,7 +131,7 @@ export function CandidatoDetalleClient({
           )}
 
           {/* Noticias */}
-          <h2 className="text-base font-black uppercase tracking-[0.15em] text-gray-400 mb-5 border-b border-gray-800/60 pb-3">
+          <h2 className="text-base font-black uppercase tracking-[0.15em] text-white mb-5 border-b border-gray-800/60 pb-3">
             Noticias y Registros
           </h2>
 

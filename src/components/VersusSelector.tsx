@@ -596,9 +596,9 @@ export function VersusSelector() {
             </button>
 
             {/* Layout: [Left candidate] [Velocímetro] [Right candidate] */}
-            <div className="grid grid-cols-1 md:grid-cols-[1fr_auto_1fr] gap-4 md:gap-6 items-center mb-4">
+            <div className="grid grid-cols-1 md:grid-cols-[1fr_auto_1fr] gap-2 md:gap-6 items-center mb-4">
               {/* Left candidate card */}
-              <div className="flex flex-col items-center text-center min-h-[260px] md:min-h-[300px]">
+              <div className="flex flex-col items-center text-center md:min-h-[300px]">
                 <div
                   className="relative h-32 w-32 md:h-40 md:w-40 rounded-2xl overflow-hidden border-4 mb-3 shrink-0"
                   style={{
@@ -617,7 +617,7 @@ export function VersusSelector() {
               </div>
 
               {/* Center: Velocímetro */}
-              <div className="flex flex-col items-center">
+              <div className="flex flex-col items-center mb-4 md:mb-0">
                 <VelocimetroVersus
                   leftGravedad={leftData.peorGravedad as GravedadKey}
                   rightGravedad={rightData.peorGravedad as GravedadKey}
@@ -630,7 +630,7 @@ export function VersusSelector() {
               </div>
 
               {/* Right candidate card */}
-              <div className="flex flex-col items-center text-center min-h-[260px] md:min-h-[300px]">
+              <div className="flex flex-col items-center text-center md:min-h-[300px]">
                 <div
                   className="relative h-32 w-32 md:h-40 md:w-40 rounded-2xl overflow-hidden border-4 mb-3 shrink-0"
                   style={{
@@ -703,7 +703,7 @@ export function VersusSelector() {
             {/* Desglose por gravedad */}
             {showResults && (
               <div className="mb-8 rounded-2xl border border-gray-800/60 bg-gray-900/40 backdrop-blur-sm p-6 sm:p-8 animate-fade-in">
-                <h3 className="text-center text-sm font-bold uppercase tracking-wider text-gray-400 mb-4">
+                <h3 className="text-center text-sm font-bold uppercase tracking-wider text-white mb-4">
                   Desglose por gravedad
                 </h3>
                 {(["MUY_PELIGROSO", "PELIGROSO", "MODERADO", "LEVE", "LIMPIO"] as GravedadKey[]).map((g) => {
@@ -751,7 +751,7 @@ export function VersusSelector() {
             {/* Top 5 noticias */}
             {showResults && (
               <div className="animate-fade-in">
-                <h3 className="text-center text-sm font-bold uppercase tracking-wider text-gray-400 mb-6">
+                <h3 className="text-center text-sm font-bold uppercase tracking-wider text-white mb-6">
                   Top 5 noticias más graves
                 </h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
