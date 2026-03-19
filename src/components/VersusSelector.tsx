@@ -703,7 +703,7 @@ export function VersusSelector() {
             {/* Desglose por gravedad */}
             {showResults && (
               <div className="mb-8 rounded-2xl border border-gray-800/60 bg-gray-900/40 backdrop-blur-sm p-6 sm:p-8 animate-fade-in">
-                <h3 className="text-center text-sm font-bold uppercase tracking-wider text-gray-400 mb-4">
+                <h3 className="text-center text-sm font-bold uppercase tracking-wider text-white mb-4">
                   Desglose por gravedad
                 </h3>
                 {(["MUY_PELIGROSO", "PELIGROSO", "MODERADO", "LEVE", "LIMPIO"] as GravedadKey[]).map((g) => {
@@ -751,7 +751,7 @@ export function VersusSelector() {
             {/* Top 5 noticias */}
             {showResults && (
               <div className="animate-fade-in">
-                <h3 className="text-center text-sm font-bold uppercase tracking-wider text-gray-400 mb-6">
+                <h3 className="text-center text-sm font-bold uppercase tracking-wider text-white mb-6">
                   Top 5 noticias más graves
                 </h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
