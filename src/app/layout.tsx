@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import { SITE_URL, SITE_NAME, SITE_DESCRIPTION } from "@/lib/site";
 import { NewsBanner } from "@/components/NewsBanner";
+import { FooterApoyanos } from "@/components/FooterApoyanos";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -136,6 +137,7 @@ export default function RootLayout({
             <p className="mt-2 max-w-xl mx-auto leading-relaxed">Información recopilada de fuentes periodísticas públicas. Las clasificaciones son automáticas y no constituyen juicio legal.</p>
             <p className="mt-1 text-gray-700">Actualización automática cada 12 horas (00:00 y 12:00, hora Perú).</p>
             <p className="mt-4 text-gray-500">Trabajo realizado por <a href="https://www.onilabs.site/" target="_blank" rel="noopener noreferrer" className="text-red-500 hover:text-red-400 font-semibold transition-colors">OniLabs</a></p>
+            <FooterApoyanos />
           </div>
         </footer>
       </body>
