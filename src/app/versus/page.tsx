@@ -8,6 +8,10 @@ export const metadata: Metadata = {
     "Compara cara a cara a los candidatos presidenciales del Perú 2026. Descubre quién tiene más denuncias, acusaciones y sentencias.",
   alternates: {
     canonical: `${SITE_URL}/versus`,
+    languages: {
+      "x-default": `${SITE_URL}/versus`,
+      es: `${SITE_URL}/versus`,
+    },
   },
   openGraph: {
     title: `Versus de Candidatos | ${SITE_NAME}`,

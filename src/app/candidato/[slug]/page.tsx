@@ -1,11 +1,15 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { prisma } from "@/lib/db";
-import { GRAVEDAD, type GravedadKey } from "@/lib/candidatos";
+import { CANDIDATOS, GRAVEDAD, type GravedadKey } from "@/lib/candidatos";
 import { CandidatoDetalleClient } from "@/components/CandidatoDetalleClient";
 import { SITE_URL, SITE_NAME } from "@/lib/site";
 
 export const revalidate = 1800;
+
+export function generateStaticParams() {
+  return CANDIDATOS.map((c) => ({ slug: c.slug }));
+}
 
 interface PageProps {
   params: Promise<{ slug: string }>;
