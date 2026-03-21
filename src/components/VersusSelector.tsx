@@ -117,11 +117,11 @@ function SearchableSelect({
       <button
         type="button"
         onClick={handleOpen}
-        className={`w-full rounded-xl border-2 border-gray-700/80 bg-gray-900/80 text-white px-3.5 py-3 text-left flex items-center justify-between gap-2 h-[72px] ${focusColor} focus:outline-none transition-colors hover:border-gray-600 ${open ? borderColor : ""}`}
+        className={`w-full rounded-xl border-2 border-gray-700/80 bg-gray-900/80 text-white px-3.5 py-2.5 sm:py-3 text-left flex items-center justify-between gap-2 h-[60px] sm:h-[72px] ${focusColor} focus:outline-none transition-colors hover:border-gray-600 ${open ? borderColor : ""}`}
       >
         {selected ? (
           <div className="min-w-0 flex-1">
-            <p className="text-sm font-semibold text-white line-clamp-2 leading-snug">{selected.nombre}</p>
+            <p className="text-sm font-semibold text-white truncate leading-snug">{selected.nombre}</p>
             <p className="text-[11px] text-gray-500 truncate mt-0.5">{selected.partido}</p>
           </div>
         ) : (
@@ -134,7 +134,14 @@ function SearchableSelect({
 
       {/* Dropdown */}
       {open && (
-        <div className="absolute z-40 mt-1 w-full rounded-xl border border-gray-700/80 bg-gray-900 shadow-2xl shadow-black/40 overflow-hidden animate-slide-down">
+        <>
+        {/* Mobile backdrop */}
+        <div className="fixed inset-0 z-30 bg-black/60 sm:hidden" onClick={() => { setOpen(false); setSearch(""); }} />
+        <div className="fixed inset-x-0 bottom-0 z-40 rounded-t-2xl sm:rounded-xl sm:absolute sm:inset-x-auto sm:bottom-auto sm:mt-1 sm:w-full border border-gray-700/80 bg-gray-900 shadow-2xl shadow-black/40 overflow-hidden animate-slide-down">
+          {/* Mobile drag handle */}
+          <div className="sm:hidden flex justify-center pt-2 pb-1">
+            <div className="w-10 h-1 rounded-full bg-gray-600" />
+          </div>
           {/* Search input */}
           <div className="p-2.5 border-b border-gray-800">
             <input
@@ -148,7 +155,7 @@ function SearchableSelect({
           </div>
 
           {/* Options list */}
-          <div className="max-h-[280px] overflow-y-auto">
+          <div className="max-h-[50vh] sm:max-h-[280px] overflow-y-auto">
             {filtered.length > 0 ? (
               filtered.map((c) => (
                 <button
@@ -176,6 +183,7 @@ function SearchableSelect({
             )}
           </div>
         </div>
+        </>
       )}
     </div>
   );
@@ -473,27 +481,27 @@ export function VersusSelector() {
     <div>
       {/* ── Selector ── */}
       {!comparing && (
-        <section ref={selectorSectionRef} className="py-8 sm:py-10 px-4 scroll-mt-24">
+        <section ref={selectorSectionRef} className="py-4 sm:py-10 px-4 scroll-mt-24">
           <div className="mx-auto max-w-5xl">
             <a
               href="/"
-              className="inline-flex items-center gap-1.5 text-sm text-gray-400 hover:text-white transition-colors mb-4"
+              className="inline-flex items-center gap-1.5 text-sm text-gray-400 hover:text-white transition-colors mb-3 sm:mb-4"
             >
               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
               </svg>
               Volver
             </a>
-            <h1 className="text-3xl font-black text-white text-center uppercase tracking-wider mb-2">
+            <h1 className="text-2xl sm:text-3xl font-black text-white text-center uppercase tracking-wider mb-1 sm:mb-2">
               Versus
             </h1>
-            <p className="text-center text-gray-400 text-sm mb-8">
+            <p className="text-center text-gray-400 text-sm mb-4 sm:mb-8">
               Selecciona dos candidatos y descubre quién es más peligroso
             </p>
 
             {/* Face-off preview */}
             {leftData && rightData && (
-              <div className="relative mb-6 sm:mb-8 h-[220px] sm:h-[300px] md:h-[420px] rounded-2xl overflow-hidden border border-gray-800">
+              <div className="relative mb-4 sm:mb-8 h-[180px] sm:h-[300px] md:h-[420px] rounded-2xl overflow-hidden border border-gray-800">
                 <div className="absolute inset-y-0 left-0 w-1/2">
                   <VersusPhoto slug={left} nombre={leftData.nombre} side="left" />
                   <div className="absolute bottom-3 sm:bottom-4 left-3 sm:left-4 z-10 max-w-[85%]">
@@ -534,9 +542,9 @@ export function VersusSelector() {
             )}
 
             {/* Dropdowns */}
-            <div className="grid grid-cols-1 md:grid-cols-[1fr_auto_1fr] gap-4 sm:gap-6 items-end">
+            <div className="grid grid-cols-1 md:grid-cols-[1fr_auto_1fr] gap-2.5 sm:gap-6 items-end">
               <div>
-                <label className="block text-xs font-bold uppercase tracking-wider text-red-500 mb-2">
+                <label className="block text-xs font-bold uppercase tracking-wider text-red-500 mb-1 sm:mb-2">
                   Candidato 1
                 </label>
                 <SearchableSelect
@@ -549,14 +557,14 @@ export function VersusSelector() {
                 />
               </div>
 
-              <div className="flex flex-col items-center justify-center py-2 sm:py-4">
-                <span className="text-4xl font-black text-red-500 italic" style={{ textShadow: "0 0 20px rgba(220,38,38,0.5)" }}>
+              <div className="flex flex-col items-center justify-center py-1 sm:py-4">
+                <span className="text-3xl sm:text-4xl font-black text-red-500 italic" style={{ textShadow: "0 0 20px rgba(220,38,38,0.5)" }}>
                   VS
                 </span>
               </div>
 
               <div>
-                <label className="block text-xs font-bold uppercase tracking-wider text-blue-500 mb-2">
+                <label className="block text-xs font-bold uppercase tracking-wider text-blue-500 mb-1 sm:mb-2">
                   Candidato 2
                 </label>
                 <SearchableSelect
@@ -570,11 +578,11 @@ export function VersusSelector() {
               </div>
             </div>
 
-            <div className="mt-8 text-center">
+            <div className="mt-5 sm:mt-8 text-center">
               <button
                 onClick={startComparison}
                 disabled={!left || !right || left === right}
-                className="w-full sm:w-auto px-10 py-4 bg-red-600 hover:bg-red-500 disabled:bg-gray-800 disabled:text-gray-500 disabled:cursor-not-allowed text-white font-black text-lg uppercase tracking-wider rounded-xl transition-all duration-200 transform hover:scale-[1.03] hover:shadow-[0_0_40px_rgba(220,38,38,0.3)] disabled:hover:scale-100 disabled:hover:shadow-none"
+                className="w-full sm:w-auto px-10 py-3 sm:py-4 bg-red-600 hover:bg-red-500 disabled:bg-gray-800 disabled:text-gray-500 disabled:cursor-not-allowed text-white font-black text-lg uppercase tracking-wider rounded-xl transition-all duration-200 transform hover:scale-[1.03] hover:shadow-[0_0_40px_rgba(220,38,38,0.3)] disabled:hover:scale-100 disabled:hover:shadow-none"
               >
                 Comparar
               </button>
@@ -597,12 +605,125 @@ export function VersusSelector() {
               Volver
             </button>
 
-            {/* Layout: [Left candidate] [Velocímetro] [Right candidate] */}
-            <div className="grid grid-cols-1 md:grid-cols-[1fr_auto_1fr] gap-2 md:gap-6 items-center mb-4">
+            {/* ── Mobile layout ── */}
+            <div className="md:hidden mb-4">
+              {/* Candidates side by side */}
+              <div className="grid grid-cols-2 gap-4 mb-4">
+                {/* Left */}
+                <div className="flex flex-col items-center text-center">
+                  <div
+                    className="relative h-24 w-24 rounded-2xl overflow-hidden border-4 mb-2 shrink-0"
+                    style={{
+                      borderColor: GRAVEDAD[leftData.peorGravedad as GravedadKey]?.color || "#555",
+                      boxShadow: winner === "left" ? `0 0 25px ${GRAVEDAD[leftData.peorGravedad as GravedadKey]?.color}40` : "none",
+                    }}
+                  >
+                    <VersusPhoto slug={left} nombre={leftData.nombre} side="left" />
+                  </div>
+                  <h3 className="text-sm font-black text-white truncate w-full px-1">{leftData.nombre}</h3>
+                  <p className="text-[11px] text-gray-400 mt-0.5 truncate w-full px-1">{leftData.partido}</p>
+                  <div className="flex items-center gap-1.5 mt-1.5">
+                    <GravedadBadge gravedad={leftData.peorGravedad} />
+                    <span className="text-[11px] text-gray-500">{leftData.totalNoticias} noticias</span>
+                  </div>
+                </div>
+                {/* Right */}
+                <div className="flex flex-col items-center text-center">
+                  <div
+                    className="relative h-24 w-24 rounded-2xl overflow-hidden border-4 mb-2 shrink-0"
+                    style={{
+                      borderColor: GRAVEDAD[rightData.peorGravedad as GravedadKey]?.color || "#555",
+                      boxShadow: winner === "right" ? `0 0 25px ${GRAVEDAD[rightData.peorGravedad as GravedadKey]?.color}40` : "none",
+                    }}
+                  >
+                    <VersusPhoto slug={right} nombre={rightData.nombre} side="right" />
+                  </div>
+                  <h3 className="text-sm font-black text-white truncate w-full px-1">{rightData.nombre}</h3>
+                  <p className="text-[11px] text-gray-400 mt-0.5 truncate w-full px-1">{rightData.partido}</p>
+                  <div className="flex items-center gap-1.5 mt-1.5">
+                    <GravedadBadge gravedad={rightData.peorGravedad} />
+                    <span className="text-[11px] text-gray-500">{rightData.totalNoticias} noticias</span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Horizontal comparison bar */}
+              <div className="rounded-xl border border-gray-800/60 bg-gray-900/40 px-4 py-3 mb-4">
+                <div className="flex items-center gap-2 mb-2">
+                  <span className="text-[10px] font-bold text-gray-500 uppercase flex-1 text-left truncate">{leftData.nombre.split(" ").slice(0, 2).join(" ")}</span>
+                  <span className="text-[10px] font-bold text-gray-500 uppercase flex-1 text-right truncate">{rightData.nombre.split(" ").slice(0, 2).join(" ")}</span>
+                </div>
+                <div className="relative h-2.5 rounded-full bg-gray-800">
+                  <div
+                    className="absolute inset-0 rounded-full"
+                    style={{
+                      background: "linear-gradient(to right, #dc2626, #ea580c, #ca8a04, #16a34a, #ca8a04, #ea580c, #dc2626)",
+                    }}
+                  />
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src="/danger-svgrepo-com.svg"
+                    alt="peligro"
+                    className="absolute top-1/2 -translate-y-1/2 -translate-x-1/2 w-7 h-7 z-10 drop-shadow-lg transition-all duration-[2500ms] ease-out"
+                    style={{
+                      left: winner === "left" ? "15%" : winner === "right" ? "85%" : "50%",
+                    }}
+                  />
+                </div>
+                <p className="text-center mt-2.5 text-xs sm:text-sm font-bold" style={{ color: winnerData ? (GRAVEDAD[winnerData.peorGravedad as GravedadKey]?.color || "#dc2626") : "#16a34a" }}>
+                  {winner === "tie"
+                    ? "Empate"
+                    : `${winnerData?.nombre} es más peligroso`}
+                </p>
+              </div>
+
+              {/* Selectors side by side */}
+              <div className="grid grid-cols-2 gap-3 mb-4">
+                <div>
+                  <label className="block text-[10px] font-bold uppercase tracking-wider text-gray-500 mb-1">Candidato 1</label>
+                  <SearchableSelect
+                    value={left}
+                    onChange={setLeft}
+                    options={lista}
+                    disabledValue={right}
+                    placeholder="Candidato..."
+                    accentColor="red"
+                  />
+                </div>
+                <div>
+                  <label className="block text-[10px] font-bold uppercase tracking-wider text-gray-500 mb-1">Candidato 2</label>
+                  <SearchableSelect
+                    value={right}
+                    onChange={setRight}
+                    options={lista}
+                    disabledValue={left}
+                    placeholder="Candidato..."
+                    accentColor="blue"
+                  />
+                </div>
+              </div>
+            </div>
+
+            {/* Velocímetro hidden on mobile, needed for onFinish callback */}
+            <div className="hidden">
+              <VelocimetroVersus
+                key={comparisonKey}
+                leftGravedad={leftData.peorGravedad as GravedadKey}
+                rightGravedad={rightData.peorGravedad as GravedadKey}
+                leftNombre={leftData.nombre}
+                rightNombre={rightData.nombre}
+                leftNoticias={leftData.totalNoticias}
+                rightNoticias={rightData.totalNoticias}
+                onFinish={handleGaugeFinish}
+              />
+            </div>
+
+            {/* ── Desktop layout ── */}
+            <div className="hidden md:grid md:grid-cols-[1fr_auto_1fr] gap-6 items-center mb-4">
               {/* Left candidate card */}
               <div className="flex flex-col items-center text-center md:min-h-[300px]">
                 <div
-                  className="relative h-32 w-32 md:h-40 md:w-40 rounded-2xl overflow-hidden border-4 mb-3 shrink-0"
+                  className="relative h-40 w-40 rounded-2xl overflow-hidden border-4 mb-3 shrink-0"
                   style={{
                     borderColor: GRAVEDAD[leftData.peorGravedad as GravedadKey]?.color || "#555",
                     boxShadow: winner === "left" ? `0 0 30px ${GRAVEDAD[leftData.peorGravedad as GravedadKey]?.color}40` : "none",
@@ -610,7 +731,7 @@ export function VersusSelector() {
                 >
                   <VersusPhoto slug={left} nombre={leftData.nombre} side="left" />
                 </div>
-                <h3 className="text-sm md:text-base font-black text-white line-clamp-2 min-h-[2.5rem] flex items-center justify-center px-2">{leftData.nombre}</h3>
+                <h3 className="text-base font-black text-white line-clamp-2 min-h-[2.5rem] flex items-center justify-center px-2">{leftData.nombre}</h3>
                 <p className="text-xs text-gray-400 mt-0.5 line-clamp-1 px-2">{leftData.partido}</p>
                 <div className="flex items-center gap-2 mt-2">
                   <GravedadBadge gravedad={leftData.peorGravedad} />
@@ -618,24 +739,23 @@ export function VersusSelector() {
                 </div>
               </div>
 
-              {/* Center: Velocímetro */}
-              <div className="flex flex-col items-center mb-4 md:mb-0">
+              {/* Center: Velocímetro (visible) */}
+              <div className="flex flex-col items-center">
                 <VelocimetroVersus
-                  key={comparisonKey}
+                  key={`desktop-${comparisonKey}`}
                   leftGravedad={leftData.peorGravedad as GravedadKey}
                   rightGravedad={rightData.peorGravedad as GravedadKey}
                   leftNombre={leftData.nombre}
                   rightNombre={rightData.nombre}
                   leftNoticias={leftData.totalNoticias}
                   rightNoticias={rightData.totalNoticias}
-                  onFinish={handleGaugeFinish}
                 />
               </div>
 
               {/* Right candidate card */}
               <div className="flex flex-col items-center text-center md:min-h-[300px]">
                 <div
-                  className="relative h-32 w-32 md:h-40 md:w-40 rounded-2xl overflow-hidden border-4 mb-3 shrink-0"
+                  className="relative h-40 w-40 rounded-2xl overflow-hidden border-4 mb-3 shrink-0"
                   style={{
                     borderColor: GRAVEDAD[rightData.peorGravedad as GravedadKey]?.color || "#555",
                     boxShadow: winner === "right" ? `0 0 30px ${GRAVEDAD[rightData.peorGravedad as GravedadKey]?.color}40` : "none",
@@ -643,7 +763,7 @@ export function VersusSelector() {
                 >
                   <VersusPhoto slug={right} nombre={rightData.nombre} side="right" />
                 </div>
-                <h3 className="text-sm md:text-base font-black text-white line-clamp-2 min-h-[2.5rem] flex items-center justify-center px-2">{rightData.nombre}</h3>
+                <h3 className="text-base font-black text-white line-clamp-2 min-h-[2.5rem] flex items-center justify-center px-2">{rightData.nombre}</h3>
                 <p className="text-xs text-gray-400 mt-0.5 line-clamp-1 px-2">{rightData.partido}</p>
                 <div className="flex items-center gap-2 mt-2">
                   <GravedadBadge gravedad={rightData.peorGravedad} />
@@ -652,8 +772,8 @@ export function VersusSelector() {
               </div>
             </div>
 
-            {/* Cambiar candidatos en línea */}
-            <div className="mb-8 grid grid-cols-1 md:grid-cols-[1fr_auto_1fr] gap-3 md:gap-6 items-end">
+            {/* Desktop: Cambiar candidatos */}
+            <div className="hidden md:grid mb-8 md:grid-cols-[1fr_auto_1fr] gap-6 items-end">
               <div>
                 <label className="block text-[10px] font-bold uppercase tracking-wider text-gray-500 mb-1.5">Cambiar candidato 1</label>
                 <SearchableSelect
@@ -665,7 +785,7 @@ export function VersusSelector() {
                   accentColor="red"
                 />
               </div>
-              <div className="flex flex-col items-center justify-center py-2 sm:py-4">
+              <div className="flex flex-col items-center justify-center py-4">
                 <span className="text-4xl font-black text-red-500 italic" style={{ textShadow: "0 0 20px rgba(220,38,38,0.5)" }}>
                   VS
                 </span>
@@ -705,10 +825,15 @@ export function VersusSelector() {
 
             {/* Desglose por gravedad */}
             {showResults && (
-              <div className="mb-8 rounded-2xl border border-gray-800/60 bg-gray-900/40 backdrop-blur-sm p-6 sm:p-8 animate-fade-in">
-                <h3 className="text-center text-sm font-bold uppercase tracking-wider text-white mb-4">
+              <div className="mb-8 rounded-2xl border border-gray-800/60 bg-gray-900/40 backdrop-blur-sm p-4 sm:p-8 animate-fade-in">
+                <h3 className="text-center text-sm font-bold uppercase tracking-wider text-white mb-2">
                   Desglose por gravedad
                 </h3>
+                <div className="grid grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] gap-2 items-center text-[10px] font-bold uppercase tracking-wider text-gray-500 mb-3">
+                  <span className="truncate text-left">{leftData.nombre.split(" ").slice(0, 2).join(" ")}</span>
+                  <span />
+                  <span className="truncate text-right">{rightData.nombre.split(" ").slice(0, 2).join(" ")}</span>
+                </div>
                 {(["MUY_PELIGROSO", "PELIGROSO", "MODERADO", "LEVE", "LIMPIO"] as GravedadKey[]).map((g) => {
                   const lCount = leftData.gravedadCounts[g] || 0;
                   const rCount = rightData.gravedadCounts[g] || 0;
@@ -716,12 +841,12 @@ export function VersusSelector() {
 
                   return (
                     <div key={g} className="mb-3">
-                      <div className="flex items-center justify-between text-xs mb-1">
-                        <span className="font-bold text-white w-8 text-right">{lCount}</span>
-                        <span className="flex-1 text-center font-semibold" style={{ color: GRAVEDAD[g].color }}>
+                      <div className="grid grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] gap-2 items-center text-xs mb-1">
+                        <span className="font-bold text-white text-left">{lCount}</span>
+                        <span className="text-center font-semibold" style={{ color: GRAVEDAD[g].color }}>
                           {GRAVEDAD[g].label}
                         </span>
-                        <span className="font-bold text-white w-8 text-left">{rCount}</span>
+                        <span className="font-bold text-white text-right">{rCount}</span>
                       </div>
                       <div className="flex gap-1 h-3">
                         <div className="flex-1 flex justify-end">
@@ -806,8 +931,8 @@ export function VersusSelector() {
               </div>
             )}
 
-            {/* Botón cambiar arriba */}
-            <div className="mt-10 text-center">
+            {/* Botón cambiar arriba (solo desktop, en mobile los selectores ya están visibles) */}
+            <div className="mt-10 text-center hidden md:block">
               <button
                 onClick={() => resultsSectionRef.current?.scrollIntoView({ behavior: "smooth", block: "start" })}
                 className="px-8 py-3.5 border border-gray-700 text-gray-300 hover:text-white hover:border-gray-500 hover:bg-white/5 rounded-xl font-semibold transition-all duration-200"

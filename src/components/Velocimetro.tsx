@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, memo } from "react";
+import { useEffect, useState, useId, memo } from "react";
 import { GRAVEDAD, type GravedadKey } from "@/lib/candidatos";
 
 interface VelocimetroProps {
@@ -298,11 +298,16 @@ export function VelocimetroVersus({
   const isLeftWorse = currentAngle < -90;
   const isRightWorse = currentAngle > -90;
 
+  const uid = useId();
+  const gradId = `vs-grad-${uid}`;
+  const glowId = `vs-glow-${uid}`;
+  const needleGlowId = `vs-needle-glow-${uid}`;
+
   return (
     <div className="flex flex-col items-center w-full">
       <svg viewBox="0 0 300 185" className="w-full max-w-[420px]">
         <defs>
-          <linearGradient id="vs-grad" x1="0" y1="0" x2="1" y2="0">
+          <linearGradient id={gradId} x1="0" y1="0" x2="1" y2="0">
             <stop offset="0%" stopColor="#dc2626" />
             <stop offset="15%" stopColor="#ea580c" />
             <stop offset="35%" stopColor="#ca8a04" />
@@ -311,14 +316,14 @@ export function VelocimetroVersus({
             <stop offset="85%" stopColor="#ea580c" />
             <stop offset="100%" stopColor="#dc2626" />
           </linearGradient>
-          <filter id="vs-glow">
+          <filter id={glowId}>
             <feGaussianBlur stdDeviation="3" result="blur" />
             <feMerge>
               <feMergeNode in="blur" />
               <feMergeNode in="SourceGraphic" />
             </feMerge>
           </filter>
-          <filter id="vs-needle-glow">
+          <filter id={needleGlowId}>
             <feGaussianBlur stdDeviation="5" result="blur" />
             <feMerge>
               <feMergeNode in="blur" />
@@ -339,11 +344,11 @@ export function VelocimetroVersus({
         {/* Gradient arc */}
         <path
           d="M 30 150 A 120 120 0 0 1 270 150"
-          stroke="url(#vs-grad)"
+          stroke={`url(#${gradId})`}
           strokeWidth="12"
           fill="none"
           strokeLinecap="round"
-          filter="url(#vs-glow)"
+          filter={`url(#${glowId})`}
         />
 
         {/* Tick marks */}
@@ -380,7 +385,7 @@ export function VelocimetroVersus({
         </text>
 
         {/* Needle */}
-        <Needle angle={currentAngle} color={needleColor} filterId="vs-needle-glow" />
+        <Needle angle={currentAngle} color={needleColor} filterId={needleGlowId} />
 
         {/* Center hub */}
         <circle cx="150" cy="150" r="12" fill="#111827" stroke="#374151" strokeWidth="2" />

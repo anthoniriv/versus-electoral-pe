@@ -30,7 +30,7 @@ export async function NewsBanner() {
       {/* Mobile: centrado */}
       <div className="sm:hidden flex items-center justify-center py-2.5">
         <p className="text-[11px] leading-none font-semibold text-white/95 px-3 truncate text-center">
-          {candidatos} candidatos • {noticias.toLocaleString()} noticias • cada 12h
+          {candidatos} candidatos • {noticias.toLocaleString()} noticias • cada 24h
         </p>
       </div>
     </div>
