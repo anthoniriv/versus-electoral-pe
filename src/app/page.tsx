@@ -40,7 +40,7 @@ export default async function Home() {
     {
       question: "¿Con qué frecuencia se actualiza la información?",
       answer:
-        "El sistema se ejecuta automáticamente cada 12 horas (00:00 y 12:00, hora de Perú) para capturar noticias nuevas de todas las fuentes monitoreadas.",
+        "El sistema se ejecuta automáticamente cada 24 horas (00:00, hora de Perú) para capturar noticias nuevas de todas las fuentes monitoreadas.",
     },
     {
       question: "¿Esta clasificación tiene valor legal?",

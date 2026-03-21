@@ -380,6 +380,7 @@ export function VersusSelector() {
   const [loading, setLoading] = useState(false);
   const [comparedLeft, setComparedLeft] = useState("");
   const [comparedRight, setComparedRight] = useState("");
+  const [comparisonKey, setComparisonKey] = useState(0);
   const selectorSectionRef = useRef<HTMLElement>(null);
   const resultsSectionRef = useRef<HTMLElement>(null);
 
@@ -395,6 +396,7 @@ export function VersusSelector() {
   const rightData = lista.find((c) => c.slug === right);
 
   const handleGaugeFinish = useCallback(() => {
+    setLoading(false);
     setShowResults(true);
     // Show modal after a small delay
     setTimeout(() => setShowModal(true), 600);
@@ -424,7 +426,7 @@ export function VersusSelector() {
     setRightNoticias((rRes.noticias || []).sort(sortByGravedad));
     setComparedLeft(l);
     setComparedRight(r);
-    setLoading(false);
+    setComparisonKey((k) => k + 1);
   };
 
   async function startComparison() {
@@ -619,6 +621,7 @@ export function VersusSelector() {
               {/* Center: Velocímetro */}
               <div className="flex flex-col items-center mb-4 md:mb-0">
                 <VelocimetroVersus
+                  key={comparisonKey}
                   leftGravedad={leftData.peorGravedad as GravedadKey}
                   rightGravedad={rightData.peorGravedad as GravedadKey}
                   leftNombre={leftData.nombre}

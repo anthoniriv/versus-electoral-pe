@@ -168,7 +168,7 @@ export default function RootLayout({
                   Información recopilada de fuentes periodísticas públicas. Las clasificaciones son automáticas y no constituyen juicio legal.
                 </p>
                 <p className="mt-2 text-[11px] text-gray-400">
-                  Actualización automática cada 12 horas (00:00 y 12:00, hora Perú).
+                  Actualización automática cada 24 horas (00:00, hora Perú).
                 </p>
               </div>
 

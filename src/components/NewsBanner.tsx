@@ -23,7 +23,7 @@ export async function NewsBanner() {
         </span>
         <div className="overflow-hidden whitespace-nowrap flex-1 flex items-center">
           <p className="animate-marquee inline-block text-[11px] font-semibold text-white/95 pl-4 tracking-wide" style={{ lineHeight: '1' }}>
-            VERSUS ELECTORAL PERÚ 2026 — Monitoreo automático de {candidatos} candidatos presidenciales — {noticias.toLocaleString()} noticias analizadas de {fuentes} fuentes periodísticas — Actualización automática cada 12 horas (00:00 y 12:00 hrs)
+            VERSUS ELECTORAL PERÚ 2026 — Monitoreo automático de {candidatos} candidatos presidenciales — {noticias.toLocaleString()} noticias analizadas de {fuentes} fuentes periodísticas — Actualización automática cada 24 horas (00:00 hrs)
           </p>
         </div>
       </div>
