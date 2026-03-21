@@ -1,7 +1,9 @@
 import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
+import Link from "next/link";
 import { SITE_URL, SITE_NAME, SITE_DESCRIPTION } from "@/lib/site";
 import { NewsBanner } from "@/components/NewsBanner";
+import { FooterApoyanos } from "@/components/FooterApoyanos";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -108,6 +110,8 @@ export default function RootLayout({
   return (
     <html lang="es" className="dark">
       <head>
+        <link rel="dns-prefetch" href="https://fonts.googleapis.com" />
+        <link rel="dns-prefetch" href="https://fonts.gstatic.com" />
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
@@ -118,24 +122,108 @@ export default function RootLayout({
       >
         <header className="sticky top-0 z-50 border-b border-gray-800/80 bg-gray-950/80 backdrop-blur-md">
           <div className="mx-auto flex max-w-7xl items-center justify-center px-4 py-3 sm:px-6">
-            <a href="/" className="flex items-center gap-1.5 group">
+            <Link href="/" className="flex items-center gap-1.5 group">
               <span className="text-lg sm:text-xl font-black text-red-500 uppercase tracking-wider group-hover:text-red-400 transition-colors">
                 Versus
               </span>
               <span className="text-lg sm:text-xl font-black text-white uppercase tracking-wider">
                 Electoral Perú
               </span>
-            </a>
+            </Link>
           </div>
         </header>
         <NewsBanner />
         <main>{children}</main>
-        <footer className="border-t border-gray-800/60 py-10 text-center text-xs text-gray-600">
-          <div className="mx-auto max-w-7xl px-4 sm:px-6">
-            <p className="font-bold text-gray-400 tracking-wider uppercase text-[11px]">{SITE_NAME}</p>
-            <p className="mt-2 max-w-xl mx-auto leading-relaxed">Información recopilada de fuentes periodísticas públicas. Las clasificaciones son automáticas y no constituyen juicio legal.</p>
-            <p className="mt-1 text-gray-700">Actualización automática cada 24 horas (00:00, hora Perú).</p>
-            <p className="mt-4 text-gray-500">Trabajo realizado por <a href="https://www.onilabs.site/" target="_blank" rel="noopener noreferrer" className="text-red-500 hover:text-red-400 font-semibold transition-colors">OniLabs</a></p>
+        <footer className="border-t border-gray-800/80 bg-gray-950/80 backdrop-blur-md text-gray-600">
+          <div className="mx-auto max-w-7xl px-4 sm:px-6 py-8 sm:py-12">
+            {/* Mobile: solo branding + apóyanos compacto */}
+            <div className="sm:hidden flex flex-col items-center text-center gap-4">
+              <Link href="/" className="flex items-center gap-1.5 group">
+                <span className="text-base font-black text-red-500 uppercase tracking-wider group-hover:text-red-400 transition-colors">
+                  Versus
+                </span>
+                <span className="text-base font-black text-white uppercase tracking-wider">
+                  Electoral Perú
+                </span>
+              </Link>
+              <p className="text-[11px] text-gray-400 leading-relaxed max-w-xs">
+                Información de fuentes periodísticas públicas. Las clasificaciones son automáticas y no constituyen juicio legal.
+              </p>
+              <FooterApoyanos />
+            </div>
+
+            {/* Desktop: 3 columnas */}
+            <div className="hidden sm:grid sm:grid-cols-3 gap-8">
+              {/* Col 1 - Versus Electoral Perú */}
+              <div>
+                <Link href="/" className="flex items-center gap-1.5 group mb-4">
+                  <span className="text-base font-black text-red-500 uppercase tracking-wider group-hover:text-red-400 transition-colors">
+                    Versus
+                  </span>
+                  <span className="text-base font-black text-white uppercase tracking-wider">
+                    Electoral Perú
+                  </span>
+                </Link>
+                <p className="text-xs text-gray-400 leading-relaxed">
+                  Información recopilada de fuentes periodísticas públicas. Las clasificaciones son automáticas y no constituyen juicio legal.
+                </p>
+                <p className="mt-2 text-[11px] text-gray-400">
+                  Actualización automática cada 24 horas (00:00, hora Perú).
+                </p>
+              </div>
+
+              {/* Col 2 - Navegación */}
+              <div className="flex justify-center">
+                <div>
+                  <h4 className="font-bold text-white uppercase tracking-wider text-[11px] mb-4">
+                    Navegación
+                  </h4>
+                  <ul className="space-y-2.5">
+                    <li>
+                      <Link href="/" className="text-sm text-gray-400 hover:text-white transition-colors">
+                        Inicio
+                      </Link>
+                    </li>
+                    <li>
+                      <Link href="/versus" className="text-sm text-gray-400 hover:text-white transition-colors">
+                        Versus
+                      </Link>
+                    </li>
+                    <li>
+                      <Link href="/candidato" className="text-sm text-gray-400 hover:text-white transition-colors">
+                        Candidatos
+                      </Link>
+                    </li>
+                    <li>
+                      <Link href="/#faq" className="text-sm text-gray-400 hover:text-white transition-colors">
+                        Preguntas Frecuentes
+                      </Link>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+
+              {/* Col 3 - Apóyanos */}
+              <div>
+                <h4 className="font-bold text-white uppercase tracking-wider text-[11px] mb-3">
+                  Haz la diferencia
+                </h4>
+                <p className="text-xs text-gray-400 leading-relaxed mb-4">
+                  Somos 100% independientes. Tu apoyo mantiene viva la transparencia electoral.
+                </p>
+                <FooterApoyanos />
+              </div>
+            </div>
+          </div>
+
+          {/* Barra inferior - Derechos reservados */}
+          <div className="pb-5">
+            <p className="text-center text-[11px] text-gray-600">
+              © {new Date().getFullYear()} {SITE_NAME}. Todos los derechos reservados — Hecho por{" "}
+              <a href="https://www.onilabs.site/" target="_blank" rel="noopener noreferrer" className="text-red-500 hover:text-red-400 font-semibold transition-colors">
+                OniLabs
+              </a>
+            </p>
           </div>
         </footer>
       </body>

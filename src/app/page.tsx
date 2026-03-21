@@ -144,7 +144,7 @@ export default async function Home() {
       </section>
 
       {/* FAQ */}
-      <section className="py-20 px-4 border-t border-gray-800/40">
+      <section id="faq" className="py-20 px-4 border-t border-gray-800/40">
         <div className="mx-auto max-w-3xl">
           <h2 className="text-xl font-black mb-10 text-center uppercase tracking-[0.2em] text-white">
             Preguntas Frecuentes
