@@ -135,8 +135,25 @@ export default function RootLayout({
         <NewsBanner />
         <main>{children}</main>
         <footer className="border-t border-gray-800/80 bg-gray-950/80 backdrop-blur-md text-gray-600">
-          <div className="mx-auto max-w-7xl px-4 sm:px-6 py-12">
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-10 sm:gap-8">
+          <div className="mx-auto max-w-7xl px-4 sm:px-6 py-8 sm:py-12">
+            {/* Mobile: solo branding + apóyanos compacto */}
+            <div className="sm:hidden flex flex-col items-center text-center gap-4">
+              <Link href="/" className="flex items-center gap-1.5 group">
+                <span className="text-base font-black text-red-500 uppercase tracking-wider group-hover:text-red-400 transition-colors">
+                  Versus
+                </span>
+                <span className="text-base font-black text-white uppercase tracking-wider">
+                  Electoral Perú
+                </span>
+              </Link>
+              <p className="text-[11px] text-gray-400 leading-relaxed max-w-xs">
+                Información de fuentes periodísticas públicas. Las clasificaciones son automáticas y no constituyen juicio legal.
+              </p>
+              <FooterApoyanos />
+            </div>
+
+            {/* Desktop: 3 columnas */}
+            <div className="hidden sm:grid sm:grid-cols-3 gap-8">
               {/* Col 1 - Versus Electoral Perú */}
               <div>
                 <Link href="/" className="flex items-center gap-1.5 group mb-4">
@@ -156,33 +173,33 @@ export default function RootLayout({
               </div>
 
               {/* Col 2 - Navegación */}
-              <div className="sm:flex sm:justify-center">
+              <div className="flex justify-center">
                 <div>
-                <h4 className="font-bold text-white uppercase tracking-wider text-[11px] mb-4">
-                  Navegación
-                </h4>
-                <ul className="space-y-2.5">
-                  <li>
-                    <Link href="/" className="text-sm text-gray-400 hover:text-white transition-colors">
-                      Inicio
-                    </Link>
-                  </li>
-                  <li>
-                    <Link href="/versus" className="text-sm text-gray-400 hover:text-white transition-colors">
-                      Versus
-                    </Link>
-                  </li>
-                  <li>
-                    <Link href="/candidato" className="text-sm text-gray-400 hover:text-white transition-colors">
-                      Candidatos
-                    </Link>
-                  </li>
-                  <li>
-                    <Link href="/#faq" className="text-sm text-gray-400 hover:text-white transition-colors">
-                      Preguntas Frecuentes
-                    </Link>
-                  </li>
-                </ul>
+                  <h4 className="font-bold text-white uppercase tracking-wider text-[11px] mb-4">
+                    Navegación
+                  </h4>
+                  <ul className="space-y-2.5">
+                    <li>
+                      <Link href="/" className="text-sm text-gray-400 hover:text-white transition-colors">
+                        Inicio
+                      </Link>
+                    </li>
+                    <li>
+                      <Link href="/versus" className="text-sm text-gray-400 hover:text-white transition-colors">
+                        Versus
+                      </Link>
+                    </li>
+                    <li>
+                      <Link href="/candidato" className="text-sm text-gray-400 hover:text-white transition-colors">
+                        Candidatos
+                      </Link>
+                    </li>
+                    <li>
+                      <Link href="/#faq" className="text-sm text-gray-400 hover:text-white transition-colors">
+                        Preguntas Frecuentes
+                      </Link>
+                    </li>
+                  </ul>
                 </div>
               </div>
 

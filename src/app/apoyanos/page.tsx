@@ -105,7 +105,7 @@ export default function ApoyanosPage() {
             <span className="text-red-500">pedirle a la IA</span>
           </h2>
           <p className="mt-4 text-sm sm:text-base text-gray-400 max-w-xl mx-auto leading-relaxed">
-            Onigrowth es un kit de prompts y plantillas estratégicas para
+            <a href="https://www.onigrowth.com/" target="_blank" rel="noopener noreferrer" className="text-white font-bold hover:text-red-400 transition-colors">Onigrowth</a> es un kit de prompts y plantillas estratégicas para
             emprendedores que quieren usar la IA como herramienta real de
             crecimiento para su negocio.
           </p>
@@ -149,7 +149,7 @@ export default function ApoyanosPage() {
             ].map((item) => (
               <div
                 key={item.title}
-                className="rounded-xl border border-gray-800/60 bg-gray-900/40 p-4 text-center flex flex-col items-center"
+                className="rounded-xl border border-gray-800/60 bg-gray-900/40 p-4 text-center flex flex-col items-center transition-all duration-300 hover:border-gray-500/60 hover:bg-gray-900/70"
               >
                 <div className="mb-2 text-red-500">{item.svg}</div>
                 <p className="text-xs font-semibold text-gray-300 leading-tight">
@@ -208,7 +208,7 @@ export default function ApoyanosPage() {
                 <img
                   src="/yape.jpeg"
                   alt="QR Yape para apoyar el proyecto"
-                  className="mx-auto w-48 h-56 rounded-lg object-contain"
+                  className="mx-auto w-48 h-56 object-contain" style={{ borderRadius: "15px" }}
                 />
                 <p className="mt-3 text-gray-400 text-xs leading-relaxed">
                   Escanea el QR desde tu billetera digital favorita.
@@ -235,7 +235,7 @@ export default function ApoyanosPage() {
           <div className="flex flex-wrap items-center justify-center gap-4">
             {/* LinkedIn */}
             <a
-              href="https://www.linkedin.com/company/onilabs"
+              href="https://www.linkedin.com/company/onilabs-dev"
               target="_blank"
               rel="noopener noreferrer"
               className="group flex items-center gap-2.5 rounded-xl border border-gray-800/60 bg-gray-900/40 px-5 py-3 transition-all duration-300 hover:border-gray-500/60 hover:bg-gray-900/70"
@@ -250,7 +250,7 @@ export default function ApoyanosPage() {
 
             {/* Instagram */}
             <a
-              href="https://www.instagram.com/onilabs"
+              href="https://www.instagram.com/onilabs.dev/"
               target="_blank"
               rel="noopener noreferrer"
               className="group flex items-center gap-2.5 rounded-xl border border-gray-800/60 bg-gray-900/40 px-5 py-3 transition-all duration-300 hover:border-gray-500/60 hover:bg-gray-900/70"
@@ -265,7 +265,7 @@ export default function ApoyanosPage() {
 
             {/* TikTok */}
             <a
-              href="https://www.tiktok.com/@onilabs"
+              href="https://www.tiktok.com/@onilabs_dev"
               target="_blank"
               rel="noopener noreferrer"
               className="group flex items-center gap-2.5 rounded-xl border border-gray-800/60 bg-gray-900/40 px-5 py-3 transition-all duration-300 hover:border-gray-500/60 hover:bg-gray-900/70"
@@ -278,20 +278,6 @@ export default function ApoyanosPage() {
               </span>
             </a>
 
-            {/* Website */}
-            <a
-              href="https://www.onilabs.site/"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="group flex items-center gap-2.5 rounded-xl border border-gray-800/60 bg-gray-900/40 px-5 py-3 transition-all duration-300 hover:border-gray-500/60 hover:bg-gray-900/70"
-            >
-              <svg className="w-5 h-5 text-gray-400 group-hover:text-white transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9" />
-              </svg>
-              <span className="text-sm font-semibold text-gray-300 group-hover:text-white transition-colors">
-                Website
-              </span>
-            </a>
           </div>
         </div>
       </section>

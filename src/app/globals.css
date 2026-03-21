@@ -51,8 +51,8 @@ body {
   }
 }
 
-/* SEO: content-visibility para secciones below-the-fold */
-section:not(:first-of-type) {
+/* SEO: content-visibility para secciones below-the-fold (solo en home) */
+.home-page section:not(:first-of-type) {
   content-visibility: auto;
   contain-intrinsic-size: auto 600px;
 }
