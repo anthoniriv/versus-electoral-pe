@@ -5,6 +5,7 @@ import { VelocimetroVersus } from "./Velocimetro";
 import { GravedadBadge } from "./GravedadBadge";
 import { GRAVEDAD, type GravedadKey } from "@/lib/candidatos";
 import { normalize } from "@/lib/normalize";
+import { trackEvent } from "./GoogleAnalytics";
 
 interface CandidatoAPI {
   id: number;
@@ -415,6 +416,14 @@ export function VersusSelector() {
   const startComparisonRef = useRef<(l: string, r: string) => Promise<void>>(undefined);
   startComparisonRef.current = async (l: string, r: string) => {
     if (!l || !r || l === r) return;
+    const leftName = lista.find((c) => c.slug === l)?.nombre || l;
+    const rightName = lista.find((c) => c.slug === r)?.nombre || r;
+    trackEvent("comparar_candidatos", {
+      candidato_1: leftName,
+      candidato_2: rightName,
+      candidato_1_slug: l,
+      candidato_2_slug: r,
+    });
     setLoading(true);
     setComparing(true);
     setShowResults(false);

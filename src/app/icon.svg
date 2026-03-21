@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
+  <!-- Shield shape -->
+  <path d="M32 4 C16 4 8 10 8 10 L8 30 C8 46 32 60 32 60 C32 60 56 46 56 30 L56 10 C56 10 48 4 32 4Z" fill="#dc2626" stroke="#fff" stroke-width="2"/>
+  <!-- V letter -->
+  <path d="M20 18 L32 46 L44 18 L38 18 L32 36 L26 18 Z" fill="#fff"/>
+</svg>

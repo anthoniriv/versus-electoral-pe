@@ -4,6 +4,7 @@ import Link from "next/link";
 import { SITE_URL, SITE_NAME, SITE_DESCRIPTION } from "@/lib/site";
 import { NewsBanner } from "@/components/NewsBanner";
 import { FooterApoyanos } from "@/components/FooterApoyanos";
+import { GoogleAnalytics } from "@/components/GoogleAnalytics";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -120,6 +121,7 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased bg-gray-950 text-white`}
       >
+        <GoogleAnalytics />
         <header className="sticky top-0 z-50 border-b border-gray-800/80 bg-gray-950/80 backdrop-blur-md">
           <div className="mx-auto flex max-w-7xl items-center justify-center px-4 py-3 sm:px-6">
             <Link href="/" className="flex items-center gap-1.5 group">
