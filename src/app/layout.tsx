@@ -134,7 +134,7 @@ export default function RootLayout({
           <div className="mx-auto max-w-7xl px-4 sm:px-6">
             <p className="font-bold text-gray-400 tracking-wider uppercase text-[11px]">{SITE_NAME}</p>
             <p className="mt-2 max-w-xl mx-auto leading-relaxed">Información recopilada de fuentes periodísticas públicas. Las clasificaciones son automáticas y no constituyen juicio legal.</p>
-            <p className="mt-1 text-gray-700">Actualización automática cada 12 horas (00:00 y 12:00, hora Perú).</p>
+            <p className="mt-1 text-gray-700">Actualización automática cada 24 horas (00:00, hora Perú).</p>
             <p className="mt-4 text-gray-500">Trabajo realizado por <a href="https://www.onilabs.site/" target="_blank" rel="noopener noreferrer" className="text-red-500 hover:text-red-400 font-semibold transition-colors">OniLabs</a></p>
           </div>
         </footer>
