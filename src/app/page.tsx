@@ -3,6 +3,7 @@ import Link from "next/link";
 import { CANDIDATOS } from "@/lib/candidatos";
 import { prisma } from "@/lib/db";
 import { FaqAccordion } from "@/components/FaqAccordion";
+import { FlashHeroBadge } from "@/components/FlashHeroBadge";
 
 export const revalidate = 1800;
 
@@ -71,6 +72,7 @@ export default async function Home() {
         <div className="absolute inset-0 bg-gradient-to-b from-red-950/20 via-gray-950/50 to-gray-950" />
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,rgba(220,38,38,0.08),transparent_70%)]" />
         <div className="relative mx-auto max-w-4xl">
+          <FlashHeroBadge />
           <p className="text-red-500 text-[11px] font-bold uppercase tracking-[0.35em] mb-3 animate-fade-in">
             Elecciones Presidenciales Perú 2026
           </p>

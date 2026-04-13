@@ -178,6 +178,20 @@ body {
   animation-delay: 0.3s;
 }
 
+/* Bar fill grow horizontal (ONPE) */
+@keyframes barGrow {
+  from { width: 0%; }
+}
+.animate-bar-grow {
+  animation: barGrow 900ms cubic-bezier(.2,.8,.2,1) both;
+}
+
+/* Bar fill grow vertical (flash encuestas) */
+@keyframes barGrowV {
+  from { transform: scaleY(0); }
+  to { transform: scaleY(1); }
+}
+
 /* Respect reduced motion preference */
 @media (prefers-reduced-motion: reduce) {
   .animate-marquee,
