@@ -5,6 +5,7 @@ import { SITE_URL, SITE_NAME, SITE_DESCRIPTION } from "@/lib/site";
 import { NewsBanner } from "@/components/NewsBanner";
 import { FooterApoyanos } from "@/components/FooterApoyanos";
 import { GoogleAnalytics } from "@/components/GoogleAnalytics";
+import { FlashElectoralLauncher } from "@/components/FlashElectoralLauncher";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -136,6 +137,7 @@ export default function RootLayout({
         </header>
         <NewsBanner />
         <main>{children}</main>
+        <FlashElectoralLauncher />
         <footer className="border-t border-gray-800/80 bg-gray-950/80 backdrop-blur-md text-gray-600">
           <div className="mx-auto max-w-7xl px-4 sm:px-6 py-8 sm:py-12">
             {/* Mobile: solo branding + apóyanos compacto */}
