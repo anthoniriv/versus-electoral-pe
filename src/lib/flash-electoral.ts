@@ -78,5 +78,9 @@ export interface OnpeResultado {
   totalEmitidos: number;
   blancos: number;
   nulos: number;
+  actasContabilizadasPct: number;
+  actasContabilizadas: number;
+  totalActas: number;
+  participacionCiudadana: number;
   candidatos: OnpeCandidato[];
 }

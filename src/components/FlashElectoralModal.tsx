@@ -293,15 +293,41 @@ function SlideOnpe({
 
   return (
     <div className="px-4 sm:px-6 py-5 sm:py-6 min-h-[420px] sm:min-h-[460px]">
-      <div className="flex items-center justify-between mb-4">
-        <div>
+      <div className="flex items-start justify-between gap-3 mb-4">
+        <div className="min-w-0">
           <p className="text-[10px] font-bold tracking-[0.25em] text-red-500 uppercase">🇵🇪 ONPE · Oficial</p>
-          <h3 className="text-lg sm:text-xl font-black text-white mt-1">Conteo presidencial</h3>
+          <h3 className="text-lg sm:text-xl font-black text-white mt-1 leading-tight">
+            Conteo presidencial
+            {data && (
+              <span className="text-red-400"> · al {data.actasContabilizadasPct.toFixed(3)}%</span>
+            )}
+          </h3>
+          {data && (
+            <p className="text-[11px] text-gray-400 mt-0.5 tabular-nums">
+              {fmtNum(data.actasContabilizadas)} de {fmtNum(data.totalActas)} actas · Participación {data.participacionCiudadana.toFixed(2)}%
+            </p>
+          )}
         </div>
-        <span className="px-2.5 py-1 rounded-full bg-red-600/15 border border-red-500/30 text-red-400 text-[10px] font-black uppercase tracking-wider">
+        <span className="shrink-0 px-2.5 py-1 rounded-full bg-red-600/15 border border-red-500/30 text-red-400 text-[10px] font-black uppercase tracking-wider">
           Tiempo real
         </span>
       </div>
+
+      {/* Barra de avance */}
+      {data && (
+        <div className="mb-4">
+          <div className="flex items-center justify-between text-[10px] font-bold uppercase tracking-wider mb-1">
+            <span className="text-gray-400">Avance de conteo</span>
+            <span className="text-white tabular-nums">{data.actasContabilizadasPct.toFixed(3)}% / 100%</span>
+          </div>
+          <div className="h-2 rounded-full bg-gray-800 overflow-hidden">
+            <div
+              className="h-full rounded-full bg-gradient-to-r from-red-600 via-red-500 to-orange-400 animate-bar-grow"
+              style={{ width: `${Math.max(0.5, Math.min(100, data.actasContabilizadasPct))}%` }}
+            />
+          </div>
+        </div>
+      )}
 
       {loading && <OnpeSkeleton />}
 

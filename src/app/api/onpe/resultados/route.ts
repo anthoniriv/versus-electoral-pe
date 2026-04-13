@@ -4,8 +4,10 @@ export const revalidate = 0;
 export const dynamic = "force-dynamic";
 export const fetchCache = "force-no-store";
 
-const ONPE_URL =
+const ONPE_PARTICIPANTES_URL =
   "https://resultadoelectoral.onpe.gob.pe/presentacion-backend/eleccion-presidencial/participantes-ubicacion-geografica-nombre?idEleccion=10&tipoFiltro=eleccion";
+const ONPE_TOTALES_URL =
+  "https://resultadoelectoral.onpe.gob.pe/presentacion-backend/resumen-general/totales?idEleccion=10&tipoFiltro=eleccion";
 
 interface OnpeParticipante {
   nombreAgrupacionPolitica: string;
@@ -21,6 +23,16 @@ interface OnpeResponse {
   success: boolean;
   message: string;
   data: OnpeParticipante[];
+}
+
+interface OnpeTotales {
+  actasContabilizadas: number;
+  contabilizadas: number;
+  totalActas: number;
+  participacionCiudadana: number;
+  totalVotosEmitidos: number;
+  totalVotosValidos: number;
+  fechaActualizacion: number;
 }
 
 const SLUG_BY_DNI: Record<string, string> = {
@@ -64,25 +76,27 @@ const SLUG_BY_DNI: Record<string, string> = {
 
 export async function GET() {
   try {
-    const res = await fetch(ONPE_URL, {
-      headers: {
-        Accept: "application/json",
-        "User-Agent": "Mozilla/5.0 (compatible; VersusElectoralPeru/1.0)",
-      },
-      cache: "no-store",
-    });
+    const headers = {
+      Accept: "application/json",
+      "User-Agent": "Mozilla/5.0 (compatible; VersusElectoralPeru/1.0)",
+    };
+    const [resPart, resTot] = await Promise.all([
+      fetch(ONPE_PARTICIPANTES_URL, { headers, cache: "no-store" }),
+      fetch(ONPE_TOTALES_URL, { headers, cache: "no-store" }),
+    ]);
 
-    if (!res.ok) {
+    if (!resPart.ok || !resTot.ok) {
       return NextResponse.json(
-        { success: false, message: `ONPE HTTP ${res.status}`, data: null },
+        { success: false, message: `ONPE HTTP ${resPart.status}/${resTot.status}`, data: null },
         { status: 502 }
       );
     }
 
-    const raw: OnpeResponse = await res.json();
-    if (!raw.success || !Array.isArray(raw.data)) {
+    const raw: OnpeResponse = await resPart.json();
+    const totRaw: { success: boolean; data: OnpeTotales } = await resTot.json();
+    if (!raw.success || !Array.isArray(raw.data) || !totRaw.success) {
       return NextResponse.json(
-        { success: false, message: raw.message || "Respuesta inválida ONPE", data: null },
+        { success: false, message: "Respuesta inválida ONPE", data: null },
         { status: 502 }
       );
     }
@@ -104,17 +118,22 @@ export async function GET() {
       }))
       .sort((a, b) => b.votos - a.votos);
 
-    const totalValidos = candidatos.reduce((s, c) => s + c.votos, 0);
-    const totalEmitidos = totalValidos + (blancos?.totalVotosValidos ?? 0) + (nulos?.totalVotosValidos ?? 0);
+    const tot = totRaw.data;
 
     return NextResponse.json(
       {
         success: true,
-        actualizado: new Date().toISOString(),
-        totalValidos,
-        totalEmitidos,
+        actualizado: tot.fechaActualizacion
+          ? new Date(tot.fechaActualizacion).toISOString()
+          : new Date().toISOString(),
+        totalValidos: tot.totalVotosValidos,
+        totalEmitidos: tot.totalVotosEmitidos,
         blancos: blancos?.totalVotosValidos ?? 0,
         nulos: nulos?.totalVotosValidos ?? 0,
+        actasContabilizadasPct: tot.actasContabilizadas,
+        actasContabilizadas: tot.contabilizadas,
+        totalActas: tot.totalActas,
+        participacionCiudadana: tot.participacionCiudadana,
         candidatos,
       },
       {
