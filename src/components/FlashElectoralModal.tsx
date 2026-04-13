@@ -299,7 +299,7 @@ function SlideOnpe({
           <h3 className="text-lg sm:text-xl font-black text-white mt-1 leading-tight">
             Conteo presidencial
             {data && (
-              <span className="text-red-400"> · al {data.actasContabilizadasPct.toFixed(3)}%</span>
+              <span className="text-red-400"> al {data.actasContabilizadasPct.toFixed(3)}%</span>
             )}
           </h3>
           {data && (
