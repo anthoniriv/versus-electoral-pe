@@ -1,7 +1,8 @@
 import { NextResponse } from "next/server";
 
-export const revalidate = 30;
+export const revalidate = 0;
 export const dynamic = "force-dynamic";
+export const fetchCache = "force-no-store";
 
 const ONPE_URL =
   "https://resultadoelectoral.onpe.gob.pe/presentacion-backend/eleccion-presidencial/participantes-ubicacion-geografica-nombre?idEleccion=10&tipoFiltro=eleccion";
@@ -68,7 +69,7 @@ export async function GET() {
         Accept: "application/json",
         "User-Agent": "Mozilla/5.0 (compatible; VersusElectoralPeru/1.0)",
       },
-      next: { revalidate: 30 },
+      cache: "no-store",
     });
 
     if (!res.ok) {
@@ -118,7 +119,7 @@ export async function GET() {
       },
       {
         headers: {
-          "Cache-Control": "public, s-maxage=30, stale-while-revalidate=60",
+          "Cache-Control": "no-store, no-cache, must-revalidate, max-age=0",
         },
       }
     );

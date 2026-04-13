@@ -344,7 +344,7 @@ function SlideOnpe({
                         </p>
                       </div>
                       <p className="text-sm sm:text-base font-black text-white tabular-nums shrink-0">
-                        {c.porcentajeValidos.toFixed(2)}%
+                        {c.porcentajeValidos.toFixed(3)}%
                       </p>
                     </div>
                     <div className="mt-1.5 h-1.5 rounded-full bg-gray-800 overflow-hidden">
