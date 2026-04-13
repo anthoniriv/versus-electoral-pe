@@ -11,7 +11,7 @@ interface Props {
   onClose: () => void;
 }
 
-const POLL_MS = 45_000;
+const POLL_MS = 30_000;
 
 function fmtNum(n: number) {
   return n.toLocaleString("es-PE");
@@ -37,7 +37,10 @@ export function FlashElectoralModal({ open, onClose }: Props) {
 
   const fetchOnpe = useCallback(async () => {
     try {
-      const res = await fetch("/api/onpe/resultados", { cache: "no-store" });
+      const res = await fetch(`/api/onpe/resultados?t=${Date.now()}`, {
+        cache: "no-store",
+        headers: { "Cache-Control": "no-cache", Pragma: "no-cache" },
+      });
       const json = await res.json();
       if (!json.success) {
         setOnpeError(true);
@@ -56,7 +59,16 @@ export function FlashElectoralModal({ open, onClose }: Props) {
     if (!open) return;
     fetchOnpe();
     const id = setInterval(fetchOnpe, POLL_MS);
-    return () => clearInterval(id);
+    function onVisible() {
+      if (document.visibilityState === "visible") fetchOnpe();
+    }
+    document.addEventListener("visibilitychange", onVisible);
+    window.addEventListener("focus", fetchOnpe);
+    return () => {
+      clearInterval(id);
+      document.removeEventListener("visibilitychange", onVisible);
+      window.removeEventListener("focus", fetchOnpe);
+    };
   }, [open, fetchOnpe]);
 
   useEffect(() => {
@@ -344,7 +356,7 @@ function SlideOnpe({
                         </p>
                       </div>
                       <p className="text-sm sm:text-base font-black text-white tabular-nums shrink-0">
-                        {c.porcentajeValidos.toFixed(2)}%
+                        {c.porcentajeValidos.toFixed(3)}%
                       </p>
                     </div>
                     <div className="mt-1.5 h-1.5 rounded-full bg-gray-800 overflow-hidden">
@@ -360,7 +372,7 @@ function SlideOnpe({
           </div>
 
           <p className="mt-5 text-[10px] text-gray-500 text-center">
-            Actualiza automáticamente cada 45s. Fuente:{" "}
+            Actualiza automáticamente cada 30s. Fuente:{" "}
             <a
               href="https://resultadoelectoral.onpe.gob.pe/main/presidenciales"
               target="_blank"
