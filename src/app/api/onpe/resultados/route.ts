@@ -77,8 +77,14 @@ const SLUG_BY_DNI: Record<string, string> = {
 export async function GET() {
   try {
     const headers = {
-      Accept: "application/json",
-      "User-Agent": "Mozilla/5.0 (compatible; VersusElectoralPeru/1.0)",
+      Accept: "application/json, text/plain, */*",
+      "User-Agent":
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36",
+      "Accept-Language": "es-ES,es;q=0.9,en;q=0.8",
+      Referer: "https://resultadoelectoral.onpe.gob.pe/main/presidenciales",
+      "Sec-Fetch-Dest": "empty",
+      "Sec-Fetch-Mode": "cors",
+      "Sec-Fetch-Site": "same-origin",
     };
     const [resPart, resTot] = await Promise.all([
       fetch(ONPE_PARTICIPANTES_URL, { headers, cache: "no-store" }),
@@ -88,6 +94,15 @@ export async function GET() {
     if (!resPart.ok || !resTot.ok) {
       return NextResponse.json(
         { success: false, message: `ONPE HTTP ${resPart.status}/${resTot.status}`, data: null },
+        { status: 502 }
+      );
+    }
+
+    const ctPart = resPart.headers.get("content-type") ?? "";
+    const ctTot = resTot.headers.get("content-type") ?? "";
+    if (!ctPart.includes("json") || !ctTot.includes("json")) {
+      return NextResponse.json(
+        { success: false, message: "ONPE devolvió HTML (bloqueo WAF o origen caído)", data: null },
         { status: 502 }
       );
     }
