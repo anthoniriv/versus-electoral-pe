@@ -192,6 +192,32 @@ body {
   to { transform: scaleY(1); }
 }
 
+/* Trading-style flash on value update */
+@keyframes priceFlashUp {
+  0% { background-color: rgba(16, 185, 129, 0.35); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.5); }
+  100% { background-color: transparent; box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
+}
+@keyframes priceFlashDown {
+  0% { background-color: rgba(239, 68, 68, 0.35); box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.5); }
+  100% { background-color: transparent; box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
+}
+.animate-flash-up {
+  animation: priceFlashUp 1200ms ease-out both;
+}
+.animate-flash-down {
+  animation: priceFlashDown 1200ms ease-out both;
+}
+
+/* Arrow bounce for tickers */
+@keyframes tickerBounce {
+  0% { transform: translateY(4px); opacity: 0; }
+  60% { transform: translateY(-2px); opacity: 1; }
+  100% { transform: translateY(0); opacity: 1; }
+}
+.animate-ticker {
+  animation: tickerBounce 500ms cubic-bezier(.2,.8,.2,1) both;
+}
+
 /* Respect reduced motion preference */
 @media (prefers-reduced-motion: reduce) {
   .animate-marquee,

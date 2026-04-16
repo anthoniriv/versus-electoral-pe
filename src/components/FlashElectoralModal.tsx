@@ -6,6 +6,15 @@ import { CANDIDATOS } from "@/lib/candidatos";
 
 const CANDIDATO_BY_SLUG = new Map(CANDIDATOS.map((c) => [c.slug, c]));
 
+// Nombre corto mediático (ej. "Keiko Fujimori" en vez de "Keiko Fujimori Higuchi").
+// Reusamos los nombres de las encuestas flash como fuente de verdad.
+const SHORT_NAME_BY_SLUG = new Map<string, string>();
+for (const enc of FLASH_ELECTORAL) {
+  for (const c of enc.candidatos) {
+    if (!SHORT_NAME_BY_SLUG.has(c.slug)) SHORT_NAME_BY_SLUG.set(c.slug, c.nombre);
+  }
+}
+
 interface Props {
   open: boolean;
   onClose: () => void;
@@ -26,14 +35,18 @@ export function FlashElectoralModal({ open, onClose }: Props) {
   const [show, setShow] = useState(false);
   const [index, setIndex] = useState(0);
   const [onpe, setOnpe] = useState<OnpeResultado | null>(null);
+  const [prevOnpe, setPrevOnpe] = useState<OnpeResultado | null>(null);
+  const [updateTick, setUpdateTick] = useState(0);
   const [loadingOnpe, setLoadingOnpe] = useState(true);
   const [onpeError, setOnpeError] = useState(false);
   const touchStartX = useRef<number | null>(null);
   const touchDeltaX = useRef(0);
   const trackRef = useRef<HTMLDivElement>(null);
   const [dragX, setDragX] = useState(0);
+  const [showHint, setShowHint] = useState(false);
 
-  const totalSlides = 1 + FLASH_ELECTORAL.length;
+  // Slides: 0 = ONPE lista completa · 1 = Top 4 trading · 2+ = encuestas flash
+  const totalSlides = 2 + FLASH_ELECTORAL.length;
 
   const fetchOnpe = useCallback(async () => {
     try {
@@ -45,7 +58,16 @@ export function FlashElectoralModal({ open, onClose }: Props) {
       if (!json.success) {
         setOnpeError(true);
       } else {
-        setOnpe(json);
+        setOnpe((cur) => {
+          // Solo movemos el "prev" cuando llega un corte nuevo (actas % cambió).
+          // Si ONPE republica el mismo corte, mantenemos el prev anterior para
+          // que el delta siga reflejando el último salto real.
+          if (cur && cur.actasContabilizadasPct !== json.actasContabilizadasPct) {
+            setPrevOnpe(cur);
+            setUpdateTick((t) => t + 1);
+          }
+          return json;
+        });
         setOnpeError(false);
       }
     } catch {
@@ -76,8 +98,17 @@ export function FlashElectoralModal({ open, onClose }: Props) {
       setMounted(true);
       document.body.style.overflow = "hidden";
       requestAnimationFrame(() => setShow(true));
+      // Hint "desliza para ver quién subió/bajó" solo la primera vez.
+      try {
+        const seen = typeof window !== "undefined" && localStorage.getItem("flash_top4_hint_seen");
+        if (!seen) {
+          setTimeout(() => setShowHint(true), 400);
+          setTimeout(() => setShowHint(false), 9000);
+        }
+      } catch {}
     } else {
       setShow(false);
+      setShowHint(false);
       document.body.style.overflow = "";
       const t = setTimeout(() => setMounted(false), 280);
       return () => clearTimeout(t);
@@ -86,6 +117,16 @@ export function FlashElectoralModal({ open, onClose }: Props) {
       document.body.style.overflow = "";
     };
   }, [open]);
+
+  // Al avanzar a slide 1, marcamos hint como visto y lo ocultamos.
+  useEffect(() => {
+    if (index >= 1 && showHint) {
+      setShowHint(false);
+      try {
+        localStorage.setItem("flash_top4_hint_seen", "1");
+      } catch {}
+    }
+  }, [index, showHint]);
 
   useEffect(() => {
     if (!open) return;
@@ -155,13 +196,17 @@ export function FlashElectoralModal({ open, onClose }: Props) {
         {/* Header dinámico */}
         <div
           className={`relative flex items-center justify-between px-4 sm:px-6 py-3 sm:py-4 border-b border-gray-800/80 transition-colors duration-300 ${
-            index === 0 ? "bg-gradient-to-r from-red-950/60 via-red-900/30 to-black/40" : "bg-black/40"
+            index === 0
+              ? "bg-gradient-to-r from-red-950/60 via-red-900/30 to-black/40"
+              : index === 1
+              ? "bg-gradient-to-r from-emerald-950/50 via-gray-900/40 to-black/40"
+              : "bg-black/40"
           }`}
         >
           <div className="flex items-center gap-2.5 min-w-0">
             <span className="relative flex h-2.5 w-2.5 shrink-0">
-              <span className="absolute inline-flex h-full w-full rounded-full bg-red-500 opacity-75 animate-ping" />
-              <span className="relative inline-flex h-2.5 w-2.5 rounded-full bg-red-500" />
+              <span className={`absolute inline-flex h-full w-full rounded-full opacity-75 animate-ping ${index === 1 ? "bg-emerald-400" : "bg-red-500"}`} />
+              <span className={`relative inline-flex h-2.5 w-2.5 rounded-full ${index === 1 ? "bg-emerald-400" : "bg-red-500"}`} />
             </span>
             <div className="min-w-0">
               {index === 0 ? (
@@ -173,13 +218,22 @@ export function FlashElectoralModal({ open, onClose }: Props) {
                     Elecciones Presidenciales 2026 · Actualización automática
                   </p>
                 </>
+              ) : index === 1 ? (
+                <>
+                  <p className="text-[10px] sm:text-[11px] font-bold tracking-[0.25em] text-emerald-400 uppercase">
+                    📈 Top 4 · Pelea presidencial en vivo
+                  </p>
+                  <p className="text-xs sm:text-sm font-black text-white truncate">
+                    Cambios vs. corte anterior · Ventajas entre punteros
+                  </p>
+                </>
               ) : (
                 <>
                   <p className="text-[10px] sm:text-[11px] font-bold tracking-[0.25em] text-red-500 uppercase">
                     A boca de urna · Elecciones 2026
                   </p>
                   <p className="text-xs sm:text-sm font-black text-white truncate">
-                    Flash {FLASH_ELECTORAL[index - 1].encuestadora}
+                    Flash {FLASH_ELECTORAL[index - 2].encuestadora}
                   </p>
                 </>
               )}
@@ -226,10 +280,21 @@ export function FlashElectoralModal({ open, onClose }: Props) {
               transition: dragX === 0 ? "transform 350ms cubic-bezier(.2,.8,.2,1)" : "none",
             }}
           >
-            {/* Slide 0: ONPE */}
+            {/* Slide 0: ONPE lista completa */}
             <div className="shrink-0" style={{ width: `${100 / totalSlides}%` }}>
               <SlideOnpe
                 data={onpe}
+                loading={loadingOnpe && !onpe}
+                error={onpeError && !onpe}
+                onRetry={fetchOnpe}
+              />
+            </div>
+            {/* Slide 1: Top 4 trading */}
+            <div className="shrink-0" style={{ width: `${100 / totalSlides}%` }}>
+              <SlideOnpeTop4
+                data={onpe}
+                prev={prevOnpe}
+                tick={updateTick}
                 loading={loadingOnpe && !onpe}
                 error={onpeError && !onpe}
                 onRetry={fetchOnpe}
@@ -255,22 +320,57 @@ export function FlashElectoralModal({ open, onClose }: Props) {
             Anterior
           </button>
           <p className="text-[10px] sm:text-[11px] text-gray-500 font-medium text-center px-2">
-            {index === 0 ? (
+            {index === 0 || index === 1 ? (
               onpe ? (
                 <>Actualizado: <span className="text-gray-300">{new Date(onpe.actualizado).toLocaleTimeString("es-PE", { hour: "2-digit", minute: "2-digit" })}</span></>
               ) : "Cargando..."
             ) : (
-              <>Fuente: <span className="text-gray-300">{FLASH_ELECTORAL[index - 1].medio}</span></>
+              <>Fuente: <span className="text-gray-300">{FLASH_ELECTORAL[index - 2].medio}</span></>
             )}
           </p>
-          <button
-            onClick={() => goTo(index + 1)}
-            disabled={index === totalSlides - 1}
-            className="flex items-center gap-1.5 px-3 py-2 rounded-full text-[11px] sm:text-xs font-bold uppercase tracking-wider text-gray-300 hover:text-white hover:bg-gray-800/80 transition disabled:opacity-30 disabled:cursor-not-allowed"
-          >
-            Siguiente
-            <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M9 5l7 7-7 7" /></svg>
-          </button>
+          <div className="relative">
+            {/* Hint onboarding: apunta al botón siguiente en slide 0 */}
+            {showHint && index === 0 && (
+              <div
+                className="absolute bottom-full right-0 mb-2 w-56 sm:w-64 z-10 animate-fade-in-up"
+                role="status"
+                aria-live="polite"
+              >
+                <div className="relative rounded-xl border border-emerald-400/60 bg-gray-950 shadow-[0_10px_40px_rgba(16,185,129,0.4)] px-3 py-2.5">
+                  <button
+                    onClick={() => {
+                      setShowHint(false);
+                      try { localStorage.setItem("flash_top4_hint_seen", "1"); } catch {}
+                    }}
+                    aria-label="Cerrar pista"
+                    className="absolute top-1 right-1 w-5 h-5 flex items-center justify-center rounded-full text-gray-400 hover:text-white hover:bg-gray-800 transition"
+                  >
+                    <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M6 18L18 6M6 6l12 12" /></svg>
+                  </button>
+                  <p className="text-[11px] leading-snug text-white pr-4">
+                    <span className="font-black">👀 Desliza →</span>{" "}
+                    <span className="text-gray-300">para ver quién</span>{" "}
+                    <span className="font-bold text-emerald-400">subió</span>{" "}
+                    <span className="text-gray-300">o</span>{" "}
+                    <span className="font-bold text-red-400">bajó</span>{" "}
+                    <span className="text-gray-300">desde el último corte.</span>
+                  </p>
+                </div>
+              </div>
+            )}
+            <button
+              onClick={() => goTo(index + 1)}
+              disabled={index === totalSlides - 1}
+              className={`flex items-center gap-1.5 px-3 py-2 rounded-full text-[11px] sm:text-xs font-bold uppercase tracking-wider transition disabled:opacity-30 disabled:cursor-not-allowed ${
+                showHint && index === 0
+                  ? "text-emerald-300 bg-emerald-500/15 ring-2 ring-emerald-400/50 animate-pulse-glow"
+                  : "text-gray-300 hover:text-white hover:bg-gray-800/80"
+              }`}
+            >
+              Siguiente
+              <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M9 5l7 7-7 7" /></svg>
+            </button>
+          </div>
         </div>
       </div>
     </div>
@@ -455,6 +555,250 @@ function OnpeSkeleton() {
       {[0, 1, 2, 3, 4].map((i) => (
         <div key={i} className="h-9 rounded-lg bg-gray-800/60 animate-shimmer" />
       ))}
+    </div>
+  );
+}
+
+function shortName(slug: string | null | undefined, full: string) {
+  if (slug && SHORT_NAME_BY_SLUG.has(slug)) return SHORT_NAME_BY_SLUG.get(slug)!;
+  // Fallback: primer + segundo token (funciona para "Jorge Nieto Montesinos").
+  const parts = full.trim().split(/\s+/);
+  if (parts.length <= 2) return full.trim();
+  return `${parts[0]} ${parts[1]}`;
+}
+
+function SlideOnpeTop4({
+  data,
+  prev,
+  tick,
+  loading,
+  error,
+  onRetry,
+}: {
+  data: OnpeResultado | null;
+  prev: OnpeResultado | null;
+  tick: number;
+  loading: boolean;
+  error: boolean;
+  onRetry: () => void;
+}) {
+  if (loading) {
+    return (
+      <div className="px-4 sm:px-6 py-5 sm:py-6 min-h-[420px] sm:min-h-[460px] space-y-3">
+        {[0, 1, 2, 3].map((i) => (
+          <div key={i} className="h-20 rounded-xl bg-gray-800/60 animate-shimmer" />
+        ))}
+      </div>
+    );
+  }
+
+  if (error || !data) {
+    return (
+      <div className="px-4 sm:px-6 py-10 min-h-[420px] sm:min-h-[460px] text-center">
+        <p className="text-sm text-gray-400 mb-3">No pudimos contactar con ONPE en este momento.</p>
+        <button
+          onClick={onRetry}
+          className="px-4 py-2 rounded-full bg-red-600/20 text-red-400 text-xs font-bold uppercase tracking-wider hover:bg-red-600/30 transition"
+        >
+          Reintentar
+        </button>
+      </div>
+    );
+  }
+
+  const top4 = data.candidatos.slice(0, 4);
+  const prevByKey = new Map(
+    (prev?.candidatos ?? []).map((c) => [c.slug ?? c.nombre, c] as const)
+  );
+
+  const lider = top4[0];
+  const liderName = lider ? shortName(lider.slug, lider.nombre) : "";
+
+  return (
+    <div className="px-4 sm:px-6 py-5 sm:py-6 min-h-[420px] sm:min-h-[460px]">
+      {/* Mini resumen tipo ticker */}
+      <div className="flex items-center justify-between mb-4 gap-3">
+        <div className="min-w-0">
+          <p className="text-[10px] font-bold tracking-[0.25em] text-emerald-400 uppercase">
+            📈 Top 4 · Pelea en vivo
+          </p>
+          <h3 className="text-lg sm:text-xl font-black text-white mt-1 leading-tight truncate">
+            {liderName || "Puntero"}{" "}
+            <span className="text-emerald-400">lidera al {data.actasContabilizadasPct.toFixed(3)}%</span>
+          </h3>
+          <p className="text-[11px] text-gray-400 mt-0.5 tabular-nums">
+            {prev ? (
+              <>
+                Δ entre corte{" "}
+                <span className="text-gray-200 font-bold">{prev.actasContabilizadasPct.toFixed(3)}%</span>
+                {" → "}
+                <span className="text-emerald-300 font-bold">{data.actasContabilizadasPct.toFixed(3)}%</span>
+              </>
+            ) : (
+              <>Esperando próximo corte oficial…</>
+            )}
+          </p>
+        </div>
+        <span className="shrink-0 px-2.5 py-1 rounded-full bg-emerald-500/15 border border-emerald-500/30 text-emerald-300 text-[10px] font-black uppercase tracking-wider">
+          En vivo
+        </span>
+      </div>
+
+      {/* Tip: cómo leer el delta */}
+      <div className="mb-3 flex items-start gap-2 rounded-xl border border-emerald-500/20 bg-emerald-500/5 px-3 py-2">
+        <span className="shrink-0 mt-0.5 text-sm" aria-hidden>💡</span>
+        <p className="text-[11px] leading-relaxed text-gray-300">
+          <span className="font-black text-white">Tip:</span> la pill de la derecha muestra si{" "}
+          <span className="inline-flex items-center gap-1 font-bold text-emerald-300">
+            <svg viewBox="0 0 12 12" className="w-2.5 h-2.5" fill="currentColor" aria-hidden><path d="M6 2l4.5 6.5h-9L6 2z" /></svg>
+            subió
+          </span>{" "}
+          o{" "}
+          <span className="inline-flex items-center gap-1 font-bold text-red-300">
+            <svg viewBox="0 0 12 12" className="w-2.5 h-2.5" fill="currentColor" aria-hidden><path d="M6 10L1.5 3.5h9L6 10z" /></svg>
+            bajó
+          </span>{" "}
+          desde el último corte de ONPE.
+        </p>
+      </div>
+
+      <div className="space-y-2.5">
+        {top4.map((c, i) => {
+          const key = c.slug ?? c.nombre;
+          const p = prevByKey.get(key);
+          const pctDelta = p ? c.porcentajeValidos - p.porcentajeValidos : 0;
+          const votosDelta = p ? c.votos - p.votos : 0;
+          const info = c.slug ? CANDIDATO_BY_SLUG.get(c.slug) : undefined;
+          const displayName = shortName(c.slug, info?.nombre ?? c.nombre);
+          const partido = info?.partido ?? c.partido;
+
+          const flashClass =
+            pctDelta > 0 ? "animate-flash-up" : pctDelta < 0 ? "animate-flash-down" : "";
+          const pillTone =
+            pctDelta > 0
+              ? "bg-emerald-500/20 text-emerald-300 border-emerald-500/40"
+              : pctDelta < 0
+              ? "bg-red-500/20 text-red-300 border-red-500/40"
+              : "bg-gray-700/40 text-gray-400 border-gray-600/40";
+          const ArrowIcon =
+            pctDelta > 0 ? (
+              <svg viewBox="0 0 12 12" className="w-3 h-3" fill="currentColor" aria-hidden>
+                <path d="M6 2l4.5 6.5h-9L6 2z" />
+              </svg>
+            ) : pctDelta < 0 ? (
+              <svg viewBox="0 0 12 12" className="w-3 h-3" fill="currentColor" aria-hidden>
+                <path d="M6 10L1.5 3.5h9L6 10z" />
+              </svg>
+            ) : (
+              <svg viewBox="0 0 12 12" className="w-3 h-3" fill="currentColor" aria-hidden>
+                <rect x="2" y="5.25" width="8" height="1.5" rx="0.75" />
+              </svg>
+            );
+          const rankBg =
+            i === 0
+              ? "bg-gradient-to-br from-yellow-400 to-amber-600 text-black"
+              : i === 1
+              ? "bg-gradient-to-br from-gray-300 to-gray-500 text-black"
+              : i === 2
+              ? "bg-gradient-to-br from-amber-700 to-amber-900 text-white"
+              : "bg-gray-800 text-gray-300 border border-gray-700";
+
+          // gap message — diferencia en votos (no puntos)
+          let gapMsg: React.ReactNode = null;
+          if (i === 0) {
+            const next = top4[1];
+            if (next) {
+              const nextName = shortName(next.slug, next.nombre);
+              const leadVotos = c.votos - next.votos;
+              gapMsg = (
+                <span className="text-emerald-300">
+                  Ventaja de{" "}
+                  <span className="tabular-nums font-black">+{fmtNum(leadVotos)} votos</span>{" "}
+                  sobre <span className="text-white font-bold">{nextName}</span>
+                </span>
+              );
+            }
+          } else {
+            const above = top4[i - 1];
+            const aboveName = shortName(above.slug, above.nombre);
+            const diffVotos = above.votos - c.votos;
+            gapMsg = (
+              <span className="text-gray-400">
+                A <span className="tabular-nums font-black text-white">{fmtNum(diffVotos)} votos</span>{" "}
+                de <span className="text-white font-bold">{aboveName}</span>
+              </span>
+            );
+          }
+
+          return (
+            <div
+              key={key}
+              className="relative rounded-xl border border-gray-800/80 bg-gradient-to-br from-gray-900/90 to-gray-950/90 p-3 overflow-hidden animate-fade-in-up"
+              style={{ animationDelay: `${i * 80}ms` }}
+            >
+              {/* capa de flash tipo trading */}
+              {flashClass && (
+                <div
+                  key={`flash-${tick}-${key}`}
+                  className={`pointer-events-none absolute inset-0 ${flashClass}`}
+                  aria-hidden
+                />
+              )}
+
+              <div className="relative flex items-center gap-3">
+                <div className={`shrink-0 w-8 h-8 rounded-lg flex items-center justify-center text-[13px] font-black ${rankBg}`}>
+                  {i === 0 ? "👑" : i + 1}
+                </div>
+                <img
+                  src={avatarUrl(c.slug)}
+                  alt=""
+                  className="w-11 h-11 rounded-full object-cover border border-gray-700 shrink-0 bg-gray-800"
+                  onError={(e) => {
+                    (e.currentTarget as HTMLImageElement).style.visibility = "hidden";
+                  }}
+                />
+                <div className="flex-1 min-w-0">
+                  <p className="text-[13px] sm:text-sm font-black text-white truncate leading-tight">
+                    {displayName}
+                  </p>
+                  <p className="text-[10px] sm:text-[11px] text-gray-400 truncate leading-tight">
+                    {partido}
+                  </p>
+                </div>
+                <div className="shrink-0 text-right">
+                  <p className="text-sm sm:text-base font-black text-white tabular-nums leading-tight">
+                    {c.porcentajeValidos.toFixed(3)}%
+                  </p>
+                  <p className="text-[10px] sm:text-[11px] text-gray-400 tabular-nums leading-tight">
+                    {fmtNum(c.votos)} votos
+                  </p>
+                </div>
+                <div
+                  key={`pill-${tick}-${key}`}
+                  className={`shrink-0 flex flex-col items-end gap-0.5 px-2 py-1 rounded-lg border text-[10px] font-black tabular-nums ${pillTone} ${pctDelta !== 0 ? "animate-ticker" : ""}`}
+                  title={`Cambio desde corte anterior: ${pctDelta >= 0 ? "+" : ""}${pctDelta.toFixed(3)} pts · ${votosDelta >= 0 ? "+" : ""}${fmtNum(votosDelta)} votos`}
+                >
+                  <span className="flex items-center gap-1 leading-none">
+                    {ArrowIcon}
+                    <span>{pctDelta >= 0 ? "+" : ""}{pctDelta.toFixed(3)}</span>
+                  </span>
+                  <span className="leading-none opacity-80">
+                    {votosDelta >= 0 ? "+" : ""}{fmtNum(votosDelta)} v
+                  </span>
+                </div>
+              </div>
+
+              <div className="relative mt-2.5 pl-11 pr-1 text-[11px] sm:text-[12px] font-medium">
+                {gapMsg}
+              </div>
+            </div>
+          );
+        })}
+      </div>
+
+      <p className="mt-5 text-[10px] text-gray-500 text-center leading-relaxed">
+        ⚡ <span className="text-emerald-400 font-bold">Tablero vivo</span> · cada 30s se redibuja el poder. Fuente: ONPE.
+      </p>
     </div>
   );
 }
