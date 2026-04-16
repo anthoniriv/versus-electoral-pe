@@ -288,8 +288,8 @@ function SlideOnpe({
   error: boolean;
   onRetry: () => void;
 }) {
-  const top5 = (data?.candidatos ?? []).slice(0, 5);
-  const maxPct = top5[0]?.porcentajeValidos ?? 1;
+  const lista = data?.candidatos ?? [];
+  const maxPct = lista[0]?.porcentajeValidos ?? 1;
 
   return (
     <div className="px-4 sm:px-6 py-5 sm:py-6 min-h-[420px] sm:min-h-[460px]">
@@ -352,9 +352,9 @@ function SlideOnpe({
             <StatBox label="Blancos/Nulos" value={fmtNum(data.blancos + data.nulos)} tone="gray" />
           </div>
 
-          {/* Top candidatos */}
-          <div className="space-y-2.5">
-            {top5.map((c, i) => {
+          {/* Lista completa candidatos */}
+          <div className="max-h-[320px] sm:max-h-[380px] overflow-y-auto pr-1 -mr-1 space-y-2.5 scrollbar-thin">
+            {lista.map((c, i) => {
               const width = Math.max(4, (c.porcentajeValidos / Math.max(1, maxPct)) * 100);
               const info = c.slug ? CANDIDATO_BY_SLUG.get(c.slug) : undefined;
               const displayName = info?.nombre ?? c.nombre;
@@ -363,8 +363,11 @@ function SlideOnpe({
                 <div
                   key={c.slug ?? c.nombre}
                   className="flex items-center gap-3 animate-fade-in-up"
-                  style={{ animationDelay: `${i * 70}ms` }}
+                  style={{ animationDelay: `${Math.min(i, 8) * 60}ms` }}
                 >
+                  <span className="shrink-0 w-5 text-[11px] font-black text-gray-500 tabular-nums text-right">
+                    {i + 1}
+                  </span>
                   <img
                     src={avatarUrl(c.slug)}
                     alt=""
@@ -381,9 +384,14 @@ function SlideOnpe({
                           {partido}
                         </p>
                       </div>
-                      <p className="text-sm sm:text-base font-black text-white tabular-nums shrink-0">
-                        {c.porcentajeValidos.toFixed(3)}%
-                      </p>
+                      <div className="shrink-0 text-right">
+                        <p className="text-sm sm:text-base font-black text-white tabular-nums leading-tight">
+                          {c.porcentajeValidos.toFixed(3)}%
+                        </p>
+                        <p className="text-[10px] sm:text-[11px] text-gray-400 tabular-nums leading-tight">
+                          {fmtNum(c.votos)} votos
+                        </p>
+                      </div>
                     </div>
                     <div className="mt-1.5 h-1.5 rounded-full bg-gray-800 overflow-hidden">
                       <div
