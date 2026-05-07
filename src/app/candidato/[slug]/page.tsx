@@ -65,7 +65,7 @@ export default async function CandidatoPage({ params, searchParams }: PageProps)
   try {
     candidato = await prisma.candidato.findUnique({
       where: { slug },
-      include: { noticias: { orderBy: { fechaNoticia: { sort: "desc", nulls: "last" } } } },
+      include: { noticias: { orderBy: { fechaNoticia: { sort: "desc", nulls: "last" } }, take: 200 } },
     });
   } catch { /* DB not ready */ }
 

@@ -137,7 +137,13 @@ function SearchableSelect({
       {open && (
         <>
         {/* Mobile backdrop */}
-        <div className="fixed inset-0 z-30 bg-black/60 sm:hidden" onClick={() => { setOpen(false); setSearch(""); }} />
+        <button
+          type="button"
+          aria-label="Cerrar selector"
+          tabIndex={-1}
+          className="fixed inset-0 z-30 bg-black/60 sm:hidden cursor-default"
+          onClick={() => { setOpen(false); setSearch(""); }}
+        />
         <div className="fixed inset-x-0 bottom-0 z-40 rounded-t-2xl sm:rounded-xl sm:absolute sm:inset-x-auto sm:bottom-auto sm:mt-1 sm:w-full border border-gray-700/80 bg-gray-900 shadow-2xl shadow-black/40 overflow-hidden animate-slide-down">
           {/* Mobile drag handle */}
           <div className="sm:hidden flex justify-center pt-2 pb-1">
@@ -169,6 +175,7 @@ function SearchableSelect({
                   <img
                     src={`/candidatos/${c.slug}.jpg`}
                     alt=""
+                    aria-hidden="true"
                     className="w-9 h-9 rounded-full object-cover bg-gray-700 shrink-0 border border-gray-700"
                     onError={(e) => { (e.target as HTMLImageElement).style.display = "none"; }}
                   />
@@ -270,7 +277,13 @@ function WinnerModal({
       style={{ transition: "opacity 0.3s", opacity: show ? 1 : 0 }}
     >
       {/* Backdrop */}
-      <div className="absolute inset-0 bg-black/80 backdrop-blur-sm" onClick={handleClose} />
+      <button
+        type="button"
+        aria-label="Cerrar resultado"
+        tabIndex={-1}
+        className="absolute inset-0 bg-black/80 backdrop-blur-sm cursor-default"
+        onClick={handleClose}
+      />
 
       {/* Modal */}
       <div

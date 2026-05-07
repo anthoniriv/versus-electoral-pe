@@ -1,8 +1,13 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { FlashElectoralModal } from "./FlashElectoralModal";
+import dynamic from "next/dynamic";
 import { FLASH_OPEN_EVENT } from "./NewsBanner";
+
+const FlashElectoralModal = dynamic(
+  () => import("./FlashElectoralModal").then((m) => m.FlashElectoralModal),
+  { ssr: false }
+);
 
 export function FlashElectoralLauncher() {
   const [open, setOpen] = useState(false);

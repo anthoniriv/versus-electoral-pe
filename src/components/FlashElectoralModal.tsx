@@ -471,6 +471,7 @@ function SlideOnpe({
                   <img
                     src={avatarUrl(c.slug)}
                     alt=""
+                    aria-hidden="true"
                     className="w-10 h-10 rounded-full object-cover border border-gray-700 shrink-0 bg-gray-800"
                     onError={(e) => { (e.currentTarget as HTMLImageElement).style.visibility = "hidden"; }}
                   />
@@ -752,6 +753,7 @@ function SlideOnpeTop4({
                 <img
                   src={avatarUrl(c.slug)}
                   alt=""
+                  aria-hidden="true"
                   className="w-11 h-11 rounded-full object-cover border border-gray-700 shrink-0 bg-gray-800"
                   onError={(e) => {
                     (e.currentTarget as HTMLImageElement).style.visibility = "hidden";
