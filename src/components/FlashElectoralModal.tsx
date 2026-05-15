@@ -252,18 +252,20 @@ export function FlashElectoralModal({ open, onClose }: Props) {
               </div>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 relative">
-              <VersusSide cand={left} side="left" lead onNavigate={handleClose} />
-              <div className="md:hidden flex items-center justify-center py-4 bg-black/40 border-y border-gray-800/80">
-                <div className="relative">
-                  <div className="absolute inset-0 rounded-full bg-red-500/40 blur-xl animate-pulse-glow" />
-                  <div className="relative w-14 h-14 rounded-full bg-gradient-to-br from-red-600 to-black border-2 border-red-500/60 flex items-center justify-center">
-                    <span className="text-xl font-black text-white italic tracking-tighter">
-                      VS
-                    </span>
-                  </div>
+            {/* VS móvil centrado entre ambas mitades */}
+            <div className="md:hidden absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-20 pointer-events-none">
+              <div className="relative">
+                <div className="absolute inset-0 rounded-full bg-red-500/40 blur-xl animate-pulse-glow" />
+                <div className="relative w-12 h-12 rounded-full bg-gradient-to-br from-red-600 to-black border-2 border-red-500/60 flex items-center justify-center">
+                  <span className="text-base font-black text-white italic tracking-tighter">
+                    VS
+                  </span>
                 </div>
               </div>
+            </div>
+
+            <div className="grid grid-cols-2 relative">
+              <VersusSide cand={left} side="left" lead onNavigate={handleClose} />
               <VersusSide cand={right} side="right" onNavigate={handleClose} />
             </div>
 
@@ -338,8 +340,8 @@ function VersusSide({
 
   return (
     <div
-      className={`relative px-4 sm:px-6 py-5 sm:py-7 overflow-hidden ${
-        mirror ? "md:border-l border-gray-800/80" : ""
+      className={`relative px-2 sm:px-6 py-4 sm:py-7 overflow-hidden ${
+        mirror ? "border-l border-gray-800/80" : ""
       }`}
     >
       {/* tinte color partido — cubre toda la mitad */}
@@ -381,19 +383,19 @@ function VersusSide({
 
       {/* badge ganador / segundo */}
       <div
-        className={`relative flex items-center gap-2 mb-3 ${mirror ? "md:justify-end" : ""}`}
+        className={`relative flex items-center gap-1.5 mb-2 sm:mb-3 ${mirror ? "justify-end md:justify-end" : ""}`}
       >
         <span
-          className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] sm:text-[11px] font-black uppercase tracking-[0.18em] border ${
+          className={`inline-flex items-center gap-1 px-1.5 sm:px-2.5 py-0.5 sm:py-1 rounded-full text-[8px] sm:text-[11px] font-black uppercase tracking-[0.12em] sm:tracking-[0.18em] border ${
             lead
               ? "bg-amber-500/15 border-amber-500/50 text-amber-300"
               : "bg-emerald-500/15 border-emerald-500/40 text-emerald-300"
           }`}
         >
-          {lead ? "👑 1° lugar" : "🥈 2° lugar"}
+          {lead ? "👑 1°" : "🥈 2°"}
         </span>
         <span
-          className="px-2 py-1 rounded-md text-[9px] sm:text-[10px] font-black tracking-widest"
+          className="px-1.5 sm:px-2 py-0.5 sm:py-1 rounded-md text-[8px] sm:text-[10px] font-black tracking-widest"
           style={{
             backgroundColor: `${partido.color}22`,
             color: partido.color,
@@ -405,11 +407,11 @@ function VersusSide({
       </div>
 
       {/* spacer reserva espacio donde se ancla la moneda 3D (canvas full-bleed) */}
-      <div className="relative h-40 sm:h-52 md:h-64" aria-hidden />
+      <div className="relative h-28 sm:h-52 md:h-64" aria-hidden />
 
-      {/* foto + nombre */}
+      {/* foto + nombre — vertical en mobile, horizontal desktop */}
       <div
-        className={`relative flex items-center gap-3 mt-3 ${mirror ? "md:flex-row-reverse md:text-right" : ""}`}
+        className={`relative flex flex-col md:flex-row items-center md:gap-3 mt-2 md:mt-3 text-center md:text-left ${mirror ? "md:flex-row-reverse md:text-right" : ""}`}
       >
         <div className="relative shrink-0">
           <div
@@ -420,19 +422,19 @@ function VersusSide({
           <img
             src={avatarUrl(cand.slug)}
             alt={displayName}
-            className="relative w-14 h-14 sm:w-16 sm:h-16 rounded-full object-cover border-2 shrink-0 bg-gray-800"
+            className="relative w-10 h-10 sm:w-16 sm:h-16 rounded-full object-cover border-2 shrink-0 bg-gray-800"
             style={{ borderColor: partido.color }}
             onError={(e) => {
               (e.currentTarget as HTMLImageElement).style.visibility = "hidden";
             }}
           />
         </div>
-        <div className="min-w-0 flex-1">
-          <p className="text-base sm:text-lg font-black text-white truncate leading-tight">
+        <div className="min-w-0 flex-1 mt-1 md:mt-0">
+          <p className="text-[11px] sm:text-lg font-black text-white truncate leading-tight">
             {shortName(cand.slug, displayName)}
           </p>
           <p
-            className="text-[11px] sm:text-xs font-bold truncate leading-tight"
+            className="text-[9px] sm:text-xs font-bold truncate leading-tight"
             style={{ color: partido.color }}
           >
             {partidoNombre}
@@ -441,24 +443,24 @@ function VersusSide({
       </div>
 
       {/* % grande */}
-      <div className={`relative mt-4 ${mirror ? "md:text-right" : ""}`}>
+      <div className={`relative mt-3 sm:mt-4 text-center md:text-left ${mirror ? "md:text-right" : ""}`}>
         <p
-          className="text-[2.75rem] sm:text-6xl md:text-7xl font-black tabular-nums leading-none drop-shadow-lg"
+          className="text-3xl sm:text-6xl md:text-7xl font-black tabular-nums leading-none drop-shadow-lg"
           style={{
             color: partido.color,
             textShadow: `0 0 30px ${partido.color}55`,
           }}
         >
-          {cand.porcentajeValidos.toFixed(3)}
-          <span className="text-2xl sm:text-3xl ml-1">%</span>
+          {cand.porcentajeValidos.toFixed(2)}
+          <span className="text-lg sm:text-3xl ml-0.5 sm:ml-1">%</span>
         </p>
-        <p className="mt-1.5 text-[11px] sm:text-xs text-gray-400 font-bold uppercase tracking-wider tabular-nums">
-          {fmtNum(cand.votos)} votos válidos
+        <p className="mt-1 sm:mt-1.5 text-[9px] sm:text-xs text-gray-400 font-bold uppercase tracking-wider tabular-nums">
+          {fmtNum(cand.votos)} votos
         </p>
       </div>
 
       {/* barra */}
-      <div className="relative mt-3 h-2 rounded-full bg-gray-800/80 overflow-hidden">
+      <div className="relative mt-2 sm:mt-3 h-1.5 sm:h-2 rounded-full bg-gray-800/80 overflow-hidden">
         <div
           className="h-full rounded-full animate-bar-grow"
           style={{
@@ -473,8 +475,8 @@ function VersusSide({
       <Link
         href={`/candidato/${cand.slug ?? ""}`}
         onClick={onNavigate}
-        className={`relative mt-5 inline-flex items-center justify-center gap-1.5 px-4 py-2.5 rounded-full text-[11px] sm:text-xs font-black uppercase tracking-wider border transition hover:scale-[1.03] w-full md:w-auto ${
-          mirror ? "md:float-right" : ""
+        className={`relative mt-3 sm:mt-5 inline-flex items-center justify-center gap-1 sm:gap-1.5 px-2 sm:px-4 py-2 sm:py-2.5 rounded-full text-[9px] sm:text-xs font-black uppercase tracking-wider border transition hover:scale-[1.03] w-full ${
+          mirror ? "md:float-right md:w-auto" : "md:w-auto"
         }`}
         style={{
           color: partido.color,
