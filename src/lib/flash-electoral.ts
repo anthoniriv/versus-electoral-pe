@@ -62,6 +62,80 @@ export const FLASH_ELECTORAL: FlashEncuesta[] = [
   },
 ];
 
+// ─────────────────────────────────────────────────────────────
+// SEGUNDA VUELTA · Boca de urna (Keiko Fujimori vs Roberto Sánchez)
+// ─────────────────────────────────────────────────────────────
+
+export interface BocaUrnaCandidato {
+  slug: string;
+  nombre: string;
+  partido: string;
+  porcentaje: number | null; // null = encuestadora aún sin datos
+  color: string;
+  logo: string;
+  foto: string;
+}
+
+export interface BocaUrnaEncuestadora {
+  id: string;
+  nombre: string;
+  label: string;
+  medio: string;
+  accent: string;
+  fecha: string;
+  pending: boolean;
+  candidatos: BocaUrnaCandidato[]; // [Keiko, Sánchez]
+}
+
+const KEIKO = {
+  slug: "keiko-fujimori",
+  nombre: "Keiko Fujimori",
+  partido: "Fuerza Popular",
+  color: "#C2410C",
+  logo: "/partidos/fuerza-popular.png",
+  foto: "/candidatos/keiko-fujimori.jpg",
+} as const;
+
+const SANCHEZ = {
+  slug: "roberto-sanchez-palomino",
+  nombre: "Roberto Sánchez",
+  partido: "Juntos por el Perú",
+  color: "#16A34A",
+  logo: "/partidos/juntos-por-el-peru.png",
+  foto: "/candidatos/roberto-sanchez-palomino.jpg",
+} as const;
+
+const FECHA_2V = "7 jun 2026 · 18:00";
+
+export const BOCA_URNA_2V: BocaUrnaEncuestadora[] = [
+  {
+    id: "datum",
+    nombre: "Datum Internacional",
+    label: "Datum",
+    medio: "Latina TV",
+    accent: "#1D4ED8",
+    fecha: FECHA_2V,
+    pending: false,
+    candidatos: [
+      { ...KEIKO, porcentaje: 50.53 },
+      { ...SANCHEZ, porcentaje: 49.47 },
+    ],
+  },
+  {
+    id: "ipsos",
+    nombre: "Ipsos Perú",
+    label: "Ipsos",
+    medio: "América TV / Canal N",
+    accent: "#2563EB",
+    fecha: FECHA_2V,
+    pending: false,
+    candidatos: [
+      { ...KEIKO, porcentaje: 50.7 },
+      { ...SANCHEZ, porcentaje: 49.3 },
+    ],
+  },
+];
+
 export interface OnpeCandidato {
   nombre: string;
   partido: string;

@@ -186,6 +186,15 @@ body {
   animation: barGrow 900ms cubic-bezier(.2,.8,.2,1) both;
 }
 
+/* Oculta scrollbar (tabs encuestadoras) */
+.scrollbar-none {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+.scrollbar-none::-webkit-scrollbar {
+  display: none;
+}
+
 /* Bar fill grow vertical (flash encuestas) */
 @keyframes barGrowV {
   from { transform: scaleY(0); }

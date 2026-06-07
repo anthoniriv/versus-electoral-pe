@@ -32,7 +32,7 @@ export function FlashElectoralLauncher() {
       {/* Badge flotante abajo-derecha */}
       <button
         onClick={() => setOpen(true)}
-        aria-label="Ver resultados finales ONPE primera vuelta"
+        aria-label="Ver boca de urna y conteo ONPE segunda vuelta"
         className="fixed z-[80] bottom-4 right-4 sm:bottom-6 sm:right-6 group flex items-center gap-2 pl-2.5 pr-3.5 py-2 rounded-full bg-gradient-to-r from-red-600 to-red-500 text-white shadow-[0_10px_30px_rgba(220,38,38,0.45)] hover:shadow-[0_16px_44px_rgba(220,38,38,0.6)] hover:scale-[1.03] transition-all animate-pulse-glow"
       >
         <span className="relative flex h-2.5 w-2.5">
@@ -40,7 +40,7 @@ export function FlashElectoralLauncher() {
           <span className="relative inline-flex h-2.5 w-2.5 rounded-full bg-white" />
         </span>
         <span className="text-[11px] sm:text-xs font-black uppercase tracking-wider">
-          En vivo · ONPE
+          ONPE en vivo · 2V
         </span>
       </button>
     </>

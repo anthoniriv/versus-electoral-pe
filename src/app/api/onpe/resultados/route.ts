@@ -4,10 +4,18 @@ export const revalidate = 0;
 export const dynamic = "force-dynamic";
 export const fetchCache = "force-no-store";
 
-const ONPE_PARTICIPANTES_URL =
-  "https://resultadoelectoral.onpe.gob.pe/presentacion-backend/eleccion-presidencial/participantes-ubicacion-geografica-nombre?idEleccion=10&tipoFiltro=eleccion";
-const ONPE_TOTALES_URL =
-  "https://resultadoelectoral.onpe.gob.pe/presentacion-backend/resumen-general/totales?idEleccion=10&tipoFiltro=eleccion";
+// 2da vuelta presidencial 2026: subdominio propio de ONPE. Devuelve 2 candidatos
+// (Keiko Fujimori vs Roberto Sánchez). idEleccion=10 es el correcto en este host.
+// Ambos overridables por env por si ONPE cambia algo el día de la elección.
+const ONPE_BASE_URL =
+  process.env.ONPE_BASE_URL ??
+  "https://resultadosegundavuelta.onpe.gob.pe/presentacion-backend";
+const ONPE_REFERER =
+  process.env.ONPE_REFERER ??
+  "https://resultadosegundavuelta.onpe.gob.pe/main/resumen";
+const ONPE_ID_ELECCION = process.env.ONPE_ID_ELECCION ?? "10";
+const ONPE_PARTICIPANTES_URL = `${ONPE_BASE_URL}/eleccion-presidencial/participantes-ubicacion-geografica-nombre?idEleccion=${ONPE_ID_ELECCION}&tipoFiltro=eleccion`;
+const ONPE_TOTALES_URL = `${ONPE_BASE_URL}/resumen-general/totales?idEleccion=${ONPE_ID_ELECCION}&tipoFiltro=eleccion`;
 
 interface OnpeParticipante {
   nombreAgrupacionPolitica: string;
@@ -81,7 +89,7 @@ export async function GET() {
       "User-Agent":
         "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36",
       "Accept-Language": "es-ES,es;q=0.9,en;q=0.8",
-      Referer: "https://resultadoelectoral.onpe.gob.pe/main/presidenciales",
+      Referer: ONPE_REFERER,
       "Sec-Fetch-Dest": "empty",
       "Sec-Fetch-Mode": "cors",
       "Sec-Fetch-Site": "same-origin",

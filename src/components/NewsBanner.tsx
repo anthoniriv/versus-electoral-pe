@@ -8,12 +8,12 @@ export function NewsBanner() {
   }
 
   const message =
-    "RESULTADOS FINALES ONPE 2026 · Primera vuelta presidencial · Fuerza Popular vs Juntos por el Perú · Keiko Fujimori vs Roberto Sánchez · Click para ver el conteo oficial al 100%";
+    "🇵🇪 CONTEO ONPE EN VIVO · SEGUNDA VUELTA 2026 · Keiko Fujimori vs Roberto Sánchez · Resultados oficiales + boca de urna (Datum · Ipsos) · Click para ver el conteo";
 
   return (
     <button
       onClick={open}
-      aria-label="Abrir resultados finales ONPE primera vuelta"
+      aria-label="Abrir boca de urna y conteo ONPE segunda vuelta"
       className="w-full group relative block bg-gradient-to-r from-red-700 via-red-600 to-red-700 overflow-hidden border-b border-red-400/40 hover:brightness-110 transition cursor-pointer"
     >
       <span className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(255,255,255,0.15),transparent_60%)] opacity-0 group-hover:opacity-100 transition-opacity" />
@@ -44,7 +44,7 @@ export function NewsBanner() {
           <span className="relative inline-flex h-2 w-2 rounded-full bg-white" />
         </span>
         <p className="text-[11px] leading-none font-black uppercase tracking-wider text-white truncate">
-          Resultados finales 1ra vuelta · FP vs JP
+          Conteo ONPE en vivo · 2da vuelta · FP vs JP
         </p>
       </div>
     </button>
