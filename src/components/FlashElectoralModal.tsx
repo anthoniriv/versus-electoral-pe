@@ -94,6 +94,7 @@ export function FlashElectoralModal({ open, onClose }: Props) {
   const [onpe, setOnpe] = useState<OnpeResultado | null>(null);
   const [loadingOnpe, setLoadingOnpe] = useState(true);
   const [onpeError, setOnpeError] = useState(false);
+  const [lastFetched, setLastFetched] = useState<Date | null>(null);
 
   // tab activo: "onpe" (conteo oficial, por defecto) | id de encuestadora
   const [tab, setTab] = useState<string>("onpe");
@@ -109,6 +110,7 @@ export function FlashElectoralModal({ open, onClose }: Props) {
       else {
         setOnpe(json);
         setOnpeError(false);
+        setLastFetched(new Date());
       }
     } catch {
       setOnpeError(true);
@@ -414,9 +416,12 @@ export function FlashElectoralModal({ open, onClose }: Props) {
             {isOnpeTab ? (
               onpe ? (
                 <>
-                  Actualizado:{" "}
+                  {conteoIniciado ? "Actualizado: " : "Última consulta: "}
                   <span className="text-gray-300">
-                    {new Date(onpe.actualizado).toLocaleTimeString("es-PE", {
+                    {(conteoIniciado
+                      ? new Date(onpe.actualizado)
+                      : lastFetched ?? new Date()
+                    ).toLocaleTimeString("es-PE", {
                       hour: "2-digit",
                       minute: "2-digit",
                     })}
@@ -434,7 +439,7 @@ export function FlashElectoralModal({ open, onClose }: Props) {
             )}
           </p>
           <a
-            href="https://resultadoelectoral.onpe.gob.pe/main/presidenciales"
+            href="https://resultadosegundavuelta.onpe.gob.pe/main/resumen"
             target="_blank"
             rel="noopener noreferrer"
             className="text-[10px] sm:text-[11px] text-red-400 hover:text-red-300 font-bold uppercase tracking-wider"
