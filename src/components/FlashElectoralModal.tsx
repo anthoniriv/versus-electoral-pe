@@ -181,6 +181,10 @@ export function FlashElectoralModal({ open, onClose }: Props) {
   const left = top2[0];
   const right = top2[1];
   const conteoCompleto = (onpe?.actasContabilizadasPct ?? 0) >= 99.9;
+  const onpeDiff =
+    left && right ? Math.abs(left.porcentajeValidos - right.porcentajeValidos) : 0;
+  const onpeVotosDiff =
+    left && right ? Math.abs(left.votos - right.votos) : 0;
 
   const isOnpeTab = tab === "onpe";
   const encActiva =
@@ -360,8 +364,8 @@ export function FlashElectoralModal({ open, onClose }: Props) {
 
             {conteoIniciado && left && right && (
               <div className="relative">
-                {/* VS central */}
-                <div className="hidden md:flex absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-20 pointer-events-none">
+                {/* VS central + diferencia */}
+                <div className="hidden md:flex flex-col items-center gap-2 absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-20 pointer-events-none">
                   <div className="relative">
                     <div className="absolute inset-0 rounded-full bg-red-500/30 blur-2xl animate-pulse-glow" />
                     <div className="relative w-20 h-20 lg:w-24 lg:h-24 rounded-full bg-gradient-to-br from-red-600 via-red-700 to-black border-2 border-red-500/60 shadow-[0_10px_40px_rgba(220,38,38,0.6)] flex items-center justify-center">
@@ -370,10 +374,20 @@ export function FlashElectoralModal({ open, onClose }: Props) {
                       </span>
                     </div>
                   </div>
+                  <div className="rounded-full bg-black/85 backdrop-blur-md border border-red-500/50 px-3 py-1 text-center shadow-[0_8px_30px_rgba(0,0,0,0.6)]">
+                    <span className="text-[11px] lg:text-xs font-black text-white tabular-nums">
+                      +{onpeDiff.toFixed(2)} pts
+                    </span>
+                    {onpeVotosDiff > 0 && (
+                      <span className="block text-[8px] lg:text-[9px] text-gray-400 font-bold tabular-nums leading-none">
+                        {fmtNum(onpeVotosDiff)} votos
+                      </span>
+                    )}
+                  </div>
                 </div>
 
-                {/* VS móvil centrado entre ambas mitades */}
-                <div className="md:hidden absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-20 pointer-events-none">
+                {/* VS móvil centrado + diferencia */}
+                <div className="md:hidden flex flex-col items-center gap-1 absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-20 pointer-events-none">
                   <div className="relative">
                     <div className="absolute inset-0 rounded-full bg-red-500/40 blur-xl animate-pulse-glow" />
                     <div className="relative w-12 h-12 rounded-full bg-gradient-to-br from-red-600 to-black border-2 border-red-500/60 flex items-center justify-center">
@@ -381,6 +395,11 @@ export function FlashElectoralModal({ open, onClose }: Props) {
                         VS
                       </span>
                     </div>
+                  </div>
+                  <div className="rounded-full bg-black/85 backdrop-blur border border-red-500/50 px-2 py-0.5">
+                    <span className="text-[9px] font-black text-white tabular-nums">
+                      +{onpeDiff.toFixed(2)} pts
+                    </span>
                   </div>
                 </div>
 
@@ -482,12 +501,17 @@ function BocaUrnaView({ enc }: { enc: BocaUrnaEncuestadora }) {
 
   const ganador =
     (keiko.porcentaje ?? 0) >= (sanchez.porcentaje ?? 0) ? "left" : "right";
+  const diff = Math.abs((keiko.porcentaje ?? 0) - (sanchez.porcentaje ?? 0));
+  const ganadorColor = ganador === "left" ? keiko.color : sanchez.color;
 
   return (
     <div key={enc.id} className="relative animate-fade-in">
       <div className="grid grid-cols-2 relative">
         <BocaSide cand={keiko} side="left" lead={ganador === "left"} />
         <BocaSide cand={sanchez} side="right" lead={ganador === "right"} />
+
+        {/* Diferencia al centro */}
+        <DiffBadge diff={diff} color={ganadorColor} />
       </div>
 
       {/* Banner BOCA DE URNA + encuestadora */}
@@ -666,6 +690,42 @@ function BocaPendingSide({
       <p className="mt-2 text-2xl sm:text-4xl font-black text-gray-600 tabular-nums animate-pulse">
         — %
       </p>
+    </div>
+  );
+}
+
+// Badge central con la diferencia entre ambos candidatos
+function DiffBadge({
+  diff,
+  color,
+  votos,
+}: {
+  diff: number;
+  color: string;
+  votos?: number;
+}) {
+  return (
+    <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-30 pointer-events-none">
+      <div
+        className="rounded-2xl bg-black/85 backdrop-blur-md border px-2.5 sm:px-4 py-1.5 sm:py-2.5 text-center shadow-[0_8px_30px_rgba(0,0,0,0.6)]"
+        style={{ borderColor: `${color}99` }}
+      >
+        <p className="text-[7px] sm:text-[9px] font-bold uppercase tracking-[0.18em] text-gray-400 leading-none">
+          Diferencia
+        </p>
+        <p
+          className="mt-0.5 sm:mt-1 text-base sm:text-2xl font-black tabular-nums leading-none"
+          style={{ color, textShadow: `0 0 18px ${color}66` }}
+        >
+          {diff.toFixed(2)}
+          <span className="text-[9px] sm:text-sm ml-0.5">pts</span>
+        </p>
+        {votos != null && votos > 0 && (
+          <p className="mt-0.5 sm:mt-1 text-[7px] sm:text-[9px] text-gray-400 font-bold tabular-nums leading-none">
+            {fmtNum(votos)} votos
+          </p>
+        )}
+      </div>
     </div>
   );
 }
