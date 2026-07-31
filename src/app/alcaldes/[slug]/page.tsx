@@ -4,7 +4,12 @@ import { prisma } from "@/lib/db";
 import { type GravedadKey } from "@/lib/candidatos";
 import { CandidatoDetalleClient } from "@/components/CandidatoDetalleClient";
 import { SITE_URL, SITE_NAME } from "@/lib/site";
-import { CANDIDATOS_MUNICIPALES, DISTRITO_BY_SLUG, AMBITO_PROVINCIAL } from "@/lib/municipales";
+import {
+  CANDIDATOS_MUNICIPALES,
+  CANDIDATO_MUNICIPAL_BY_SLUG,
+  DISTRITO_BY_SLUG,
+  AMBITO_PROVINCIAL,
+} from "@/lib/municipales";
 
 export const revalidate = 1800;
 
@@ -33,7 +38,11 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     });
   } catch { /* DB not ready */ }
 
-  if (!candidato) return { title: "Candidato no encontrado" };
+  if (!candidato) {
+    const delPadron = CANDIDATO_MUNICIPAL_BY_SLUG.get(slug);
+    if (!delPadron) return { title: "Candidato no encontrado" };
+    candidato = { nombre: delPadron.nombre, partido: delPadron.partido, ambito: delPadron.ambito };
+  }
 
   const zona = ambitoLabel(candidato.ambito);
   const title = `${candidato.nombre} — Denuncias y Acusaciones`;
@@ -72,7 +81,23 @@ export default async function AlcaldeCandidatoPage({ params, searchParams }: Pag
   } catch { /* DB not ready */ }
 
   // Un candidato presidencial no se sirve bajo /alcaldes: cada elección tiene su árbol.
-  if (!candidato || candidato.eleccion !== "municipal-2026") notFound();
+  if (candidato && candidato.eleccion !== "municipal-2026") notFound();
+
+  // Aún sin fila en BD (padrón recién cargado, scraping pendiente): mostramos la
+  // ficha con los datos del JNE y sin noticias, en vez de un 404.
+  if (!candidato) {
+    const delPadron = CANDIDATO_MUNICIPAL_BY_SLUG.get(slug);
+    if (!delPadron) notFound();
+    candidato = {
+      id: -1,
+      nombre: delPadron.nombre,
+      partido: delPadron.partido,
+      slug: delPadron.slug,
+      eleccion: "municipal-2026",
+      ambito: delPadron.ambito,
+      noticias: [],
+    };
+  }
 
   const gravedadCounts: Record<string, number> = {};
   for (const n of candidato.noticias) {

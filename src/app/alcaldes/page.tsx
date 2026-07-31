@@ -2,9 +2,14 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { SITE_URL, SITE_NAME } from "@/lib/site";
 import { CandidatosList } from "@/components/CandidatosList";
-import { obtenerResumenCandidatos } from "@/lib/candidatos-resumen";
+import { obtenerResumenMunicipal } from "@/lib/candidatos-resumen";
 import { getEleccion } from "@/lib/elecciones";
-import { AMBITO_PROVINCIAL, DISTRITOS_LIMA, distritosConCandidatos } from "@/lib/municipales";
+import {
+  AMBITO_PROVINCIAL,
+  DISTRITOS_LIMA,
+  POSTULANTES_POR_AMBITO,
+  distritosConCandidatos,
+} from "@/lib/municipales";
 import { SinDatosEleccion } from "@/components/SinDatosEleccion";
 
 export const revalidate = 1800;
@@ -31,17 +36,7 @@ export const metadata: Metadata = {
 };
 
 export default async function AlcaldesPage() {
-  let candidatos: Awaited<ReturnType<typeof obtenerResumenCandidatos>> = [];
-
-  try {
-    candidatos = await obtenerResumenCandidatos({
-      eleccion: "municipal-2026",
-      ambito: AMBITO_PROVINCIAL,
-    });
-  } catch {
-    // DB not ready
-  }
-
+  const candidatos = await obtenerResumenMunicipal(AMBITO_PROVINCIAL);
   const conDatos = distritosConCandidatos();
 
   return (
@@ -52,8 +47,9 @@ export default async function AlcaldesPage() {
             Alcaldía de Lima Metropolitana 2026
           </h1>
           <p className="text-gray-400 text-sm sm:text-base mb-6">
-            Elección municipal del {ELECCION.fecha}. Selecciona un candidato para ver
-            sus noticias, denuncias y sentencias.
+            {candidatos.length} postulantes a la alcaldía provincial · elección del{" "}
+            {ELECCION.fecha}. Selecciona un candidato para ver sus noticias, denuncias
+            y sentencias.
           </p>
 
           {candidatos.length > 0 ? (
@@ -66,25 +62,28 @@ export default async function AlcaldesPage() {
             Por distrito
           </h2>
           <p className="text-gray-400 text-sm mb-5">
-            43 distritos de Lima.{" "}
-            {conDatos.length === 0
-              ? "Aún sin candidatos cargados."
-              : `${conDatos.length} con candidatos cargados.`}
+            {conDatos.length} alcaldías distritales en elección. El Cercado se
+            gobierna desde la Municipalidad Metropolitana.
           </p>
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-2">
             {DISTRITOS_LIMA.map((d) => {
-              const tieneDatos = conDatos.some((x) => x.slug === d.slug);
+              const total = POSTULANTES_POR_AMBITO.get(d.slug) ?? 0;
               return (
                 <Link
                   key={d.slug}
                   href={`/alcaldes/distrito/${d.slug}`}
-                  className={`rounded-xl border px-3 py-2.5 text-sm font-semibold transition ${
-                    tieneDatos
+                  className={`flex items-center justify-between gap-2 rounded-xl border px-3 py-2.5 text-sm font-semibold transition ${
+                    total > 0
                       ? "border-gray-700 bg-gray-900/60 text-white hover:border-red-500/70"
                       : "border-gray-800/70 bg-gray-900/30 text-gray-500 hover:border-gray-600"
                   }`}
                 >
-                  {d.nombre}
+                  <span className="truncate">{d.nombre}</span>
+                  {total > 0 && (
+                    <span className="shrink-0 rounded-full bg-gray-800 px-2 py-0.5 text-[10px] font-black tabular-nums text-gray-300">
+                      {total}
+                    </span>
+                  )}
                 </Link>
               );
             })}

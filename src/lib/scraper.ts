@@ -7,21 +7,50 @@ import type { EleccionId } from "./elecciones";
 import { clasificarNoticia, esNoticiaRelevante } from "./clasificador";
 import { clasificarConIA } from "./clasificador-ia";
 
-// El scraping recorre todas las elecciones cubiertas. Mientras el padrón
-// municipal esté vacío esto equivale exactamente a CANDIDATOS.
-type CandidatoScrape = CandidatoData & { eleccion: EleccionId; ambito: string | null };
+// El scraping recorre todas las elecciones cubiertas.
+type CandidatoScrape = CandidatoData & {
+  eleccion: EleccionId;
+  ambito: string | null;
+  estado: string | null;
+  hojaVidaId: number | null;
+};
 
-const CANDIDATOS_TODOS: CandidatoScrape[] = [
-  ...CANDIDATOS.map((c) => ({
-    ...c,
-    eleccion: "presidencial-2026" as const,
-    ambito: null,
-  })),
-  ...CANDIDATOS_MUNICIPALES.map((c) => ({
-    ...c,
-    eleccion: "municipal-2026" as const,
-  })),
-];
+const PRESIDENCIALES: CandidatoScrape[] = CANDIDATOS.map((c) => ({
+  ...c,
+  eleccion: "presidencial-2026" as const,
+  ambito: null,
+  estado: null,
+  hojaVidaId: null,
+}));
+
+const MUNICIPALES: CandidatoScrape[] = CANDIDATOS_MUNICIPALES.map((c) => ({
+  ...c,
+  eleccion: "municipal-2026" as const,
+}));
+
+/** Todos los candidatos: se upsertean en BD y se usan para atribuir noticias. */
+const CANDIDATOS_TODOS: CandidatoScrape[] = [...PRESIDENCIALES, ...MUNICIPALES];
+
+// Las búsquedas por candidato (Google News + buscadores de medios) son la parte
+// cara: con 500+ municipales no entran en los 300s de la función. Por eso los
+// presidenciales se buscan siempre y los municipales rotan por ventana diaria,
+// cubriendo el padrón completo en ~ceil(485 / ventana) días.
+const MUNICIPALES_POR_RUN = Number(process.env.SCRAPE_MUNICIPALES_POR_RUN ?? 40);
+
+function ventanaMunicipal(fecha = new Date()): CandidatoScrape[] {
+  if (MUNICIPALES.length === 0 || MUNICIPALES_POR_RUN <= 0) return [];
+  if (MUNICIPALES_POR_RUN >= MUNICIPALES.length) return MUNICIPALES;
+
+  const dia = Math.floor(fecha.getTime() / 86_400_000);
+  const totalVentanas = Math.ceil(MUNICIPALES.length / MUNICIPALES_POR_RUN);
+  const inicio = (dia % totalVentanas) * MUNICIPALES_POR_RUN;
+  return MUNICIPALES.slice(inicio, inicio + MUNICIPALES_POR_RUN);
+}
+
+/** Candidatos a buscar en esta corrida (presidenciales + ventana municipal). */
+function candidatosDeEstaCorrida(): CandidatoScrape[] {
+  return [...PRESIDENCIALES, ...ventanaMunicipal()];
+}
 
 interface NoticiaRaw {
   titulo: string;
@@ -690,14 +719,29 @@ export async function ejecutarScraping(): Promise<{ total: number; nuevas: numbe
 
   console.log("[SCRAPER] Iniciando scraping completo...");
 
-  // Asegurar que los candidatos existen en la BD
+  // Asegurar que los candidatos existen en la BD (todas las elecciones)
   for (const c of CANDIDATOS_TODOS) {
+    const datos = {
+      nombre: c.nombre,
+      partido: c.partido,
+      eleccion: c.eleccion,
+      ambito: c.ambito,
+      estado: c.estado,
+      hojaVidaId: c.hojaVidaId,
+    };
     await prisma.candidato.upsert({
       where: { slug: c.slug },
-      update: { nombre: c.nombre, partido: c.partido, eleccion: c.eleccion, ambito: c.ambito },
-      create: { nombre: c.nombre, partido: c.partido, slug: c.slug, eleccion: c.eleccion, ambito: c.ambito },
+      update: datos,
+      create: { ...datos, slug: c.slug },
     });
   }
+
+  // Búsqueda por candidato: presidenciales siempre + ventana rotativa municipal
+  const candidatosBusqueda = candidatosDeEstaCorrida();
+  console.log(
+    `[SCRAPER] Búsqueda por candidato: ${candidatosBusqueda.length} ` +
+      `(${PRESIDENCIALES.length} presidenciales + ${candidatosBusqueda.length - PRESIDENCIALES.length} municipales de ${MUNICIPALES.length})`
+  );
 
   // ---- FASE 1: Scraping de secciones de política de todos los medios ----
   console.log("[SCRAPER] Fase 1: Scraping de secciones de política...");
@@ -742,8 +786,8 @@ export async function ejecutarScraping(): Promise<{ total: number; nuevas: numbe
 
   // Procesar en lotes de 4 candidatos para no saturar Google
   const BATCH_SIZE = 4;
-  for (let i = 0; i < CANDIDATOS_TODOS.length; i += BATCH_SIZE) {
-    const batch = CANDIDATOS_TODOS.slice(i, i + BATCH_SIZE);
+  for (let i = 0; i < candidatosBusqueda.length; i += BATCH_SIZE) {
+    const batch = candidatosBusqueda.slice(i, i + BATCH_SIZE);
     const results = await Promise.allSettled(
       batch.map((c) => buscarCandidatoGoogleNews(c.nombre, c.partido, c.keywords))
     );
@@ -751,7 +795,7 @@ export async function ejecutarScraping(): Promise<{ total: number; nuevas: numbe
       if (r.status === "fulfilled") todasLasNoticias.push(...r.value);
       else errores.push(`Google News batch: ${r.reason?.message || "error"}`);
     }
-    if (i + BATCH_SIZE < CANDIDATOS_TODOS.length) await delay(1500); // Pausa entre lotes
+    if (i + BATCH_SIZE < candidatosBusqueda.length) await delay(1500); // Pausa entre lotes
   }
 
   console.log(`[SCRAPER] Fase 2 completada: ${todasLasNoticias.length} noticias total con Google News`);
@@ -761,8 +805,8 @@ export async function ejecutarScraping(): Promise<{ total: number; nuevas: numbe
 
   // Solo buscar los candidatos más conocidos/relevantes en buscadores internos
   // (para no hacer cientos de requests)
-  for (let i = 0; i < CANDIDATOS_TODOS.length; i += BATCH_SIZE) {
-    const batch = CANDIDATOS_TODOS.slice(i, i + BATCH_SIZE);
+  for (let i = 0; i < candidatosBusqueda.length; i += BATCH_SIZE) {
+    const batch = candidatosBusqueda.slice(i, i + BATCH_SIZE);
     const results = await Promise.allSettled(
       batch.map((c) => buscarCandidatoEnSitios(c.keywords[0]))
     );
@@ -770,7 +814,7 @@ export async function ejecutarScraping(): Promise<{ total: number; nuevas: numbe
       if (r.status === "fulfilled") todasLasNoticias.push(...r.value);
       else errores.push(`Búsqueda directa: ${r.reason?.message || "error"}`);
     }
-    if (i + BATCH_SIZE < CANDIDATOS_TODOS.length) await delay(1000);
+    if (i + BATCH_SIZE < candidatosBusqueda.length) await delay(1000);
   }
 
   console.log(`[SCRAPER] Fase 3 completada: ${todasLasNoticias.length} noticias total`);

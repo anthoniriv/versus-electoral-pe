@@ -4,7 +4,7 @@ import { notFound } from "next/navigation";
 import { SITE_URL, SITE_NAME } from "@/lib/site";
 import { CandidatosList } from "@/components/CandidatosList";
 import { SinDatosEleccion } from "@/components/SinDatosEleccion";
-import { obtenerResumenCandidatos } from "@/lib/candidatos-resumen";
+import { obtenerResumenMunicipal } from "@/lib/candidatos-resumen";
 import { DISTRITOS_LIMA, DISTRITO_BY_SLUG } from "@/lib/municipales";
 
 export const revalidate = 1800;
@@ -39,15 +39,7 @@ export default async function DistritoPage({ params }: PageProps) {
   const d = DISTRITO_BY_SLUG.get(distrito);
   if (!d) notFound();
 
-  let candidatos: Awaited<ReturnType<typeof obtenerResumenCandidatos>> = [];
-  try {
-    candidatos = await obtenerResumenCandidatos({
-      eleccion: "municipal-2026",
-      ambito: d.slug,
-    });
-  } catch {
-    // DB not ready
-  }
+  const candidatos = await obtenerResumenMunicipal(d.slug);
 
   return (
     <div className="min-h-screen bg-gray-950">
@@ -60,13 +52,22 @@ export default async function DistritoPage({ params }: PageProps) {
             ← Todos los distritos
           </Link>
           <h1 className="mt-3 text-2xl sm:text-3xl font-black mb-2 text-white uppercase tracking-wider">
-            Alcaldía de {d.nombre} 2026
+            {d.sinAlcaldiaPropia ? d.nombre : `Alcaldía de ${d.nombre} 2026`}
           </h1>
           <p className="text-gray-400 text-sm sm:text-base mb-6">
-            Candidatos a alcalde distrital de {d.nombre}.
+            {d.sinAlcaldiaPropia
+              ? "Este distrito vota por la alcaldía provincial de Lima."
+              : `${candidatos.length} candidatos a alcalde distrital de ${d.nombre}.`}
           </p>
 
-          {candidatos.length > 0 ? (
+          {d.sinAlcaldiaPropia ? (
+            <SinDatosEleccion
+              titulo="El Cercado no elige alcalde distrital"
+              detalle="Lima (Cercado) lo administra la Municipalidad Metropolitana de Lima: sus votantes eligen la alcaldía provincial."
+              ctaHref="/alcaldes"
+              ctaLabel="Ver candidatos a Lima Metropolitana"
+            />
+          ) : candidatos.length > 0 ? (
             <CandidatosList candidatos={candidatos} basePath="/alcaldes" />
           ) : (
             <SinDatosEleccion

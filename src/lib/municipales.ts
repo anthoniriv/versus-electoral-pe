@@ -1,4 +1,5 @@
 import type { CandidatoData } from "./candidatos";
+import { CANDIDATOS_MUNICIPALES_DATA, CORTE_JNE } from "./municipales-data";
 
 // ─────────────────────────────────────────────────────────────
 // ELECCIONES MUNICIPALES 2026 · Lima Metropolitana + distritos
@@ -10,11 +11,19 @@ export const AMBITO_PROVINCIAL = "lima-metropolitana";
 export interface Distrito {
   slug: string;
   nombre: string;
+  /**
+   * El Cercado no elige alcalde distrital: lo administra la Municipalidad
+   * Metropolitana, así que sus votantes eligen la alcaldía provincial.
+   */
+  sinAlcaldiaPropia?: boolean;
 }
 
-/** Los 43 distritos de la provincia de Lima (incluye el Cercado). */
+/**
+ * Los 43 distritos de la provincia de Lima. Solo 42 eligen alcalde distrital
+ * (el Cercado se gobierna desde la Municipalidad Metropolitana).
+ */
 export const DISTRITOS_LIMA: Distrito[] = [
-  { slug: "lima-cercado", nombre: "Lima (Cercado)" },
+  { slug: "lima-cercado", nombre: "Lima (Cercado)", sinAlcaldiaPropia: true },
   { slug: "ancon", nombre: "Ancón" },
   { slug: "ate", nombre: "Ate" },
   { slug: "barranco", nombre: "Barranco" },
@@ -64,24 +73,36 @@ export const DISTRITO_BY_SLUG = new Map(DISTRITOS_LIMA.map((d) => [d.slug, d]));
 export interface CandidatoMunicipal extends CandidatoData {
   /** `lima-metropolitana` para la alcaldía provincial, o el slug del distrito. */
   ambito: string;
+  /** Estado del postulante en el JNE: INSCRITO, ADMITIDO, RECIBIDO, etc. */
+  estado: string;
+  expediente: string;
+  /** Id de hoja de vida en la plataforma del JNE (para propuestas/plan de gobierno). */
+  hojaVidaId: number | null;
 }
 
-// ⚠️ PENDIENTE DE DATOS REALES.
-// No inventamos nombres: este sitio publica denuncias sobre personas reales, así
-// que el padrón municipal se llena solo con candidaturas inscritas y verificadas
-// (JNE/ONPE). Mientras esté vacío, /alcaldes muestra estado "próximamente" y el
-// scraper no busca nada para esta elección.
-//
-// Para cargar: añade entradas con la misma forma que CANDIDATOS en candidatos.ts
-// más `ambito`, y pon `conDatos: true` en la elección municipal de elecciones.ts.
-export const CANDIDATOS_MUNICIPALES: CandidatoMunicipal[] = [];
+/**
+ * Padrón municipal ERM 2026 (Lima), generado desde el export del JNE.
+ * Ver scripts/generar-municipales.ts para regenerarlo cuando cambien los estados.
+ */
+export const CANDIDATOS_MUNICIPALES: CandidatoMunicipal[] = CANDIDATOS_MUNICIPALES_DATA;
+
+export { CORTE_JNE };
+
+export const CANDIDATO_MUNICIPAL_BY_SLUG = new Map(
+  CANDIDATOS_MUNICIPALES.map((c) => [c.slug, c])
+);
 
 export function candidatosPorAmbito(ambito: string): CandidatoMunicipal[] {
   return CANDIDATOS_MUNICIPALES.filter((c) => c.ambito === ambito);
 }
 
+/** Cuántos postulantes tiene cada ámbito, según el padrón del JNE. */
+export const POSTULANTES_POR_AMBITO: Map<string, number> = CANDIDATOS_MUNICIPALES.reduce(
+  (acc, c) => acc.set(c.ambito, (acc.get(c.ambito) ?? 0) + 1),
+  new Map<string, number>()
+);
+
 /** Distritos que ya tienen al menos una candidatura cargada. */
 export function distritosConCandidatos(): Distrito[] {
-  const conData = new Set(CANDIDATOS_MUNICIPALES.map((c) => c.ambito));
-  return DISTRITOS_LIMA.filter((d) => conData.has(d.slug));
+  return DISTRITOS_LIMA.filter((d) => POSTULANTES_POR_AMBITO.has(d.slug));
 }

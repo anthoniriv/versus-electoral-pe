@@ -20,7 +20,10 @@ export function CandidatoAvatar({ slug, nombre, size = 160, className = "", styl
         /* eslint-disable-next-line @next/next/no-img-element */
         <img
           src={src}
-          alt={nombre}
+          // Decorativo: el nombre va al lado. Con alt vacío no aparece el texto
+          // roto mientras se prueban las variantes de foto (muchos municipales
+          // aún no tienen imagen y se cae a las iniciales).
+          alt=""
           width={size}
           height={size}
           className="w-full h-full object-cover"

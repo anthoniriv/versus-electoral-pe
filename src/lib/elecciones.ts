@@ -45,7 +45,7 @@ export const ELECCIONES: Eleccion[] = [
     basePath: "/alcaldes",
     listaPath: "/alcaldes",
     versusPath: "/alcaldes/versus",
-    conDatos: false,
+    conDatos: true,
   },
 ];
 
