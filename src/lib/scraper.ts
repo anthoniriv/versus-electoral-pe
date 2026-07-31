@@ -1,9 +1,27 @@
 import axios from "axios";
 import * as cheerio from "cheerio";
 import { prisma } from "./db";
-import { CANDIDATOS } from "./candidatos";
+import { CANDIDATOS, type CandidatoData } from "./candidatos";
+import { CANDIDATOS_MUNICIPALES } from "./municipales";
+import type { EleccionId } from "./elecciones";
 import { clasificarNoticia, esNoticiaRelevante } from "./clasificador";
 import { clasificarConIA } from "./clasificador-ia";
+
+// El scraping recorre todas las elecciones cubiertas. Mientras el padrón
+// municipal esté vacío esto equivale exactamente a CANDIDATOS.
+type CandidatoScrape = CandidatoData & { eleccion: EleccionId; ambito: string | null };
+
+const CANDIDATOS_TODOS: CandidatoScrape[] = [
+  ...CANDIDATOS.map((c) => ({
+    ...c,
+    eleccion: "presidencial-2026" as const,
+    ambito: null,
+  })),
+  ...CANDIDATOS_MUNICIPALES.map((c) => ({
+    ...c,
+    eleccion: "municipal-2026" as const,
+  })),
+];
 
 interface NoticiaRaw {
   titulo: string;
@@ -653,8 +671,8 @@ async function obtenerUrlsExistentes(urls: string[]): Promise<Set<string>> {
   return existentes;
 }
 
-function seleccionarCandidato(texto: string): (typeof CANDIDATOS)[number] | null {
-  for (const candidato of CANDIDATOS) {
+function seleccionarCandidato(texto: string): CandidatoScrape | null {
+  for (const candidato of CANDIDATOS_TODOS) {
     if (matchCandidato(texto, candidato.keywords)) return candidato;
   }
   return null;
@@ -673,11 +691,11 @@ export async function ejecutarScraping(): Promise<{ total: number; nuevas: numbe
   console.log("[SCRAPER] Iniciando scraping completo...");
 
   // Asegurar que los candidatos existen en la BD
-  for (const c of CANDIDATOS) {
+  for (const c of CANDIDATOS_TODOS) {
     await prisma.candidato.upsert({
       where: { slug: c.slug },
-      update: { nombre: c.nombre, partido: c.partido },
-      create: { nombre: c.nombre, partido: c.partido, slug: c.slug },
+      update: { nombre: c.nombre, partido: c.partido, eleccion: c.eleccion, ambito: c.ambito },
+      create: { nombre: c.nombre, partido: c.partido, slug: c.slug, eleccion: c.eleccion, ambito: c.ambito },
     });
   }
 
@@ -724,8 +742,8 @@ export async function ejecutarScraping(): Promise<{ total: number; nuevas: numbe
 
   // Procesar en lotes de 4 candidatos para no saturar Google
   const BATCH_SIZE = 4;
-  for (let i = 0; i < CANDIDATOS.length; i += BATCH_SIZE) {
-    const batch = CANDIDATOS.slice(i, i + BATCH_SIZE);
+  for (let i = 0; i < CANDIDATOS_TODOS.length; i += BATCH_SIZE) {
+    const batch = CANDIDATOS_TODOS.slice(i, i + BATCH_SIZE);
     const results = await Promise.allSettled(
       batch.map((c) => buscarCandidatoGoogleNews(c.nombre, c.partido, c.keywords))
     );
@@ -733,7 +751,7 @@ export async function ejecutarScraping(): Promise<{ total: number; nuevas: numbe
       if (r.status === "fulfilled") todasLasNoticias.push(...r.value);
       else errores.push(`Google News batch: ${r.reason?.message || "error"}`);
     }
-    if (i + BATCH_SIZE < CANDIDATOS.length) await delay(1500); // Pausa entre lotes
+    if (i + BATCH_SIZE < CANDIDATOS_TODOS.length) await delay(1500); // Pausa entre lotes
   }
 
   console.log(`[SCRAPER] Fase 2 completada: ${todasLasNoticias.length} noticias total con Google News`);
@@ -743,8 +761,8 @@ export async function ejecutarScraping(): Promise<{ total: number; nuevas: numbe
 
   // Solo buscar los candidatos más conocidos/relevantes en buscadores internos
   // (para no hacer cientos de requests)
-  for (let i = 0; i < CANDIDATOS.length; i += BATCH_SIZE) {
-    const batch = CANDIDATOS.slice(i, i + BATCH_SIZE);
+  for (let i = 0; i < CANDIDATOS_TODOS.length; i += BATCH_SIZE) {
+    const batch = CANDIDATOS_TODOS.slice(i, i + BATCH_SIZE);
     const results = await Promise.allSettled(
       batch.map((c) => buscarCandidatoEnSitios(c.keywords[0]))
     );
@@ -752,7 +770,7 @@ export async function ejecutarScraping(): Promise<{ total: number; nuevas: numbe
       if (r.status === "fulfilled") todasLasNoticias.push(...r.value);
       else errores.push(`Búsqueda directa: ${r.reason?.message || "error"}`);
     }
-    if (i + BATCH_SIZE < CANDIDATOS.length) await delay(1000);
+    if (i + BATCH_SIZE < CANDIDATOS_TODOS.length) await delay(1000);
   }
 
   console.log(`[SCRAPER] Fase 3 completada: ${todasLasNoticias.length} noticias total`);

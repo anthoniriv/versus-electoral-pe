@@ -2,7 +2,9 @@
 
 import { useEffect, useState } from "react";
 import dynamic from "next/dynamic";
+import { usePathname } from "next/navigation";
 import { FLASH_OPEN_EVENT } from "./NewsBanner";
+import { eleccionFromPath } from "@/lib/elecciones";
 
 const FlashElectoralModal = dynamic(
   () => import("./FlashElectoralModal").then((m) => m.FlashElectoralModal),
@@ -11,11 +13,15 @@ const FlashElectoralModal = dynamic(
 
 export function FlashElectoralLauncher() {
   const [open, setOpen] = useState(false);
+  const pathname = usePathname() ?? "/";
+  // El flash es de la elección presidencial: en las rutas municipales estorba.
+  const esPresidencial = eleccionFromPath(pathname) === "presidencial-2026";
 
   useEffect(() => {
+    if (!esPresidencial) return;
     const t = setTimeout(() => setOpen(true), 700);
     return () => clearTimeout(t);
-  }, []);
+  }, [esPresidencial]);
 
   useEffect(() => {
     function handler() {
@@ -24,6 +30,10 @@ export function FlashElectoralLauncher() {
     window.addEventListener(FLASH_OPEN_EVENT, handler);
     return () => window.removeEventListener(FLASH_OPEN_EVENT, handler);
   }, []);
+
+  // En rutas municipales no se monta nada; al volver a presidenciales el efecto
+  // de arriba vuelve a abrirlo, así que no hace falta resetear el estado.
+  if (!esPresidencial) return null;
 
   return (
     <>

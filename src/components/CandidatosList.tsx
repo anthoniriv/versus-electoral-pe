@@ -18,7 +18,14 @@ interface CandidatoItem {
 
 const LETTERS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("");
 
-export function CandidatosList({ candidatos }: { candidatos: CandidatoItem[] }) {
+export function CandidatosList({
+  candidatos,
+  basePath = "/candidato",
+}: {
+  candidatos: CandidatoItem[];
+  /** Raíz de la ficha de candidato según la elección (/candidato o /alcaldes) */
+  basePath?: string;
+}) {
   const [search, setSearch] = useState("");
   const [letterFilter, setLetterFilter] = useState<string | null>(null);
 
@@ -118,7 +125,7 @@ export function CandidatosList({ candidatos }: { candidatos: CandidatoItem[] }) 
           {filtered.map((c, i) => (
             <Link
               key={c.id}
-              href={`/candidato/${c.slug}`}
+              href={`${basePath}/${c.slug}`}
               className="group flex items-center gap-4 rounded-xl border border-gray-800/60 bg-gray-900/50 p-4 hover:border-gray-600 hover:bg-gray-900 transition-all duration-200 animate-fade-in-up"
               style={{ animationDelay: `${Math.min(i * 30, 300)}ms` }}
             >

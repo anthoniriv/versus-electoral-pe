@@ -5,6 +5,7 @@ import { VelocimetroVersus } from "./Velocimetro";
 import { GravedadBadge } from "./GravedadBadge";
 import { GRAVEDAD, type GravedadKey } from "@/lib/candidatos";
 import { normalize } from "@/lib/normalize";
+import type { EleccionId } from "@/lib/elecciones";
 import { trackEvent } from "./GoogleAnalytics";
 
 interface CandidatoAPI {
@@ -390,7 +391,14 @@ function WinnerModal({
 }
 
 /* ── Main Selector ── */
-export function VersusSelector() {
+export function VersusSelector({
+  eleccion = "presidencial-2026",
+  ambito,
+}: {
+  eleccion?: EleccionId;
+  /** Solo municipales: lima-metropolitana o slug de distrito */
+  ambito?: string;
+} = {}) {
   const [candidatos, setCandidatos] = useState<CandidatoAPI[]>([]);
   const [left, setLeft] = useState<string>("");
   const [right, setRight] = useState<string>("");
@@ -407,11 +415,13 @@ export function VersusSelector() {
   const resultsSectionRef = useRef<HTMLElement>(null);
 
   useEffect(() => {
-    fetch("/api/candidatos")
+    const q = new URLSearchParams({ eleccion });
+    if (ambito) q.set("ambito", ambito);
+    fetch(`/api/candidatos?${q}`)
       .then((r) => r.json())
       .then((data) => setCandidatos(Array.isArray(data) ? data : []))
       .catch(() => {});
-  }, []);
+  }, [eleccion, ambito]);
 
   const lista = Array.isArray(candidatos) ? candidatos : [];
   const leftData = lista.find((c) => c.slug === left);

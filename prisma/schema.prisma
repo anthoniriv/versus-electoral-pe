@@ -13,9 +13,16 @@ model Candidato {
   nombre    String
   partido   String
   slug      String    @unique
+  // presidencial-2026 | municipal-2026 (ver src/lib/elecciones.ts)
+  eleccion  String    @default("presidencial-2026")
+  // Solo municipales: lima-metropolitana o el slug del distrito
+  ambito    String?
   noticias  Noticia[]
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
+
+  @@index([eleccion])
+  @@index([eleccion, ambito])
 }
 
 model Noticia {

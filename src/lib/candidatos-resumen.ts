@@ -1,4 +1,5 @@
 import { prisma } from "./db";
+import { ELECCION_DEFAULT, type EleccionId } from "./elecciones";
 
 export interface CandidatoResumen {
   id: number;
@@ -10,11 +11,22 @@ export interface CandidatoResumen {
   gravedadCounts: Record<string, number>;
 }
 
+export interface FiltroCandidatos {
+  eleccion?: EleccionId;
+  /** Solo municipales: lima-metropolitana o slug de distrito */
+  ambito?: string;
+}
+
 const ORDEN_GRAVEDAD = ["MUY_PELIGROSO", "PELIGROSO", "MODERADO", "LEVE", "LIMPIO"];
 
-export async function obtenerResumenCandidatos(): Promise<CandidatoResumen[]> {
+export async function obtenerResumenCandidatos(
+  filtro: FiltroCandidatos = {}
+): Promise<CandidatoResumen[]> {
+  const { eleccion = ELECCION_DEFAULT, ambito } = filtro;
+
   const [candidatos, grouped] = await Promise.all([
     prisma.candidato.findMany({
+      where: { eleccion, ...(ambito ? { ambito } : {}) },
       select: { id: true, nombre: true, partido: true, slug: true },
       orderBy: { nombre: "asc" },
     }),

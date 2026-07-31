@@ -6,6 +6,7 @@ import { NewsBanner } from "@/components/NewsBanner";
 import { FooterApoyanos } from "@/components/FooterApoyanos";
 import { GoogleAnalytics } from "@/components/GoogleAnalytics";
 import { FlashElectoralLauncher } from "@/components/FlashElectoralLauncher";
+import { EleccionSwitch } from "@/components/EleccionSwitch";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -124,15 +125,16 @@ export default function RootLayout({
       >
         <GoogleAnalytics />
         <header className="sticky top-0 z-50 border-b border-gray-800/80 bg-gray-950/80 backdrop-blur-md">
-          <div className="mx-auto flex max-w-7xl items-center justify-center px-4 py-3 sm:px-6">
-            <Link href="/" className="flex items-center gap-1.5 group">
+          <div className="mx-auto flex max-w-7xl items-center justify-between gap-3 px-4 py-3 sm:px-6">
+            <Link href="/" className="flex items-center gap-1.5 group shrink-0">
               <span className="text-lg sm:text-xl font-black text-red-500 uppercase tracking-wider group-hover:text-red-400 transition-colors">
                 Versus
               </span>
-              <span className="text-lg sm:text-xl font-black text-white uppercase tracking-wider">
+              <span className="hidden sm:inline text-lg sm:text-xl font-black text-white uppercase tracking-wider">
                 Electoral Perú
               </span>
             </Link>
+            <EleccionSwitch />
           </div>
         </header>
         <NewsBanner />

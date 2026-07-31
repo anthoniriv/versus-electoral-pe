@@ -1,6 +1,7 @@
 import type { MetadataRoute } from "next";
 import { prisma } from "@/lib/db";
 import { SITE_URL } from "@/lib/site";
+import { DISTRITOS_LIMA } from "@/lib/municipales";
 
 export const revalidate = 3600;
 
@@ -25,6 +26,18 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       priority: 0.9,
     },
     {
+      url: `${SITE_URL}/alcaldes`,
+      lastModified: new Date(),
+      changeFrequency: "daily",
+      priority: 0.9,
+    },
+    {
+      url: `${SITE_URL}/alcaldes/versus`,
+      lastModified: new Date(),
+      changeFrequency: "daily",
+      priority: 0.8,
+    },
+    {
       url: `${SITE_URL}/apoyanos`,
       lastModified: new Date(),
       changeFrequency: "monthly",
@@ -32,14 +45,24 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     },
   ];
 
+  for (const d of DISTRITOS_LIMA) {
+    entries.push({
+      url: `${SITE_URL}/alcaldes/distrito/${d.slug}`,
+      lastModified: new Date(),
+      changeFrequency: "weekly",
+      priority: 0.6,
+    });
+  }
+
   try {
     const candidatos = await prisma.candidato.findMany({
-      select: { slug: true, updatedAt: true },
+      select: { slug: true, updatedAt: true, eleccion: true },
     });
 
     for (const c of candidatos) {
+      const base = c.eleccion === "municipal-2026" ? "/alcaldes" : "/candidato";
       entries.push({
-        url: `${SITE_URL}/candidato/${c.slug}`,
+        url: `${SITE_URL}${base}/${c.slug}`,
         lastModified: c.updatedAt,
         changeFrequency: "daily",
         priority: 0.8,
