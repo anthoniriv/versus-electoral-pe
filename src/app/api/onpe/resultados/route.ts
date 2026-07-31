@@ -82,6 +82,10 @@ const SLUG_BY_DNI: Record<string, string> = {
   "08255194": "armando-masse",
 };
 
+// Sin timeout una petición a un host caído/retirado (DNS SERVFAIL, TCP sin RST)
+// se cuelga hasta el timeout de la función y el modal se queda en skeleton.
+const UPSTREAM_TIMEOUT_MS = Number(process.env.ONPE_TIMEOUT_MS ?? 8000);
+
 export async function GET() {
   try {
     const headers = {
@@ -94,14 +98,23 @@ export async function GET() {
       "Sec-Fetch-Mode": "cors",
       "Sec-Fetch-Site": "same-origin",
     };
+    const signal = AbortSignal.timeout(UPSTREAM_TIMEOUT_MS);
     const [resPart, resTot] = await Promise.all([
-      fetch(ONPE_PARTICIPANTES_URL, { headers, cache: "no-store" }),
-      fetch(ONPE_TOTALES_URL, { headers, cache: "no-store" }),
+      fetch(ONPE_PARTICIPANTES_URL, { headers, cache: "no-store", signal }),
+      fetch(ONPE_TOTALES_URL, { headers, cache: "no-store", signal }),
     ]);
 
     if (!resPart.ok || !resTot.ok) {
+      const dead = [resPart.status, resTot.status].some(
+        (s) => s === 404 || s === 410 || s >= 500
+      );
       return NextResponse.json(
-        { success: false, message: `ONPE HTTP ${resPart.status}/${resTot.status}`, data: null },
+        {
+          success: false,
+          offline: dead,
+          message: `ONPE HTTP ${resPart.status}/${resTot.status}`,
+          data: null,
+        },
         { status: 502 }
       );
     }
@@ -167,9 +180,27 @@ export async function GET() {
     );
   } catch (err) {
     console.error("[ONPE] Error:", err);
+    const e = err as { name?: string; cause?: { code?: string } };
+    const code = e.cause?.code;
+    const offline =
+      e.name === "TimeoutError" ||
+      e.name === "AbortError" ||
+      code === "ENOTFOUND" ||
+      code === "EAI_AGAIN" ||
+      code === "ECONNREFUSED";
     return NextResponse.json(
-      { success: false, message: "Error al consultar ONPE", data: null },
-      { status: 500 }
+      {
+        success: false,
+        // `offline` = el host de ONPE ya no existe o no responde (típico cuando
+        // ONPE retira el subdominio de una elección terminada). El cliente lo
+        // usa para dejar de reintentar y caer a boca de urna.
+        offline,
+        message: offline
+          ? "El servicio de ONPE para esta elección no está disponible"
+          : "Error al consultar ONPE",
+        data: null,
+      },
+      { status: 502 }
     );
   }
 }

@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import dynamic from "next/dynamic";
 import Link from "next/link";
 import type {
@@ -61,6 +61,11 @@ interface Props {
 }
 
 const POLL_MS = 15_000;
+// Corta la petición del cliente aunque el route/red se cuelgue: sin esto el
+// modal se queda en skeleton para siempre.
+const CLIENT_TIMEOUT_MS = 12_000;
+// Tras N fallos seguidos dejamos de reintentar en automático (queda el botón).
+const MAX_FALLOS = 3;
 
 // Kill-switch del conteo ONPE en vivo. Combínalo con la heurística de
 // "2 candidatos": aunque esté en true, el tab ONPE solo aparece cuando el
@@ -94,27 +99,47 @@ export function FlashElectoralModal({ open, onClose }: Props) {
   const [onpe, setOnpe] = useState<OnpeResultado | null>(null);
   const [loadingOnpe, setLoadingOnpe] = useState(true);
   const [onpeError, setOnpeError] = useState(false);
+  // ONPE retiró el endpoint de esta elección → no tiene sentido seguir sondeando.
+  const [onpeOffline, setOnpeOffline] = useState(false);
   const [lastFetched, setLastFetched] = useState<Date | null>(null);
+  const inFlight = useRef(false);
+  const fallos = useRef(0);
 
   // tab activo: "onpe" (conteo oficial, por defecto) | id de encuestadora
   const [tab, setTab] = useState<string>("onpe");
 
-  const fetchOnpe = useCallback(async () => {
+  const fetchOnpe = useCallback(async (manual = false) => {
+    if (inFlight.current) return;
+    if (!manual && fallos.current >= MAX_FALLOS) return;
+    inFlight.current = true;
+    if (manual) {
+      fallos.current = 0;
+      setLoadingOnpe(true);
+    }
     try {
       const res = await fetch(`/api/onpe/resultados?t=${Date.now()}`, {
         cache: "no-store",
         headers: { "Cache-Control": "no-cache", Pragma: "no-cache" },
+        signal: AbortSignal.timeout(CLIENT_TIMEOUT_MS),
       });
-      const json = await res.json();
-      if (!json.success) setOnpeError(true);
-      else {
+      const json = await res.json().catch(() => null);
+      if (!json?.success) {
+        fallos.current += 1;
+        setOnpeError(true);
+        if (json?.offline) setOnpeOffline(true);
+      } else {
+        fallos.current = 0;
         setOnpe(json);
         setOnpeError(false);
+        setOnpeOffline(false);
         setLastFetched(new Date());
       }
     } catch {
+      // incluye TimeoutError del AbortSignal
+      fallos.current += 1;
       setOnpeError(true);
     } finally {
+      inFlight.current = false;
       setLoadingOnpe(false);
     }
   }, []);
@@ -122,18 +147,27 @@ export function FlashElectoralModal({ open, onClose }: Props) {
   useEffect(() => {
     if (!open) return;
     fetchOnpe();
-    const id = setInterval(fetchOnpe, POLL_MS);
+    if (onpeOffline) return;
+    const poll = () => fetchOnpe();
+    const id = setInterval(poll, POLL_MS);
     function onVisible() {
-      if (document.visibilityState === "visible") fetchOnpe();
+      if (document.visibilityState === "visible") poll();
     }
     document.addEventListener("visibilitychange", onVisible);
-    window.addEventListener("focus", fetchOnpe);
+    window.addEventListener("focus", poll);
     return () => {
       clearInterval(id);
       document.removeEventListener("visibilitychange", onVisible);
-      window.removeEventListener("focus", fetchOnpe);
+      window.removeEventListener("focus", poll);
     };
-  }, [open, fetchOnpe]);
+  }, [open, fetchOnpe, onpeOffline]);
+
+  // ONPE sin servicio para esta elección → mostramos boca de urna, que sí tiene datos.
+  useEffect(() => {
+    if (onpeOffline && tab === "onpe" && BOCA_URNA_2V.length > 0) {
+      setTab(BOCA_URNA_2V[0].id);
+    }
+  }, [onpeOffline, tab]);
 
   useEffect(() => {
     if (open) {
@@ -231,7 +265,17 @@ export function FlashElectoralModal({ open, onClose }: Props) {
               <p className="text-xs sm:text-sm font-black text-white truncate">
                 {isOnpeTab ? (
                   !onpe ? (
-                    "Cargando resultados…"
+                    onpeOffline ? (
+                      <span className="text-amber-400">
+                        ONPE sin conteo activo · ver boca de urna
+                      </span>
+                    ) : onpeError ? (
+                      <span className="text-amber-400">
+                        No se pudo contactar con ONPE
+                      </span>
+                    ) : (
+                      "Cargando resultados…"
+                    )
                   ) : !conteoIniciado ? (
                     <span className="text-amber-400">
                       ⏳ Esperando inicio del conteo · 2da vuelta
@@ -342,13 +386,15 @@ export function FlashElectoralModal({ open, onClose }: Props) {
           <>
             {loadingOnpe && !onpe && <VersusSkeleton />}
 
-            {onpeError && !onpe && (
+            {onpeError && !onpe && !loadingOnpe && (
               <div className="px-6 py-16 text-center">
                 <p className="text-sm text-gray-400 mb-3">
-                  No pudimos contactar con ONPE en este momento.
+                  {onpeOffline
+                    ? "ONPE ya no publica conteo en vivo para esta elección."
+                    : "No pudimos contactar con ONPE en este momento."}
                 </p>
                 <button
-                  onClick={fetchOnpe}
+                  onClick={() => fetchOnpe(true)}
                   className="px-4 py-2 rounded-full bg-red-600/20 text-red-400 text-xs font-bold uppercase tracking-wider hover:bg-red-600/30 transition"
                 >
                   Reintentar
