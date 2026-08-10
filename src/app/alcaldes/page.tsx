@@ -19,7 +19,7 @@ const ELECCION = getEleccion("municipal-2026");
 export const metadata: Metadata = {
   title: "Candidatos a Alcalde de Lima 2026",
   description:
-    "Candidatos a la alcaldía de Lima Metropolitana y de los 43 distritos en las elecciones municipales 2026, con su registro de acusaciones, denuncias y sentencias.",
+    "Candidatos a la alcaldía de Lima Metropolitana y a las 42 alcaldías distritales en las elecciones municipales 2026, con sus propuestas y noticias.",
   alternates: {
     canonical: `${SITE_URL}/alcaldes`,
     languages: {

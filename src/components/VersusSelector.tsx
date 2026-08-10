@@ -1,12 +1,16 @@
 "use client";
 
 import { useState, useEffect, useCallback, useRef } from "react";
+import Link from "next/link";
 import { VelocimetroVersus } from "./Velocimetro";
 import { GravedadBadge } from "./GravedadBadge";
 import { GRAVEDAD, type GravedadKey } from "@/lib/candidatos";
 import { normalize } from "@/lib/normalize";
 import type { EleccionId } from "@/lib/elecciones";
 import { trackEvent } from "./GoogleAnalytics";
+import { PlanGobierno } from "./PlanGobierno";
+import { CandidatoAvatar } from "./CandidatoAvatar";
+import type { PlanGobiernoView } from "@/lib/planes-gobierno";
 
 interface CandidatoAPI {
   id: number;
@@ -172,13 +176,11 @@ function SearchableSelect({
                   onClick={() => handleSelect(c.slug)}
                   className={`w-full text-left px-3 py-2.5 flex items-center gap-3 hover:bg-white/5 transition-colors ${c.slug === value ? "bg-white/5" : ""}`}
                 >
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img
-                    src={`/candidatos/${c.slug}.jpg`}
-                    alt=""
-                    aria-hidden="true"
-                    className="w-9 h-9 rounded-full object-cover bg-gray-700 shrink-0 border border-gray-700"
-                    onError={(e) => { (e.target as HTMLImageElement).style.display = "none"; }}
+                  <CandidatoAvatar
+                    slug={c.slug}
+                    nombre={c.nombre}
+                    size={36}
+                    className="rounded-full shrink-0 border border-gray-700"
                   />
                   <div className="min-w-0 flex-1">
                     <p className="text-sm font-semibold text-white truncate">{c.nombre}</p>
@@ -199,35 +201,9 @@ function SearchableSelect({
 }
 
 function VersusPhoto({ slug, nombre, side }: { slug: string; nombre: string; side: "left" | "right" }) {
-  const [src, setSrc] = useState(`/candidatos/${slug}.jpg`);
-  const [fallback, setFallback] = useState(false);
-
-  useEffect(() => {
-    setSrc(`/candidatos/${slug}.jpg`);
-    setFallback(false);
-  }, [slug]);
-
   return (
     <div className="relative w-full h-full overflow-hidden">
-      {!fallback ? (
-        /* eslint-disable-next-line @next/next/no-img-element */
-        <img
-          src={src}
-          alt={nombre}
-          className="w-full h-full object-cover object-top"
-          onError={() => {
-            if (src.endsWith(".jpg")) {
-              setSrc(`/candidatos/${slug}.svg`);
-            } else {
-              setFallback(true);
-            }
-          }}
-        />
-      ) : (
-        <div className="flex items-center justify-center h-full w-full bg-gray-800 text-gray-500 font-black text-5xl">
-          {nombre.split(" ").filter(Boolean).map(w => w[0]).slice(0, 2).join("").toUpperCase()}
-        </div>
-      )}
+      <CandidatoAvatar slug={slug} nombre={nombre} fill className="[&_img]:object-top" />
       {/* Fade toward center */}
       <div
         className="absolute inset-0 pointer-events-none"
@@ -248,11 +224,13 @@ function WinnerModal({
   winner,
   loser,
   topNoticias,
+  basePath,
   onClose,
 }: {
   winner: CandidatoAPI;
   loser: CandidatoAPI;
   topNoticias: NoticiaAPI[];
+  basePath: string;
   onClose: () => void;
 }) {
   const [show, setShow] = useState(false);
@@ -311,12 +289,11 @@ function WinnerModal({
                 boxShadow: `0 0 30px ${winnerInfo?.color || "#dc2626"}30`,
               }}
             >
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
-                src={`/candidatos/${winner.slug}.jpg`}
-                alt={winner.nombre}
-                className="w-full h-full object-cover object-top"
-                onError={(e) => { (e.target as HTMLImageElement).src = `/candidatos/${winner.slug}.svg`; }}
+              <CandidatoAvatar
+                slug={winner.slug}
+                nombre={winner.nombre}
+                fill
+                className="[&_img]:object-top"
               />
             </div>
             <h3 className="text-lg sm:text-2xl font-black text-white text-center">{winner.nombre}</h3>
@@ -372,7 +349,7 @@ function WinnerModal({
           {/* Actions */}
           <div className="mt-4 sm:mt-6 flex flex-col sm:flex-row gap-2 sm:gap-3">
             <a
-              href={`/candidato/${winner.slug}`}
+              href={`${basePath}/${winner.slug}`}
               className="flex-1 text-center py-2.5 sm:py-3 rounded-xl bg-red-600 hover:bg-red-500 text-white font-bold text-sm transition-colors"
             >
               Ver todas las noticias
@@ -404,6 +381,8 @@ export function VersusSelector({
   const [right, setRight] = useState<string>("");
   const [leftNoticias, setLeftNoticias] = useState<NoticiaAPI[]>([]);
   const [rightNoticias, setRightNoticias] = useState<NoticiaAPI[]>([]);
+  const [leftPlan, setLeftPlan] = useState<PlanGobiernoView | null>(null);
+  const [rightPlan, setRightPlan] = useState<PlanGobiernoView | null>(null);
   const [comparing, setComparing] = useState(false);
   const [showResults, setShowResults] = useState(false);
   const [showModal, setShowModal] = useState(false);
@@ -453,9 +432,11 @@ export function VersusSelector({
     setShowModal(false);
     window.scrollTo({ top: 0, behavior: "smooth" });
 
-    const [lRes, rRes] = await Promise.all([
+    const [lRes, rRes, lPlanRes, rPlanRes] = await Promise.all([
       fetch(`/api/noticias?candidato=${l}&limit=50`).then((r) => r.json()),
       fetch(`/api/noticias?candidato=${r}&limit=50`).then((r) => r.json()),
+      fetch(`/api/propuestas?candidato=${l}`).then((r) => r.json()),
+      fetch(`/api/propuestas?candidato=${r}`).then((r) => r.json()),
     ]);
 
     const gravedadOrder = ["MUY_PELIGROSO", "PELIGROSO", "MODERADO", "LEVE", "LIMPIO"];
@@ -464,6 +445,8 @@ export function VersusSelector({
 
     setLeftNoticias((lRes.noticias || []).sort(sortByGravedad));
     setRightNoticias((rRes.noticias || []).sort(sortByGravedad));
+    setLeftPlan(lPlanRes.plan || null);
+    setRightPlan(rPlanRes.plan || null);
     setComparedLeft(l);
     setComparedRight(r);
     setComparisonKey((k) => k + 1);
@@ -489,6 +472,8 @@ export function VersusSelector({
     setShowModal(false);
     setLeftNoticias([]);
     setRightNoticias([]);
+    setLeftPlan(null);
+    setRightPlan(null);
     requestAnimationFrame(() => {
       selectorSectionRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
     });
@@ -515,7 +500,7 @@ export function VersusSelector({
       {!comparing && (
         <section ref={selectorSectionRef} className="py-4 sm:py-10 px-4 scroll-mt-24">
           <div className="mx-auto max-w-5xl">
-            <a
+            <Link
               href="/"
               className="inline-flex items-center gap-1.5 text-sm text-gray-400 hover:text-white transition-colors mb-3 sm:mb-4"
             >
@@ -523,7 +508,7 @@ export function VersusSelector({
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
               </svg>
               Volver
-            </a>
+            </Link>
             <h1 className="text-2xl sm:text-3xl font-black text-white text-center uppercase tracking-wider mb-1 sm:mb-2">
               Versus
             </h1>
@@ -908,6 +893,42 @@ export function VersusSelector({
               </div>
             )}
 
+            {/* Propuestas oficiales */}
+            {showResults && eleccion === "municipal-2026" && (
+              <section className="mb-8 animate-fade-in">
+                <div className="mb-5 text-center">
+                  <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-red-400">
+                    Fuente oficial JNE
+                  </p>
+                  <h3 className="mt-1 text-sm font-bold uppercase tracking-wider text-white">
+                    Propuestas y planes de gobierno
+                  </h3>
+                </div>
+                <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+                  {[
+                    { data: leftData, plan: leftPlan, color: "text-red-400" },
+                    { data: rightData, plan: rightPlan, color: "text-blue-400" },
+                  ].map(({ data, plan, color }) => (
+                    <div key={data.slug} className="min-w-0 rounded-2xl border border-gray-800/70 bg-gray-950/60 p-4">
+                      <div className="mb-4 flex items-end justify-between gap-2 border-b border-gray-800/60 pb-3">
+                        <h4 className={`text-sm font-black ${color}`}>{data.nombre}</h4>
+                        <span className="shrink-0 text-[10px] font-bold text-gray-500">
+                          {plan?.propuestas.length ?? 0} propuestas
+                        </span>
+                      </div>
+                      {plan ? (
+                        <PlanGobierno plan={plan} compact />
+                      ) : (
+                        <p className="rounded-xl border border-dashed border-gray-700/60 p-6 text-center text-xs text-gray-500">
+                          No se encontró un resumen oficial del plan en el JNE.
+                        </p>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              </section>
+            )}
+
             {/* Top 5 noticias */}
             {showResults && (
               <div className="animate-fade-in">
@@ -948,7 +969,7 @@ export function VersusSelector({
                             </a>
                           ))}
                           <a
-                            href={`/candidato/${slug}`}
+                            href={`${eleccion === "municipal-2026" ? "/alcaldes" : "/candidato"}/${slug}`}
                             className="block text-center py-3 rounded-lg border border-dashed border-gray-600 text-sm font-semibold text-gray-400 hover:text-white hover:border-gray-400 transition-colors"
                           >
                             Ver todas las noticias &rarr;
@@ -1002,6 +1023,7 @@ export function VersusSelector({
           winner={winnerData}
           loser={loserData}
           topNoticias={winnerNoticias}
+          basePath={eleccion === "municipal-2026" ? "/alcaldes" : "/candidato"}
           onClose={() => setShowModal(false)}
         />
       )}

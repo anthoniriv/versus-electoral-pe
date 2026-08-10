@@ -1,7 +1,29 @@
 import { NextResponse } from "next/server";
 import { ejecutarScraping } from "@/lib/scraper";
+import { prisma } from "@/lib/db";
+import { AMBITO_PROVINCIAL, distritosConCandidatos } from "@/lib/municipales";
 
 export const maxDuration = 300;
+
+const AMBITOS = [
+  AMBITO_PROVINCIAL,
+  ...distritosConCandidatos().map((distrito) => distrito.slug),
+];
+
+async function ejecutarHistorico() {
+  const logs = await prisma.scrapingLog.findMany({
+    where: { fuente: { startsWith: "MUNICIPAL_HISTORICO:" }, status: "OK" },
+    select: { fuente: true },
+  });
+  const completados = new Set(logs.map((log) => log.fuente.replace("MUNICIPAL_HISTORICO:", "")));
+  const slot = Math.floor(Date.now() / 43_200_000);
+  const ambito = AMBITOS.find((item) => !completados.has(item)) ?? AMBITOS[slot % AMBITOS.length];
+  const hoy = new Date();
+  const hasta = new Date(Date.UTC(hoy.getUTCFullYear(), hoy.getUTCMonth(), hoy.getUTCDate() + 1));
+  const desde = new Date(`${process.env.BACKFILL_MUNICIPAL_DESDE ?? "2016-07-31"}T00:00:00.000Z`);
+  const results = await ejecutarScraping({ eleccion: "municipal-2026", ambito, desde, hasta });
+  return { ambito, desde: desde.toISOString(), hasta: hasta.toISOString(), results };
+}
 
 export async function GET(request: Request) {
   const cronSecret = process.env.CRON_SECRET;
@@ -15,7 +37,8 @@ export async function GET(request: Request) {
   }
 
   try {
-    const results = await ejecutarScraping();
+    const historico = new URL(request.url).searchParams.get("modo") === "historico";
+    const results = historico ? await ejecutarHistorico() : await ejecutarScraping();
     return NextResponse.json({
       success: true,
       timestamp: new Date().toISOString(),

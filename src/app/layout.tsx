@@ -2,10 +2,9 @@ import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import Link from "next/link";
 import { SITE_URL, SITE_NAME, SITE_DESCRIPTION } from "@/lib/site";
-import { NewsBanner } from "@/components/NewsBanner";
+import { MunicipalBanner } from "@/components/MunicipalBanner";
 import { FooterApoyanos } from "@/components/FooterApoyanos";
 import { GoogleAnalytics } from "@/components/GoogleAnalytics";
-import { FlashElectoralLauncher } from "@/components/FlashElectoralLauncher";
 import { EleccionSwitch } from "@/components/EleccionSwitch";
 import "./globals.css";
 
@@ -19,7 +18,7 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
-const TITLE = `${SITE_NAME} — Versus de Candidatos Presidenciales 2026`;
+const TITLE = `${SITE_NAME} — Candidatos a Alcalde de Lima 2026`;
 
 export const viewport: Viewport = {
   width: "device-width",
@@ -137,9 +136,8 @@ export default function RootLayout({
             <EleccionSwitch />
           </div>
         </header>
-        <NewsBanner />
+        <MunicipalBanner />
         <main>{children}</main>
-        <FlashElectoralLauncher />
         <footer className="border-t border-gray-800/80 bg-gray-950/80 backdrop-blur-md text-gray-600">
           <div className="mx-auto max-w-7xl px-4 sm:px-6 py-8 sm:py-12">
             {/* Mobile: solo branding + apóyanos compacto */}
@@ -174,7 +172,7 @@ export default function RootLayout({
                   Información recopilada de fuentes periodísticas públicas. Las clasificaciones son automáticas y no constituyen juicio legal.
                 </p>
                 <p className="mt-2 text-[11px] text-gray-400">
-                  Actualización automática cada 24 horas (00:00, hora Perú).
+                  Actualización automática dos veces al día (00:00 y 12:00, hora Perú).
                 </p>
               </div>
 
@@ -191,12 +189,12 @@ export default function RootLayout({
                       </Link>
                     </li>
                     <li>
-                      <Link href="/versus" className="text-sm text-gray-400 hover:text-white transition-colors">
+                      <Link href="/alcaldes/versus" className="text-sm text-gray-400 hover:text-white transition-colors">
                         Versus
                       </Link>
                     </li>
                     <li>
-                      <Link href="/candidato" className="text-sm text-gray-400 hover:text-white transition-colors">
+                      <Link href="/alcaldes" className="text-sm text-gray-400 hover:text-white transition-colors">
                         Candidatos
                       </Link>
                     </li>

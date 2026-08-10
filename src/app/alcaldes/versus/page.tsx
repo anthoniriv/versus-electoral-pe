@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { SITE_URL, SITE_NAME } from "@/lib/site";
-import { VersusSelector } from "@/components/VersusSelector";
+import { VersusMunicipal } from "@/components/VersusMunicipal";
 import { SinDatosEleccion } from "@/components/SinDatosEleccion";
 import { CANDIDATOS_MUNICIPALES } from "@/lib/municipales";
 
@@ -39,7 +39,7 @@ export default function AlcaldesVersusPage() {
 
   return (
     <div className="min-h-screen bg-gray-950">
-      <VersusSelector eleccion="municipal-2026" />
+      <VersusMunicipal />
     </div>
   );
 }

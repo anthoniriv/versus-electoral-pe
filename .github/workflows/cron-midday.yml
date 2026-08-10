@@ -22,7 +22,7 @@ jobs:
             exit 1
           fi
 
-      - name: Call /api/cron
+      - name: Call current and historical municipal crons
         run: |
           APP_URL="${{ vars.APP_URL }}"
           if [ -z "$APP_URL" ]; then
@@ -42,3 +42,8 @@ jobs:
           if [ "$status" -lt 200 ] || [ "$status" -ge 300 ]; then
             exit 1
           fi
+
+          echo "Calling historical municipal backfill"
+          curl -fsS \
+            -H "Authorization: Bearer ${{ secrets.CRON_SECRET }}" \
+            "${APP_URL}/api/cron?modo=historico"

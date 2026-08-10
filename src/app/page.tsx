@@ -1,23 +1,26 @@
-import { SITE_URL, SITE_NAME } from "@/lib/site";
 import Link from "next/link";
-import { CANDIDATOS } from "@/lib/candidatos";
 import { prisma } from "@/lib/db";
 import { FaqAccordion } from "@/components/FaqAccordion";
-import { FlashHeroBadge } from "@/components/FlashHeroBadge";
+import { CANDIDATOS_MUNICIPALES, distritosConCandidatos } from "@/lib/municipales";
+import { METADATA_PLANES } from "@/lib/planes-gobierno";
 
 export const revalidate = 1800;
 
 const HOME_STATS_BASE = {
-  candidatos: CANDIDATOS.length,
+  candidatos: CANDIDATOS_MUNICIPALES.length,
+  alcaldias: distritosConCandidatos().length + 1,
+  propuestas: METADATA_PLANES.propuestasGuardadas,
   fuentes: 20,
 };
 
 async function obtenerConteoNoticiasHome(): Promise<number> {
   try {
-    return await prisma.noticia.count();
+    return await prisma.noticia.count({
+      where: { candidato: { eleccion: "municipal-2026" } },
+    });
   } catch (error) {
     console.error("[HOME] Error contando noticias en DB, usando fallback estático:", error);
-    return Number(process.env.NEXT_PUBLIC_HOME_NEWS_COUNT || "1756");
+    return Number(process.env.NEXT_PUBLIC_HOME_MUNICIPAL_NEWS_COUNT || "0");
   }
 }
 
@@ -31,7 +34,7 @@ export default async function Home() {
     {
       question: "¿De dónde se obtiene la información de los candidatos?",
       answer:
-        "La información se recopila automáticamente de más de 20 medios periodísticos peruanos como RPP, El Comercio, La República, Gestión, Perú 21, IDL-Reporteros, Ojo Público, Convoca y otros. Cada noticia incluye el enlace a la fuente original.",
+        "Las candidaturas y planes de gobierno proceden de la Plataforma Electoral del JNE. Las noticias se recopilan de más de 20 medios periodísticos peruanos y cada registro conserva el enlace a su fuente original.",
     },
     {
       question: "¿Cómo se clasifica la gravedad de las noticias?",
@@ -41,7 +44,7 @@ export default async function Home() {
     {
       question: "¿Con qué frecuencia se actualiza la información?",
       answer:
-        "El sistema se ejecuta automáticamente cada 24 horas (00:00, hora de Perú) para capturar noticias nuevas de todas las fuentes monitoreadas.",
+        "El monitoreo se ejecuta dos veces al día y rota por las alcaldías de Lima para mantener cubiertos los 485 candidatos sin saturar las fuentes.",
     },
     {
       question: "¿Esta clasificación tiene valor legal?",
@@ -72,9 +75,8 @@ export default async function Home() {
         <div className="absolute inset-0 bg-gradient-to-b from-red-950/20 via-gray-950/50 to-gray-950" />
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,rgba(220,38,38,0.08),transparent_70%)]" />
         <div className="relative mx-auto max-w-4xl">
-          <FlashHeroBadge />
           <p className="text-red-500 text-[11px] font-bold uppercase tracking-[0.35em] mb-3 animate-fade-in">
-            Elecciones Presidenciales Perú 2026
+            Elecciones Municipales · Lima 2026
           </p>
           <h1 className="text-4xl sm:text-5xl lg:text-7xl font-black tracking-tight leading-[1.05]">
             <span className="text-white">Versus</span>
@@ -82,32 +84,34 @@ export default async function Home() {
             <span className="text-red-500">Electoral Perú</span>
           </h1>
           <p className="mt-4 text-sm sm:text-base lg:text-lg text-gray-400 max-w-2xl mx-auto leading-relaxed">
-            Monitoreo automático de <strong className="text-white">{stats.candidatos} candidatos</strong> presidenciales.
-            Acusaciones, denuncias y sentencias con fuentes verificadas de {stats.fuentes} medios.
+            Compara <strong className="text-white">{stats.candidatos} candidatos</strong> a las alcaldías de Lima,
+            sus propuestas oficiales y noticias verificadas de {stats.fuentes} medios.
           </p>
 
           {/* Stats */}
-          <div className="mt-6 sm:mt-8 inline-flex items-center gap-5 sm:gap-8 rounded-2xl border border-gray-800/60 bg-gray-900/40 backdrop-blur-sm px-6 sm:px-8 py-4">
+          <div className="mt-6 sm:mt-8 inline-grid grid-cols-2 gap-x-6 gap-y-4 rounded-2xl border border-gray-800/60 bg-gray-900/40 px-6 py-4 backdrop-blur-sm sm:grid-cols-4 sm:gap-8 sm:px-8">
             <div>
               <p className="text-2xl sm:text-3xl font-black text-white">{stats.candidatos}</p>
               <p className="text-[10px] sm:text-xs text-gray-500 uppercase tracking-wider mt-0.5">Candidatos</p>
             </div>
-            <div className="h-8 w-px bg-gray-700/60" />
+            <div>
+              <p className="text-2xl sm:text-3xl font-black text-white">{stats.alcaldias}</p>
+              <p className="text-[10px] sm:text-xs text-gray-500 uppercase tracking-wider mt-0.5">Alcaldías</p>
+            </div>
+            <div>
+              <p className="text-2xl sm:text-3xl font-black text-white">{stats.propuestas.toLocaleString()}</p>
+              <p className="text-[10px] sm:text-xs text-gray-500 uppercase tracking-wider mt-0.5">Propuestas</p>
+            </div>
             <div>
               <p className="text-2xl sm:text-3xl font-black text-white">{stats.noticias.toLocaleString()}</p>
               <p className="text-[10px] sm:text-xs text-gray-500 uppercase tracking-wider mt-0.5">Noticias</p>
-            </div>
-            <div className="h-8 w-px bg-gray-700/60" />
-            <div>
-              <p className="text-2xl sm:text-3xl font-black text-white">{stats.fuentes}</p>
-              <p className="text-[10px] sm:text-xs text-gray-500 uppercase tracking-wider mt-0.5">Fuentes</p>
             </div>
           </div>
 
           {/* CTA Cards */}
           <div className="mt-8 sm:mt-10 grid grid-cols-1 sm:grid-cols-2 gap-4 max-w-2xl mx-auto">
             <Link
-              href="/versus"
+              href="/alcaldes/versus"
               className="group relative overflow-hidden rounded-2xl border border-red-500/30 bg-gradient-to-br from-red-950/30 to-gray-900/80 p-6 sm:p-8 text-center transition-all duration-300 hover:border-red-500/60 hover:scale-[1.02] hover:shadow-[0_0_60px_rgba(220,38,38,0.15)]"
             >
               <div className="absolute inset-0 bg-gradient-to-br from-red-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
@@ -115,7 +119,7 @@ export default async function Home() {
                 <div className="text-4xl mb-3 flex justify-center"><img src="/ic_versus.svg" alt="" className="w-9 h-9" style={{ filter: "brightness(0) invert(1)" }} /></div>
                 <h2 className="text-lg sm:text-xl font-black text-white uppercase tracking-wider">Versus</h2>
                 <p className="mt-2 text-sm text-gray-400 leading-relaxed">
-                  Compara cara a cara a dos candidatos y descubre quién tiene más denuncias
+                  Compara candidatos de la misma alcaldía, sus propuestas y noticias
                 </p>
                 <div className="mt-5 inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-red-600/20 text-red-400 text-xs font-bold uppercase tracking-wider group-hover:bg-red-600/30 transition-colors">
                   Comparar ahora
@@ -125,7 +129,7 @@ export default async function Home() {
             </Link>
 
             <Link
-              href="/candidato"
+              href="/alcaldes"
               className="group relative overflow-hidden rounded-2xl border border-gray-700/50 bg-gradient-to-br from-gray-800/30 to-gray-900/80 p-6 sm:p-8 text-center transition-all duration-300 hover:border-gray-500/60 hover:scale-[1.02] hover:shadow-[0_0_60px_rgba(156,163,175,0.08)]"
             >
               <div className="absolute inset-0 bg-gradient-to-br from-white/[0.02] to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
@@ -133,7 +137,7 @@ export default async function Home() {
                 <div className="text-4xl mb-3 flex justify-center"><img src="/ic_candidate.svg" alt="" className="w-9 h-9" style={{ filter: "brightness(0) invert(1)" }} /></div>
                 <h2 className="text-lg sm:text-xl font-black text-white uppercase tracking-wider">Candidatos</h2>
                 <p className="mt-2 text-sm text-gray-400 leading-relaxed">
-                  Explora los {stats.candidatos} candidatos, sus noticias y nivel de gravedad
+                  Explora Lima Metropolitana y sus 42 alcaldías distritales
                 </p>
                 <div className="mt-5 inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-gray-600/20 text-gray-300 text-xs font-bold uppercase tracking-wider group-hover:bg-gray-600/30 transition-colors">
                   Ver candidatos

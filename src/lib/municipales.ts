@@ -76,7 +76,7 @@ export interface CandidatoMunicipal extends CandidatoData {
   /** Estado del postulante en el JNE: INSCRITO, ADMITIDO, RECIBIDO, etc. */
   estado: string;
   expediente: string;
-  /** Id de hoja de vida en la plataforma del JNE (para propuestas/plan de gobierno). */
+  /** Id de la hoja de vida personal en la Plataforma Electoral del JNE. */
   hojaVidaId: number | null;
 }
 

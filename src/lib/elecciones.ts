@@ -24,18 +24,6 @@ export interface Eleccion {
 
 export const ELECCIONES: Eleccion[] = [
   {
-    id: "presidencial-2026",
-    label: "Presidenciales",
-    labelLargo: "Elecciones Presidenciales 2026",
-    cargo: "candidatos presidenciales",
-    cargoSingular: "candidato presidencial",
-    fecha: "12 abr 2026",
-    basePath: "/candidato",
-    listaPath: "/candidato",
-    versusPath: "/versus",
-    conDatos: true,
-  },
-  {
     id: "municipal-2026",
     label: "Alcaldes",
     labelLargo: "Elecciones Municipales 2026 · Lima",
@@ -47,9 +35,21 @@ export const ELECCIONES: Eleccion[] = [
     versusPath: "/alcaldes/versus",
     conDatos: true,
   },
+  {
+    id: "presidencial-2026",
+    label: "Presidenciales",
+    labelLargo: "Elecciones Presidenciales 2026",
+    cargo: "candidatos presidenciales",
+    cargoSingular: "candidato presidencial",
+    fecha: "12 abr 2026",
+    basePath: "/candidato",
+    listaPath: "/candidato",
+    versusPath: "/versus",
+    conDatos: true,
+  },
 ];
 
-export const ELECCION_DEFAULT: EleccionId = "presidencial-2026";
+export const ELECCION_DEFAULT: EleccionId = "municipal-2026";
 
 export function getEleccion(id: EleccionId): Eleccion {
   return ELECCIONES.find((e) => e.id === id) ?? ELECCIONES[0];
@@ -57,5 +57,8 @@ export function getEleccion(id: EleccionId): Eleccion {
 
 /** Deduce la elección activa a partir del pathname (fuente de verdad del switch). */
 export function eleccionFromPath(pathname: string): EleccionId {
-  return pathname.startsWith("/alcaldes") ? "municipal-2026" : ELECCION_DEFAULT;
+  if (pathname.startsWith("/candidato") || pathname.startsWith("/versus")) {
+    return "presidencial-2026";
+  }
+  return ELECCION_DEFAULT;
 }

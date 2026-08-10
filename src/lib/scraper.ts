@@ -2,7 +2,7 @@ import axios from "axios";
 import * as cheerio from "cheerio";
 import { prisma } from "./db";
 import { CANDIDATOS, type CandidatoData } from "./candidatos";
-import { CANDIDATOS_MUNICIPALES } from "./municipales";
+import { CANDIDATOS_MUNICIPALES, DISTRITO_BY_SLUG } from "./municipales";
 import type { EleccionId } from "./elecciones";
 import { clasificarNoticia, esNoticiaRelevante } from "./clasificador";
 import { clasificarConIA } from "./clasificador-ia";
@@ -30,26 +30,43 @@ const MUNICIPALES: CandidatoScrape[] = CANDIDATOS_MUNICIPALES.map((c) => ({
 
 /** Todos los candidatos: se upsertean en BD y se usan para atribuir noticias. */
 const CANDIDATOS_TODOS: CandidatoScrape[] = [...PRESIDENCIALES, ...MUNICIPALES];
+const CANDIDATOS_BY_SLUG = new Map(CANDIDATOS_TODOS.map((candidato) => [candidato.slug, candidato]));
 
 // Las búsquedas por candidato (Google News + buscadores de medios) son la parte
-// cara: con 500+ municipales no entran en los 300s de la función. Por eso los
-// presidenciales se buscan siempre y los municipales rotan por ventana diaria,
-// cubriendo el padrón completo en ~ceil(485 / ventana) días.
+// cara: con 485 municipales no entran en los 300s de la función. El cron regular
+// se dedica a alcaldes y rota por ventana cada 12 horas. Presidenciales queda
+// disponible solo para una corrida explícita de mantenimiento.
 const MUNICIPALES_POR_RUN = Number(process.env.SCRAPE_MUNICIPALES_POR_RUN ?? 40);
 
 function ventanaMunicipal(fecha = new Date()): CandidatoScrape[] {
   if (MUNICIPALES.length === 0 || MUNICIPALES_POR_RUN <= 0) return [];
   if (MUNICIPALES_POR_RUN >= MUNICIPALES.length) return MUNICIPALES;
 
-  const dia = Math.floor(fecha.getTime() / 86_400_000);
+  const franja = Math.floor(fecha.getTime() / 43_200_000);
   const totalVentanas = Math.ceil(MUNICIPALES.length / MUNICIPALES_POR_RUN);
-  const inicio = (dia % totalVentanas) * MUNICIPALES_POR_RUN;
+  const inicio = (franja % totalVentanas) * MUNICIPALES_POR_RUN;
   return MUNICIPALES.slice(inicio, inicio + MUNICIPALES_POR_RUN);
 }
 
-/** Candidatos a buscar en esta corrida (presidenciales + ventana municipal). */
-function candidatosDeEstaCorrida(): CandidatoScrape[] {
-  return [...PRESIDENCIALES, ...ventanaMunicipal()];
+export interface ScrapingOptions {
+  eleccion?: EleccionId;
+  ambito?: string;
+  fecha?: Date;
+  /** Backfill histórico: fecha inclusiva desde la que se buscarán noticias. */
+  desde?: Date;
+  /** Backfill histórico: límite superior exclusivo. */
+  hasta?: Date;
+}
+
+/** Candidatos a buscar en esta corrida o en un backfill municipal acotado. */
+function candidatosDeEstaCorrida(options: ScrapingOptions): CandidatoScrape[] {
+  if (options.eleccion === "presidencial-2026") return PRESIDENCIALES;
+  if (options.eleccion === "municipal-2026") {
+    return options.ambito
+      ? MUNICIPALES.filter((candidato) => candidato.ambito === options.ambito)
+      : ventanaMunicipal(options.fecha);
+  }
+  return ventanaMunicipal(options.fecha);
 }
 
 interface NoticiaRaw {
@@ -58,6 +75,8 @@ interface NoticiaRaw {
   url: string;
   fuente: string;
   fechaPublicacion: Date | null;
+  /** Candidato que originó una búsqueda nominal; evita atribuciones por coincidencia. */
+  candidatoSlug?: string;
 }
 
 function normalizarUrl(url: string): string {
@@ -508,7 +527,11 @@ const SITES_PERU = [
   "site:latina.pe",
 ].join(" OR ");
 
-async function scrapeGoogleNewsRSS(query: string): Promise<NoticiaRaw[]> {
+async function scrapeGoogleNewsRSS(
+  query: string,
+  intento = 1,
+  estricto = false
+): Promise<NoticiaRaw[]> {
   const noticias: NoticiaRaw[] = [];
   try {
     const encodedQuery = encodeURIComponent(query);
@@ -539,37 +562,85 @@ async function scrapeGoogleNewsRSS(query: string): Promise<NoticiaRaw[]> {
       }
     });
   } catch (e) {
+    const status = axios.isAxiosError(e) ? e.response?.status : undefined;
+    if (intento < 3 && (!status || status === 429 || status >= 500)) {
+      await delay(5_000 * 2 ** (intento - 1));
+      return scrapeGoogleNewsRSS(query, intento + 1, estricto);
+    }
+    if (estricto) throw e;
     console.error(`Error Google News RSS [${query.slice(0, 50)}]:`, e instanceof Error ? e.message : e);
   }
   return noticias;
 }
 
+function nombreAmbito(candidato: CandidatoScrape): string {
+  if (candidato.ambito === "lima-metropolitana") return "Lima Metropolitana";
+  return candidato.ambito
+    ? DISTRITO_BY_SLUG.get(candidato.ambito)?.nombre ?? candidato.ambito.replaceAll("-", " ")
+    : "Perú";
+}
+
+interface RangoBusqueda {
+  desde: Date;
+  hasta: Date;
+}
+
+function fechaBusqueda(fecha: Date): string {
+  return fecha.toISOString().slice(0, 10);
+}
+
 // Búsquedas múltiples por candidato en Google News
-async function buscarCandidatoGoogleNews(nombre: string, partido: string, keywords: string[]): Promise<NoticiaRaw[]> {
+async function buscarCandidatoGoogleNews(
+  candidato: CandidatoScrape,
+  rangoHistorico?: RangoBusqueda
+): Promise<NoticiaRaw[]> {
   const todas: NoticiaRaw[] = [];
-
-  // Query 1: Nombre + términos legales
   const termsLegales = "denuncia OR acusación OR sentencia OR investigación OR proceso OR fiscalía OR condena OR prisión";
-  const q1 = `"${keywords[0]}" (${termsLegales}) (${SITES_PERU})`;
-  todas.push(...await scrapeGoogleNewsRSS(q1));
+  let consultas: string[] = [];
 
-  // Query 2: Nombre + elecciones
-  const q2 = `"${keywords[0]}" (elecciones OR candidato OR partido OR campaña) (${SITES_PERU})`;
-  todas.push(...await scrapeGoogleNewsRSS(q2));
-
-  // Query 3: Partido político
-  if (partido.length > 5) {
-    const q3 = `"${partido}" (denuncia OR acusación OR investigación OR escándalo OR sentencia) (${SITES_PERU})`;
-    todas.push(...await scrapeGoogleNewsRSS(q3));
+  if (candidato.eleccion === "municipal-2026") {
+    const ambito = nombreAmbito(candidato);
+    consultas = rangoHistorico
+      ? [
+          `"${candidato.nombre}" (alcalde OR municipalidad OR candidatura OR elecciones OR ${termsLegales}) "${ambito}"`,
+          `"${candidato.keywords[0]}" (alcalde OR municipalidad OR política OR ${termsLegales}) ("${ambito}" OR Lima)`,
+        ]
+      : [
+          `"${candidato.nombre}" (${termsLegales}) (alcalde OR municipalidad OR "${ambito}") (${SITES_PERU})`,
+          `"${candidato.nombre}" (alcalde OR candidatura OR "elecciones municipales") "${ambito}" (${SITES_PERU})`,
+          ...(candidato.keywords[0] && candidato.keywords[0] !== candidato.nombre
+            ? [`"${candidato.keywords[0]}" (alcalde OR municipalidad OR "${ambito}") (${termsLegales})`]
+            : []),
+        ];
+  } else {
+    consultas = [
+      `"${candidato.keywords[0]}" (${termsLegales}) (${SITES_PERU})`,
+      `"${candidato.keywords[0]}" (elecciones OR candidato OR partido OR campaña) (${SITES_PERU})`,
+    ];
+    if (candidato.partido.length > 5) {
+      consultas.push(
+        `"${candidato.partido}" (denuncia OR acusación OR investigación OR escándalo OR sentencia) (${SITES_PERU})`
+      );
+    }
+    if (candidato.keywords.length > 1 && candidato.keywords[1] !== candidato.keywords[0]) {
+      consultas.push(
+        `"${candidato.keywords[1]}" Perú (denuncia OR acusación OR sentencia OR investigación)`
+      );
+    }
   }
 
-  // Query 4: Segundo keyword si existe (para cubrir variantes)
-  if (keywords.length > 1 && keywords[1] !== keywords[0]) {
-    const q4 = `"${keywords[1]}" Perú (denuncia OR acusación OR sentencia OR investigación)`;
-    todas.push(...await scrapeGoogleNewsRSS(q4));
+  const sufijoFecha = rangoHistorico
+    ? ` after:${fechaBusqueda(rangoHistorico.desde)} before:${fechaBusqueda(rangoHistorico.hasta)}`
+    : "";
+  for (const consulta of consultas) {
+    todas.push(...await scrapeGoogleNewsRSS(
+      `${consulta}${sufijoFecha}`,
+      1,
+      Boolean(rangoHistorico)
+    ));
   }
 
-  return todas;
+  return todas.map((noticia) => ({ ...noticia, candidatoSlug: candidato.slug }));
 }
 
 // =====================================================
@@ -670,17 +741,35 @@ function matchCandidato(texto: string, keywords: string[]): boolean {
   });
 }
 
+/**
+ * Google puede devolver "Rosselli Amuruz" aunque el padrón tenga
+ * "Yessica Rosselli Amuruz Dulanto". Para una búsqueda ya ligada a un
+ * candidato aceptamos dos componentes distintivos del nombre; un solo apellido
+ * no basta y evita atribuir homónimos o resultados genéricos del distrito.
+ */
+function matchCandidatoSugerido(texto: string, candidato: CandidatoScrape): boolean {
+  if (matchCandidato(texto, candidato.keywords)) return true;
+  const normalizado = texto.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+  const ignorar = new Set(["de", "del", "la", "las", "los", "y"]);
+  const tokens = [...new Set(
+    candidato.nombre.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "")
+      .split(/[^a-z0-9]+/)
+      .filter((token) => token.length >= 4 && !ignorar.has(token))
+  )];
+  return tokens.filter((token) => normalizado.includes(token)).length >= 2;
+}
+
 // Deduplicar por URL
 function deduplicar(noticias: NoticiaRaw[]): NoticiaRaw[] {
-  const seen = new Set<string>();
-  return noticias
-    .map((n) => ({ ...n, url: normalizarUrl(n.url) }))
-    .filter((n) => {
-      const urlNorm = n.url;
-      if (seen.has(urlNorm)) return false;
-      seen.add(urlNorm);
-      return true;
-    });
+  const porUrl = new Map<string, NoticiaRaw>();
+  for (const noticia of noticias) {
+    const normalizada = { ...noticia, url: normalizarUrl(noticia.url) };
+    const anterior = porUrl.get(normalizada.url);
+    if (!anterior || (!anterior.candidatoSlug && normalizada.candidatoSlug)) {
+      porUrl.set(normalizada.url, normalizada);
+    }
+  }
+  return [...porUrl.values()];
 }
 
 async function obtenerUrlsExistentes(urls: string[]): Promise<Set<string>> {
@@ -700,8 +789,11 @@ async function obtenerUrlsExistentes(urls: string[]): Promise<Set<string>> {
   return existentes;
 }
 
-function seleccionarCandidato(texto: string): CandidatoScrape | null {
-  for (const candidato of CANDIDATOS_TODOS) {
+function seleccionarCandidato(
+  texto: string,
+  candidatos: CandidatoScrape[]
+): CandidatoScrape | null {
+  for (const candidato of candidatos) {
     if (matchCandidato(texto, candidato.keywords)) return candidato;
   }
   return null;
@@ -712,15 +804,33 @@ function delay(ms: number) {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
-export async function ejecutarScraping(): Promise<{ total: number; nuevas: number; errores: string[] }> {
+export async function ejecutarScraping(
+  options: ScrapingOptions = {}
+): Promise<{ total: number; nuevas: number; errores: string[] }> {
   const startedAt = Date.now();
   const errores: string[] = [];
   let nuevasGuardadas = 0; // filas realmente creadas
 
-  console.log("[SCRAPER] Iniciando scraping completo...");
+  const historico = options.desde && options.hasta
+    ? { desde: options.desde, hasta: options.hasta }
+    : null;
+  if ((options.desde && !options.hasta) || (!options.desde && options.hasta)) {
+    throw new Error("El backfill histórico requiere fechas desde y hasta.");
+  }
+  if (historico && historico.desde >= historico.hasta) {
+    throw new Error("La fecha desde debe ser anterior a la fecha hasta.");
+  }
 
-  // Asegurar que los candidatos existen en la BD (todas las elecciones)
-  for (const c of CANDIDATOS_TODOS) {
+  console.log(historico
+    ? `[SCRAPER] Iniciando backfill histórico ${fechaBusqueda(historico.desde)} → ${fechaBusqueda(historico.hasta)}...`
+    : "[SCRAPER] Iniciando monitoreo electoral...");
+
+  // Búsqueda por candidato según la elección solicitada; sin opciones, alcaldes.
+  const candidatosBusqueda = candidatosDeEstaCorrida(options);
+
+  // Solo sincronizar la ventana actual. En un backfill por alcaldía evita repetir
+  // 485 upserts en cada una de las 43 ejecuciones.
+  for (const c of candidatosBusqueda) {
     const datos = {
       nombre: c.nombre,
       partido: c.partido,
@@ -736,99 +846,99 @@ export async function ejecutarScraping(): Promise<{ total: number; nuevas: numbe
     });
   }
 
-  // Búsqueda por candidato: presidenciales siempre + ventana rotativa municipal
-  const candidatosBusqueda = candidatosDeEstaCorrida();
+  const presidencialesBusqueda = candidatosBusqueda.filter((c) => c.eleccion === "presidencial-2026").length;
+  const municipalesBusqueda = candidatosBusqueda.length - presidencialesBusqueda;
   console.log(
     `[SCRAPER] Búsqueda por candidato: ${candidatosBusqueda.length} ` +
-      `(${PRESIDENCIALES.length} presidenciales + ${candidatosBusqueda.length - PRESIDENCIALES.length} municipales de ${MUNICIPALES.length})`
+      `(${presidencialesBusqueda} presidenciales + ${municipalesBusqueda} municipales de ${MUNICIPALES.length})`
   );
-
-  // ---- FASE 1: Scraping de secciones de política de todos los medios ----
-  console.log("[SCRAPER] Fase 1: Scraping de secciones de política...");
-
-  const scrapersDirectos = await Promise.allSettled([
-    scrapeRPP(),
-    scrapeElComercio(),
-    scrapeLaRepublica(),
-    scrapeGestion(),
-    scrapePeru21(),
-    scrapeOjo(),
-    scrapeCorreo(),
-    scrapeExpreso(),
-    scrapeInfobae(),
-    scrapeExitosa(),
-    scrapeCanalN(),
-    scrapePanamericana(),
-    scrapeAndina(),
-    scrapeIDLReporteros(),
-    scrapeOjoPublico(),
-    scrapeConvoca(),
-    scrapeWayka(),
-    scrapeElBuho(),
-    scrapeLatina(),
-    scrapeLibero(),
-  ]);
 
   let todasLasNoticias: NoticiaRaw[] = [];
 
-  for (const result of scrapersDirectos) {
-    if (result.status === "fulfilled") {
-      todasLasNoticias.push(...result.value);
-    } else {
-      errores.push(result.reason?.message || "Error desconocido en scraper directo");
+  if (!historico) {
+    // ---- FASE 1: Scraping de secciones de política de todos los medios ----
+    console.log("[SCRAPER] Fase 1: Scraping de secciones de política...");
+    const scrapersDirectos = await Promise.allSettled([
+      scrapeRPP(), scrapeElComercio(), scrapeLaRepublica(), scrapeGestion(),
+      scrapePeru21(), scrapeOjo(), scrapeCorreo(), scrapeExpreso(), scrapeInfobae(),
+      scrapeExitosa(), scrapeCanalN(), scrapePanamericana(), scrapeAndina(),
+      scrapeIDLReporteros(), scrapeOjoPublico(), scrapeConvoca(), scrapeWayka(),
+      scrapeElBuho(), scrapeLatina(), scrapeLibero(),
+    ]);
+    for (const result of scrapersDirectos) {
+      if (result.status === "fulfilled") todasLasNoticias.push(...result.value);
+      else errores.push(result.reason?.message || "Error desconocido en scraper directo");
     }
+    console.log(`[SCRAPER] Fase 1 completada: ${todasLasNoticias.length} noticias de secciones`);
   }
-
-  console.log(`[SCRAPER] Fase 1 completada: ${todasLasNoticias.length} noticias de secciones`);
 
   // ---- FASE 2: Google News RSS por cada candidato ----
   console.log("[SCRAPER] Fase 2: Búsqueda por Google News RSS...");
 
   // Procesar en lotes de 4 candidatos para no saturar Google
-  const BATCH_SIZE = 4;
-  for (let i = 0; i < candidatosBusqueda.length; i += BATCH_SIZE) {
-    const batch = candidatosBusqueda.slice(i, i + BATCH_SIZE);
-    const results = await Promise.allSettled(
-      batch.map((c) => buscarCandidatoGoogleNews(c.nombre, c.partido, c.keywords))
-    );
-    for (const r of results) {
-      if (r.status === "fulfilled") todasLasNoticias.push(...r.value);
-      else errores.push(`Google News batch: ${r.reason?.message || "error"}`);
+  const BATCH_SIZE = historico ? 2 : 4;
+  const rangos: Array<RangoBusqueda | undefined> = historico ? [historico] : [undefined];
+  for (const rango of rangos) {
+    if (rango) console.log(`[SCRAPER] Ventana ${fechaBusqueda(rango.desde)} → ${fechaBusqueda(rango.hasta)}`);
+    for (let i = 0; i < candidatosBusqueda.length; i += BATCH_SIZE) {
+      const batch = candidatosBusqueda.slice(i, i + BATCH_SIZE);
+      const results = await Promise.allSettled(
+        batch.map((c) => buscarCandidatoGoogleNews(c, rango))
+      );
+      for (const r of results) {
+        if (r.status === "fulfilled") todasLasNoticias.push(...r.value);
+        else errores.push(`Google News batch: ${r.reason?.message || "error"}`);
+      }
+      if (historico && results.some((result) => result.status === "rejected")) {
+        throw new Error(
+          `Google News limitó el backfill en ${options.ambito ?? "ROTATIVO"}; reintentar más tarde.`
+        );
+      }
+      if (i + BATCH_SIZE < candidatosBusqueda.length) await delay(1500);
     }
-    if (i + BATCH_SIZE < candidatosBusqueda.length) await delay(1500); // Pausa entre lotes
   }
 
   console.log(`[SCRAPER] Fase 2 completada: ${todasLasNoticias.length} noticias total con Google News`);
 
   // ---- FASE 3: Búsqueda directa en buscadores internos de medios ----
-  console.log("[SCRAPER] Fase 3: Búsqueda directa en buscadores de medios...");
-
-  // Solo buscar los candidatos más conocidos/relevantes en buscadores internos
-  // (para no hacer cientos de requests)
-  for (let i = 0; i < candidatosBusqueda.length; i += BATCH_SIZE) {
-    const batch = candidatosBusqueda.slice(i, i + BATCH_SIZE);
-    const results = await Promise.allSettled(
-      batch.map((c) => buscarCandidatoEnSitios(c.keywords[0]))
-    );
-    for (const r of results) {
-      if (r.status === "fulfilled") todasLasNoticias.push(...r.value);
-      else errores.push(`Búsqueda directa: ${r.reason?.message || "error"}`);
+  if (!historico) {
+    console.log("[SCRAPER] Fase 3: Búsqueda directa en buscadores de medios...");
+    for (let i = 0; i < candidatosBusqueda.length; i += BATCH_SIZE) {
+      const batch = candidatosBusqueda.slice(i, i + BATCH_SIZE);
+      const results = await Promise.allSettled(
+        batch.map((c) => buscarCandidatoEnSitios(c.keywords[0]))
+      );
+      for (let resultIndex = 0; resultIndex < results.length; resultIndex++) {
+        const result = results[resultIndex];
+        if (result.status === "fulfilled") {
+          todasLasNoticias.push(...result.value.map((noticia) => ({
+            ...noticia,
+            candidatoSlug: batch[resultIndex].slug,
+          })));
+        } else errores.push(`Búsqueda directa: ${result.reason?.message || "error"}`);
+      }
+      if (i + BATCH_SIZE < candidatosBusqueda.length) await delay(1000);
     }
-    if (i + BATCH_SIZE < candidatosBusqueda.length) await delay(1000);
+    console.log(`[SCRAPER] Fase 3 completada: ${todasLasNoticias.length} noticias total`);
+
+    // ---- FASE 4: Twitter/X — Periodistas y cuentas de investigación ----
+    console.log("[SCRAPER] Fase 4: Buscando reportes de Twitter/X...");
+    try {
+      const twitterNoticias = await scrapeTwitterAccounts();
+      todasLasNoticias.push(...twitterNoticias);
+      console.log(`[SCRAPER] Fase 4 completada: ${twitterNoticias.length} noticias de Twitter/X`);
+    } catch (e) {
+      errores.push(`Twitter scraping: ${e instanceof Error ? e.message : "error"}`);
+      console.error("[SCRAPER] Error en fase Twitter:", e);
+    }
   }
 
-  console.log(`[SCRAPER] Fase 3 completada: ${todasLasNoticias.length} noticias total`);
-
-  // ---- FASE 4: Twitter/X — Periodistas y cuentas de investigación ----
-  console.log("[SCRAPER] Fase 4: Buscando reportes de Twitter/X...");
-
-  try {
-    const twitterNoticias = await scrapeTwitterAccounts();
-    todasLasNoticias.push(...twitterNoticias);
-    console.log(`[SCRAPER] Fase 4 completada: ${twitterNoticias.length} noticias de Twitter/X`);
-  } catch (e) {
-    errores.push(`Twitter scraping: ${e instanceof Error ? e.message : "error"}`);
-    console.error("[SCRAPER] Error en fase Twitter:", e);
+  if (historico) {
+    todasLasNoticias = todasLasNoticias.filter((noticia) =>
+      noticia.fechaPublicacion
+      && noticia.fechaPublicacion >= historico.desde
+      && noticia.fechaPublicacion < historico.hasta
+    );
   }
 
   // Deduplicar
@@ -859,7 +969,10 @@ export async function ejecutarScraping(): Promise<{ total: number; nuevas: numbe
 
   for (const noticia of noticiasNuevas) {
     const textoCompleto = `${noticia.titulo} ${noticia.descripcion}`;
-    const candidato = seleccionarCandidato(textoCompleto);
+    const sugerido = noticia.candidatoSlug ? CANDIDATOS_BY_SLUG.get(noticia.candidatoSlug) : null;
+    const candidato = sugerido && matchCandidatoSugerido(textoCompleto, sugerido)
+      ? sugerido
+      : seleccionarCandidato(textoCompleto, candidatosBusqueda);
     if (!candidato) continue;
 
     const candidatoBD = candidatosBySlug.get(candidato.slug);
@@ -923,7 +1036,11 @@ export async function ejecutarScraping(): Promise<{ total: number; nuevas: numbe
   // Log del scraping
   await prisma.scrapingLog.create({
     data: {
-      fuente: "ALL",
+      fuente: historico
+        ? `MUNICIPAL_HISTORICO:${options.ambito ?? "ROTATIVO"}`
+        : options.eleccion === "presidencial-2026"
+        ? "PRESIDENCIAL"
+        : `MUNICIPAL:${options.ambito ?? "ROTATIVO"}`,
       status: errores.length > 0 ? "PARCIAL" : "OK",
       mensaje: errores.length > 0 ? errores.slice(0, 10).join("; ") : null,
       noticias: nuevasGuardadas,

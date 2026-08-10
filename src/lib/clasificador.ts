@@ -103,6 +103,8 @@ const CUESTIONAN_AL_CANDIDATO = [
   "piden investigar a", "piden investigación contra",
   "contraloría advierte", "contraloría observa", "contraloría detecta",
   "fiscalía investiga", "fiscalía abre",
+  "fiscalía denuncia a", "fiscalia denuncia a",
+  "fiscal denuncia a", "ministerio público denuncia", "ministerio publico denuncia",
   "comisión investiga", "congreso investiga",
 ];
 
