@@ -2,8 +2,11 @@ import { NextResponse } from "next/server";
 import { ejecutarScraping } from "@/lib/scraper";
 import { prisma } from "@/lib/db";
 import { AMBITO_PROVINCIAL, distritosConCandidatos } from "@/lib/municipales";
+import { ELECCIONES, type EleccionId } from "@/lib/elecciones";
 
 export const maxDuration = 300;
+
+const ELECCION_IDS = new Set<string>(ELECCIONES.map((e) => e.id));
 
 const AMBITOS = [
   AMBITO_PROVINCIAL,
@@ -37,8 +40,24 @@ export async function GET(request: Request) {
   }
 
   try {
-    const historico = new URL(request.url).searchParams.get("modo") === "historico";
-    const results = historico ? await ejecutarHistorico() : await ejecutarScraping();
+    const params = new URL(request.url).searchParams;
+    const historico = params.get("modo") === "historico";
+
+    // Sin ?eleccion, ejecutarScraping cae en la ventana municipal rotativa. Los
+    // presidenciales solo se scrapean si alguien pide su elección explícitamente,
+    // así que el disparador del workflow tiene que pasarla.
+    const eleccionParam = params.get("eleccion");
+    if (eleccionParam && !ELECCION_IDS.has(eleccionParam)) {
+      return NextResponse.json(
+        { success: false, error: `Elección desconocida: ${eleccionParam}` },
+        { status: 400 }
+      );
+    }
+    const eleccion = (eleccionParam ?? undefined) as EleccionId | undefined;
+
+    const results = historico
+      ? await ejecutarHistorico()
+      : await ejecutarScraping(eleccion ? { eleccion } : {});
     return NextResponse.json({
       success: true,
       timestamp: new Date().toISOString(),

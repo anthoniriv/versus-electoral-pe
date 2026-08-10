@@ -22,7 +22,7 @@ jobs:
             exit 1
           fi
 
-      - name: Call current and historical municipal crons
+      - name: Call presidential, municipal and historical crons
         run: |
           APP_URL="${{ vars.APP_URL }}"
           if [ -z "$APP_URL" ]; then
@@ -47,3 +47,21 @@ jobs:
           curl -fsS \
             -H "Authorization: Bearer ${{ secrets.CRON_SECRET }}" \
             "${APP_URL}/api/cron?modo=historico"
+
+          # Sin ?eleccion el endpoint scrapea la ventana municipal rotativa. Los
+          # presidenciales quedaron sin actualizar desde el 2026-07-31 porque
+          # ningun disparador pasaba su eleccion.
+          echo "Calling presidential cron"
+          pres=$(curl -sS -w "\n%{http_code}" \
+            -H "Authorization: Bearer ${{ secrets.CRON_SECRET }}" \
+            "${APP_URL}/api/cron?eleccion=presidencial-2026")
+
+          pres_body=$(echo "$pres" | sed '$d')
+          pres_status=$(echo "$pres" | tail -n1)
+
+          echo "HTTP $pres_status"
+          echo "$pres_body"
+
+          if [ "$pres_status" -lt 200 ] || [ "$pres_status" -ge 300 ]; then
+            exit 1
+          fi
