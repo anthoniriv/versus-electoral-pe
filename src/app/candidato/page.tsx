@@ -28,7 +28,9 @@ export default async function CandidatosPage() {
   let candidatos: Awaited<ReturnType<typeof obtenerResumenCandidatos>> = [];
 
   try {
-    candidatos = await obtenerResumenCandidatos();
+    // Explícito a propósito: ELECCION_DEFAULT es municipal-2026, así que omitir
+    // el filtro llenaba esta página con los 485 postulantes a alcaldía.
+    candidatos = await obtenerResumenCandidatos({ eleccion: "presidencial-2026" });
   } catch {
     // DB not ready
   }
