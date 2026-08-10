@@ -4,6 +4,7 @@ import { prisma } from "@/lib/db";
 import { type GravedadKey } from "@/lib/candidatos";
 import { CandidatoDetalleClient } from "@/components/CandidatoDetalleClient";
 import { SITE_URL, SITE_NAME } from "@/lib/site";
+import { obtenerPlanGobierno } from "@/lib/planes-gobierno";
 import {
   CANDIDATOS_MUNICIPALES,
   CANDIDATO_MUNICIPAL_BY_SLUG,
@@ -19,7 +20,6 @@ export function generateStaticParams() {
 
 interface PageProps {
   params: Promise<{ slug: string }>;
-  searchParams: Promise<{ gravedad?: string }>;
 }
 
 function ambitoLabel(ambito: string | null): string {
@@ -59,9 +59,8 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 
 const ORDEN_GRAVEDAD: GravedadKey[] = ["MUY_PELIGROSO", "PELIGROSO", "MODERADO", "LEVE", "LIMPIO"];
 
-export default async function AlcaldeCandidatoPage({ params, searchParams }: PageProps) {
+export default async function AlcaldeCandidatoPage({ params }: PageProps) {
   const { slug } = await params;
-  const { gravedad } = await searchParams;
 
   let candidato: {
     id: number; nombre: string; partido: string; slug: string;
@@ -112,11 +111,8 @@ export default async function AlcaldeCandidatoPage({ params, searchParams }: Pag
     }
   }
 
-  const initialGravedad = ORDEN_GRAVEDAD.includes(gravedad as GravedadKey)
-    ? (gravedad as GravedadKey)
-    : null;
-
   const zona = ambitoLabel(candidato.ambito);
+  const planGobierno = await obtenerPlanGobierno(slug);
 
   const personStructuredData = {
     "@context": "https://schema.org",
@@ -138,7 +134,8 @@ export default async function AlcaldeCandidatoPage({ params, searchParams }: Pag
         partido={candidato.partido}
         peorGravedad={peorGravedad}
         gravedadCounts={gravedadCounts}
-        initialGravedad={initialGravedad}
+        planGobierno={planGobierno}
+        basePath="/alcaldes"
         noticias={candidato.noticias.map((n) => ({
           id: n.id,
           titulo: n.titulo,

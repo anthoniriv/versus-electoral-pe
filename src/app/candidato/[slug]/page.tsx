@@ -13,7 +13,6 @@ export function generateStaticParams() {
 
 interface PageProps {
   params: Promise<{ slug: string }>;
-  searchParams: Promise<{ gravedad?: string }>;
 }
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
@@ -49,9 +48,8 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 
 const ORDEN_GRAVEDAD: GravedadKey[] = ["MUY_PELIGROSO", "PELIGROSO", "MODERADO", "LEVE", "LIMPIO"];
 
-export default async function CandidatoPage({ params, searchParams }: PageProps) {
+export default async function CandidatoPage({ params }: PageProps) {
   const { slug } = await params;
-  const { gravedad } = await searchParams;
 
   let candidato: {
     id: number; nombre: string; partido: string; slug: string;
@@ -84,10 +82,6 @@ export default async function CandidatoPage({ params, searchParams }: PageProps)
     }
   }
 
-  const initialGravedad = ORDEN_GRAVEDAD.includes(gravedad as GravedadKey)
-    ? (gravedad as GravedadKey)
-    : null;
-
   const personStructuredData = {
     "@context": "https://schema.org",
     "@type": "Person",
@@ -108,7 +102,6 @@ export default async function CandidatoPage({ params, searchParams }: PageProps)
         partido={candidato.partido}
         peorGravedad={peorGravedad}
         gravedadCounts={gravedadCounts}
-        initialGravedad={initialGravedad}
         noticias={candidato.noticias.map((n) => ({
           id: n.id,
           titulo: n.titulo,

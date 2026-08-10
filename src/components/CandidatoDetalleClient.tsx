@@ -1,10 +1,13 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
+import Link from "next/link";
 import { CandidatoAvatar } from "./CandidatoAvatar";
 import { GravedadBadge } from "./GravedadBadge";
 import { NoticiaItem } from "./NoticiaItem";
+import { PlanGobierno } from "./PlanGobierno";
 import { GRAVEDAD, type GravedadKey } from "@/lib/candidatos";
+import type { PlanGobiernoView } from "@/lib/planes-gobierno";
 
 const ORDEN_GRAVEDAD: GravedadKey[] = ["MUY_PELIGROSO", "PELIGROSO", "MODERADO", "LEVE", "LIMPIO"];
 
@@ -26,7 +29,8 @@ interface CandidatoDetalleClientProps {
   peorGravedad: GravedadKey;
   gravedadCounts: Record<string, number>;
   noticias: NoticiaView[];
-  initialGravedad?: GravedadKey | null;
+  planGobierno?: PlanGobiernoView | null;
+  basePath?: string;
 }
 
 export function CandidatoDetalleClient({
@@ -36,10 +40,27 @@ export function CandidatoDetalleClient({
   peorGravedad,
   gravedadCounts,
   noticias,
-  initialGravedad = null,
+  planGobierno = null,
+  basePath = "/candidato",
 }: CandidatoDetalleClientProps) {
-  const [gravedadSeleccionada, setGravedadSeleccionada] = useState<GravedadKey | null>(initialGravedad);
+  const [gravedadSeleccionada, setGravedadSeleccionada] = useState<GravedadKey | null>(null);
   const [busqueda, setBusqueda] = useState("");
+
+  // El preselector ?gravedad= se lee en el cliente a propósito: si la página
+  // servidora leyera searchParams, Next la marcaría dinámica y cada una de las
+  // ~485 fichas se renderizaría por request en vez de servirse desde la CDN.
+  //
+  // Tampoco sirve useSearchParams(): en una ruta estática obliga a envolver esto
+  // en <Suspense>, y entonces la ficha entera deja de prerenderizarse (pérdida de
+  // SEO en 485 páginas). Leer la URL una vez tras montar es justo el caso de
+  // "sincronizar con un sistema externo" que el efecto existe para cubrir.
+  useEffect(() => {
+    const g = new URLSearchParams(window.location.search).get("gravedad");
+    if (g && ORDEN_GRAVEDAD.includes(g as GravedadKey)) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
+      setGravedadSeleccionada(g as GravedadKey);
+    }
+  }, []);
 
   const noticiasFiltradas = useMemo(() => {
     const q = busqueda.trim().toLowerCase();
@@ -60,9 +81,9 @@ export function CandidatoDetalleClient({
         <div className="mx-auto max-w-4xl">
           {/* Breadcrumb */}
           <nav className="mb-6 text-xs sm:text-sm text-gray-500 flex items-center gap-1.5 flex-wrap">
-            <a href="/" className="hover:text-white transition-colors">Inicio</a>
+            <Link href="/" className="hover:text-white transition-colors">Inicio</Link>
             <span className="text-gray-700">/</span>
-            <a href="/candidato" className="hover:text-white transition-colors">Candidatos</a>
+            <Link href={basePath} className="hover:text-white transition-colors">Candidatos</Link>
             <span className="text-gray-700">/</span>
             <span className="text-gray-300 font-medium truncate max-w-[200px] sm:max-w-none">{nombre}</span>
           </nav>
@@ -91,6 +112,25 @@ export function CandidatoDetalleClient({
               </div>
             </div>
           </div>
+
+          {planGobierno && (
+            <section className="mb-10 rounded-2xl border border-gray-800/70 bg-gray-950/60 p-4 sm:p-6">
+              <div className="mb-5 flex flex-wrap items-end justify-between gap-2 border-b border-gray-800/60 pb-3">
+                <div>
+                  <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-red-400">
+                    Fuente oficial JNE
+                  </p>
+                  <h2 className="mt-1 text-base font-black uppercase tracking-[0.12em] text-white">
+                    Propuestas y plan de gobierno
+                  </h2>
+                </div>
+                <span className="text-xs font-bold text-gray-400">
+                  {planGobierno.propuestas.length} propuestas
+                </span>
+              </div>
+              <PlanGobierno plan={planGobierno} />
+            </section>
+          )}
 
           {/* Search local */}
           <div className="mb-5">
