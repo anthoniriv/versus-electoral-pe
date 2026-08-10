@@ -19,7 +19,7 @@ model Candidato {
   ambito    String?
   // Solo municipales: estado del postulante en el JNE (INSCRITO, ADMITIDO, ...)
   estado    String?
-  // Id de hoja de vida en la plataforma del JNE (propuestas / plan de gobierno)
+  // Id de la hoja de vida personal en la plataforma del JNE
   hojaVidaId Int?
   noticias  Noticia[]
   createdAt DateTime  @default(now())

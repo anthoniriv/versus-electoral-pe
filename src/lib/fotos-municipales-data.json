@@ -1,0 +1,1955 @@
+{
+  "metadata": {
+    "fuente": "JNE · Plataforma Electoral / Sistema Declara",
+    "fechaConsulta": "2026-08-09T22:24:34.232Z",
+    "candidatosObjetivo": 485,
+    "plantillasConsultadas": [
+      "https://declara.jne.gob.pe/Assets/Fotos-HojaVida/{id}.jpg"
+    ],
+    "resumen": {
+      "sin-foto-oficial": 485
+    }
+  },
+  "resultados": [
+    {
+      "slug": "carlos-alberto-tejada-noriega",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "susel-ana-maria-paredes-pique",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "francis-james-allison-oyague",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "samir-frank-quispe-caballero",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "yehude-simon-munaro",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "segundo-valdez-zavala",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "ruben-daniel-bonilla-espinoza",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "samuel-marcos-daza-taype",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "oswaldo-hernan-vargas-cuellar",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "ricardo-pablo-belmont-cassinelli",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "flor-de-maria-hurtado-valdez",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "carlos-ricardo-bruce-montes-de-oca",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "elizabeth-maria-del-rosario-leon-chinchay",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "victoria-betzabe-la-cruz-garces",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "sandro-caller-gutierrez",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "ruben-jose-ramirez-mateo",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "luis-alberto-huette-tolentino",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "edgardo-renan-de-pomar-vizcarra",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "daniel-belizario-urresti-elera",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "luis-isael-rubio-idrogo",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "lauro-cristobal-munoz-soldevilla",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "pedro-john-barrera-bernui",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "oscar-enrique-aliaga-abanto",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "felipe-arakaki-shapiama",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "pablo-cesar-ramos-ocana",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "walter-jesus-rivera-guerra",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "luis-eusebio-poma-tacuri",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "arturo-jonell-pena-sanchez",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "manuel-gaudencio-vidal-camargo",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "misael-meneses-flores",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "oscar-ramirez-rojas",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "miguel-angel-malma-valverde",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "enrique-bruno-palma-salinas",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "simon-ortiz-talaverano",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "maidy-marti-lopez-casimiro",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "jorge-antonio-salazar-velasquez",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "carlos-daniel-cuya-ponce",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "gianmarco-valentin-tobalino-castillo",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "joel-jose-nunez-mendoza",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "jose-luis-hurtado-apaico",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "edde-cuellar-alegria",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "mel-ian-vilcahuaman-medrano",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "elizabeth-nancy-cabezas-flores",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "netzer-alemao-chavez-flores",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "maria-luisa-cardoso-serra",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "angelica-maria-noguerol-sueldo",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "jose-juan-rodriguez-cardenas",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "felipe-antonio-mezarina-tong",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "enrique-fernando-delucchi-chueca",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "jorge-antonio-ruiz-de-somocurcio-hidalgo",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "nicole-fiorella-munoz-zevallos",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "manuel-milenco-espinoza-loarte",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "jose-dalton-li-bravo",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "ivan-joel-chang-del-arroyo",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "rommel-omar-carbajal-munoz",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "henrry-giscard-de-la-cruz-arana",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "urso-grajeda-reyes",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "jorge-henry-sarmiento-reynoso",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "raul-alberto-sullca-maquera",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "luis-alberto-ojeda-samame",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "marco-antonio-salazar-saenz",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "arturo-omar-maura-alfaro",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "cesar-israel-perez-contreras",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "diana-pilar-leon-castrillon-de-oyakawa",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "silfredo-virgilio-gamboa-usca",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "luis-rolando-alejandro-de-la-mata-alva",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "isabel-maria-rodriguez-vera",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "carlos-faustino-nunez-calderon",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "ignacio-jorge-sebastian-tavara-arroyo",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "juan-ladislao-espinoza-ortiz",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "joe-peter-robles-escobedo",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "belica-julia-bravo-alcantara",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "juan-carlos-huayanay-mormontoy",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "pascual-eutiquinio-poma-torrez",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "alejandro-hipolito-ramos-rivera",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "rosario-pelaez-ramirez",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "pablo-alejandro-gonzalez-villanueva",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "gianfranco-antonie-soriano-linares",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "daniel-josue-carbajal-ugarte",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "claudio-rodriguez-mansilla",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "renso-evert-aguilar-velarde",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "dennis-antonio-huapaya-bravo",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "michael-alonso-tineo-mendoza",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "wilmer-roberto-valverde-valverde",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "nandy-janeth-cordova-morales",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "manuel-javier-campos-sologuren",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "rique-danny-aguilar-quispe",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "leonidas-ivan-altamirano-matus",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "elsa-stephany-alvarez-bonifaz",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "karen-elizabeth-acevedo-salvatierra",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "mario-daniel-cubas-romero",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "victor-luis-urrutia-condori",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "carmen-rosario-cardenas-alcarraz",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "vicente-felipe-castillo-jimenez",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "marco-antonio-tello-castro",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "carlos-alberto-ysla-duran",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "luis-alberto-jimenez-caichihua",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "henry-hernan-herrera-aleman",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "richard-cortez-melgarejo",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "ricardo-herminio-bejarano-fernandez",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "maria-del-rosario-neyra-onofre",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "josian-tatiana-calmet-leon",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "giuliano-fabrizio-bacigalupo-padilla",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "luciano-tunoque-mori",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "ricardo-santiago-vasquez-laguna",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "kruger-kelvin-vidal-quispe",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "jorge-luis-chicata-moreno",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "augusto-miyashiro-yamashiro",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "jorge-ignacio-guzman-nino",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "dionisio-navarro-de-la-o",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "wilber-jorge-ancco-mamani",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "ermelinda-lanazca-baltazar-de-taype",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "edwin-subileti-areche",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "ortensia-la-torre-cervantes",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "william-ronald-salazar-mateo",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "pierre-orlando-apian-castillo",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "cesar-augusto-cosiche-tenorio",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "roxana-marylia-ari-acuna",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "jorge-luis-molina-salazar",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "raul-diaz-perez",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "nicolas-octavio-kusunoki-fuero",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "ana-yuriko-nino-de-guzman-tengan",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "rosa-lidia-corzo-saldarriaga",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "juan-carlos-condori-chavez",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "nerio-wilson-sanchez-quiroz",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "carmen-monica-acuna-jara",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "jean-pool-granados-lazo",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "ernesto-mikhajil-colqui-bedregal",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "miguel-hernan-garcia-arias",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "victor-modesto-salcedo-rios",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "juan-david-barrientos-arce",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "irellis-lisbbet-muchaypina-barriales",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "jackeline-stephany-munoz-calderon",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "carlos-alexander-ramos-amante",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "ana-cecilia-buleje-castillo",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "carlos-manuel-juscamayta-cosme",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "liborio-soria-alvarez",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "carmen-carolina-castillo-yataco",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "lucy-balna-falcon-campos",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "jose-elgar-espejo-cardenas",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "javier-raul-solis-espinoza",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "maria-elena-rios-suarez",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "edgard-hugo-limaylla-montalvo",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "georgina-flores-remigio",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "jesus-alfonso-flores-cordova",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "felicita-maria-rodriguez-pena",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "angel-demetrio-intor-vega",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "yuri-jose-pando-fernandez",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "sandra-gutierrez-aibar",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "evans-rodolfo-sifuentes-ocana",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "gregorio-bernardino-quispe-alvino",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "benigno-roberto-calderon-arones",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "ivan-jesus-aquino-honores",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "jorge-luis-quintana-garcia-godos",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "raphael-christian-valencia-diestra",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "renato-aldo-rossini-valenzuela",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "luis-enrique-ocrospoma-pella",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "maria-luisa-lanatta-pino",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "jose-luis-herrera-urueta",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "luiz-carlos-reategui-del-aguila",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "maria-del-pilar-albarracin-valverde",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "julissa-rocio-fernandez-fernandez",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "ernesto-enrique-delhonte-cagna",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "daniel-ricardo-li-leon",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "edmundo-del-aguila-herrera",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "flor-de-maria-tadeo-romero",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "maria-perla-espinoza-aquino",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "sergio-joan-castromonte-chaparro",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "maria-pia-paz-de-la-barra-freigeiro",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "victor-andres-marroquin-merino-torres",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "juan-carlos-martin-zurek-pardo-figueroa",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "julio-adolfo-tovar-uribe",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "meisy-blanca-rosa-nunez-ruiz",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "jose-miguel-rodriguez-tasayco",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "lizzi-del-rocio-sueldo-matos",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "edwin-anibal-mendoza-ramirez",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "luis-alvaro-pletikosic-guzman",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "nilda-esperanza-carranza-rodriguez",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "joaquin-reynaldo-albarracin-ramos",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "joe-zanabria-soberon",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "walter-ciro-perez-norena",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "alejandro-nilo-perez-moreno",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "alberto-fernando-moreno-mejia",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "maria-teresa-rosas-garcia",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "florencio-froilan-fierro-flores",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "aldo-horacio-rosales-pacheco",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "cesar-rafael-ibarra-nurena",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "mesias-maximo-gonzales-sanchez",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "susana-liliana-saldana-ramos",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "victor-manuel-noriega-salazar",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "nidia-alegria-herrera",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "luis-ernesto-flores-reategui",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "otilia-merino-garcia",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "yvan-alexis-villavicencio-alvildo",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "jose-antonio-aliaga-pajares",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "miguel-angel-espinoza-saavedra",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "arturo-ronald-bejarano-gurmendi",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "eduardo-danilo-albarracin-ugarte",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "luis-miguel-alonzo-ramirez",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "mirtha-sebastiana-uribe-soriano",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "franco-enrique-cortez-gutierrez",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "lucio-hernan-cabello-morales",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "jose-anibal-lopez-gonzales",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "felipe-baldomero-castillo-alfaro",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "jorge-luis-salinas-paredes",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "tony-elbert-rojas-espinoza",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "heidelberger-willians-davis-suyon-diaz",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "angel-solis-vergaray",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "wilder-leoncio-torpoco-huayta",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "denner-guillermo-romaldo-noblejas",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "gabriela-huamani-aliaga",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "erick-melchor-torres",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "ricardo-luis-grados-guevara",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "maria-rosario-silvestre-vilchez",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "arturo-alejandro-cutipa-camac",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "miguel-eduardo-figueroa-suarez",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "jose-gilberto-oliva-chuman",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "carlos-alberto-romero-garcia",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "segundo-marcos-de-la-cruz-vega",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "luis-sigfredo-milla-soto",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "ilich-ivan-pumacayo-palomino",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "victor-arturo-castillo-sanchez",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "rafael-david-huaringa-saavedra",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "alfredo-javier-mujica-pastrana",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "ramon-tinta-soriano",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "luis-fernando-bueno-quino",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "olimpio-lopez-manuico",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "maria-marisol-quinto-rojas",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "carlos-alberto-jesus-paucarchuco",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "timoteo-francisco-nishijima-villavicencio",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "walter-yony-valeriano-vivas",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "esther-del-rosario-meza-atuncar",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "diana-vanessa-herrera-zavala",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "arturo-nahuero-ybanez",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "antonio-caycho-cervantes",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "honorio-cesar-paredes-galvez",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "bernardo-silva-beck",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "cesar-ricardo-noa-casas",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "lizardo-alberto-ramos-rivas",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "rosa-elva-torrejon-aragon",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "mercedes-victoria-morocho-arias",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "franz-teseo-mario-neyra-barreda",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "johan-fritz-chavez-sifuentes",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "carla-robbiano-montes-de-allison",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "jesus-adolfo-quispichuco-taico",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "juan-jose-segura-santisteban",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "eduardo-rosello-montero",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "raul-madueno-ortiz",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "jose-rafael-haro-zolezzi",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "victor-raul-paulini-sanchez",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "carlos-alcides-zuniga-arce",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "ricardo-enrique-giesecke-sara-lafosse",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "jorge-vicente-martin-munoz-wells",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "daniel-rodriguez-zanabria",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "alexander-enrique-von-ehren-campos",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "mario-renato-otiniano-buquich",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "maria-soledad-ferreyros-castaneda",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "amilcar-alessio-cantella-vega",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "pedro-quispe-galdos",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "johnny-walter-auris-olivares",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "guillermo-elvis-pomez-cano",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "giancarlos-enrique-zarate-quispe",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "jorge-alexander-ardiles-quin",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "javier-fernando-ramirez-guerra-guerra",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "luis-fernando-moreno-cordova",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "hector-javier-quispe-salvador",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "pedro-pablo-florian-huari",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "jhonny-edgardo-calagua-huambachano",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "luis-martin-koc-lem-moya",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "edwin-freddy-cuya-espinoza",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "enrique-julio-manco-suni",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "sandra-paola-canchanya-espinoza",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "rocio-del-pilar-del-valle-morales",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "oswaldo-americo-salazar-quispe",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "carlos-enrique-arana-urteaga",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "oscar-raul-cabello-acosta",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "hilgo-antonio-manchego-ormeno",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "jose-luis-casas-carrion",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "josmell-absalon-munoz-barranzuela",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "jhonel-jorge-leguia-jamis",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "fabiola-lucero-silva-montero",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "miguel-stefano-ruiz-gutierrez",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "manuel-augusto-landerer-loli",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "fidel-bratzo-garcia-durante",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "daniel-martin-amaya-carranza",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "cecilia-acosta-cajaleon",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "walter-alfonso-cavero-villanes",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "juan-carlos-merino-huaman",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "luis-andres-eustaquio-sanchez",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "judith-marisol-ramirez-rodriguez",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "zusan-lizzet-sanchez-ponce",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "paulo-anibal-casas-pinedo",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "leonidas-cordero-villarreal",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "virginia-sandy-meza-pucho",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "rennan-santiago-espinoza-venegas",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "antonio-german-rodriguez-jaureguiza",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "fernando-guillermo-agurto-montesinos",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "esteban-felizardo-monzon-fernandez",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "antonio-ricardo-diaz-zamalloa",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "jorge-humberto-olaechea-reyes",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "hector-portugal-marin",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "jhon-anderson-ortega-torres",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "luis-felipe-moreno-torres",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "monica-cecilia-mundaca-becerra",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "max-andre-ampuero-leandro",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "jenny-leila-romero-chaucayanqui",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "federico-guillermo-abraham-kajatt-kajatt",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "jorge-luis-linares-vera-portocarrero",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "monica-alicia-huyhua-limachi",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "javier-vicente-bustamante-villafuerte",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "luis-lizandro-alvitez-asalde",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "miguel-angel-saman-ballarta",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "jose-ruben-delgado-heredia",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "guillermo-eduardo-saco-vertiz-schwarz",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "josue-jefferson-de-la-torre-bramon",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "javier-victor-revilla-belisario",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "jonathan-enrique-sena-manguinury",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "enrique-armando-peramas-diaz",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "adelina-rivera-escudero",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "luz-elena-flores-ledesma",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "felicidad-emperatriz-salhuana-serna",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "roberto-abelardo-telles-jaramillo",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "henry-alex-cifuentes-carrillo",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "jose-alberto-angulo-dominguez",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "jerico-edward-mosquera-torres",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "antonio-harry-cocha-camargo",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "katherine-angelica-de-la-rosa-menendez",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "isabel-del-rocio-ayala-melgarejo",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "yliana-elisa-castro-gregorio",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "rufino-enciso-rios",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "fernando-juan-amador-loayza-garate",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "yolanda-chavez-rubio",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "alberto-tejada-conroy",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "roberth-edwuard-montoya-puente",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "edgard-nunez-quipuzco",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "gina-valeria-casanova-mera",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "joel-edmundo-miranda-villanueva",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "willyans-jose-soriano-cabrera",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "javier-martin-diez-gaspard",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "carlomagno-chacon-gomez",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "victor-hugo-bazan-pastor",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "cesar-enrique-stuart-alvarado",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "charles-adrian-zapata-vega",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "javier-eduardo-paino-scarpati",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "rigan-edward-valcarcel-salinas",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "luis-gino-blanco-aldama",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "elsa-virginia-alarcon-suarez",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "juan-valentin-navarro-jimenez",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "sabina-alarcon-solis",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "hector-joaquin-alejandro-bustamante",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "walter-jacobo-gutierrez-vaisman",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "antonio-flores-caceres",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "edwin-mejia-cerdan",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "carlos-jaime-de-la-torre-mendoza",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "noe-zender-mamani-espinoza",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "alex-gonzales-castillo",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "cesar-andre-usquiano-maldonado",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "armengol-sanchez-sandoval",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "jose-fernando-mendoza-ramirez",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "jose-luis-luna-morales",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "victor-jhonatan-romani-medina",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "alex-fabio-trujillo-uscamayta",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "olis-yaranga-jacinto",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "luis-dante-mendieta-flores",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "joaquin-lopez-chiroque",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "jessica-loren-alcantara-silva",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "jaime-javier-frias-reymundo",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "ricardo-rodrigo-salvatierra-paucar",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "eloy-chavez-hernandez",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "edgar-wuillington-mejia-rodriguez",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "alan-freddy-mendoza-ramos",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "christian-marco-gutierrez-guzman",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "michel-melchor-sanabria-ruiz",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "edilberto-lucio-quispe-rodriguez",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "oswaldo-graviel-taype-gutierrez",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "mabel-karina-leandro-melgarejo",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "andy-alan-vilca-huaman",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "diego-alejandro-hernandez-huambachano",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "zee-carlos-corrales-romero",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "victor-antonio-alegria-garcia",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "napoleon-gonzales-castillo",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "ricardo-fidel-castro-sierra",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "german-anselmo-chirinos-quispe",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "cesar-roberto-mendoza-valencia",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "ronald-eulogio-fuertes-vega",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "maria-rosario-lopez-solano",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "christian-israel-pardo-reyes",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "julio-abraham-chavez-chiong",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "aquiles-cirilo-collasos-villanueva",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "adolfo-israel-mattos-piaggio",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "cesar-efrain-sifuentes-chavez",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "cesar-augusto-vargas-gutierrez",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "sadith-hurtado-vela",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "carlos-alberto-albujar-corazon",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "luis-paul-cardenas-sanchez",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "luis-alberto-flores-roldan",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "alan-rudy-vasquez-davila",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "enrique-amador-escalante-carpio",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "victor-vicente-santander-salvador",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "yuri-luis-medina-barrios",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "jiulliana-paola-herrera-moscoso",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "diego-armando-lopez-jara",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "anndy-miguel-duran-nunez",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "peter-omar-jaime-cori",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "juan-jose-guevara-bonilla",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "karin-noemi-garcia-juarez",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "santiago-nicolas-barreda-arias",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "michael-alberto-paredes-torres",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "carolina-mannucci-arambulo",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "jorge-luis-moreno-moran",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "napoleon-roberto-martinez-merizalde-huatuco",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "marcos-enrique-cabrera-porras",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "flora-maribel-fernandez-rengifo",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "david-elias-alegria-liberato",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "eduardo-rimachi-martinez",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "judith-soledad-aguero-tinco",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "ingrid-alcarraz-guia",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "maribel-albornoz-rosas",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "jose-luis-nole-palomino",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "jose-eleuterio-horna-saavedra",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "celia-laura-jorge",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "marissa-melo-llaullipoma",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "manuel-edgardo-mamani-rodriguez",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "leonor-chumbimune-cajahuaringa",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "antero-maurine-pickmans-arenaza",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "marwan-zakharia-kahhat-abedrabbo",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "yessica-rosselli-amuruz-dulanto",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "jorge-patricio-vasquez-nemi",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "tanus-barraza-calvo",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "evelyn-elizabeth-ramirez-ocana",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "ever-felix-rojas-caja",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "john-porfirio-robles-soto",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "oscar-alex-dolorier-mori",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "oswaldo-martin-moreno-rivera",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "jose-manuel-fernandez-chavez",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "jean-pierre-combe-portocarrero",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "jhon-cautivo-hancco-chumpitaz",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "maria-luisa-meneses-martinez",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "arturo-miguel-guillermo-bobbio-carranza",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "betty-fani-fernandez-gallarday",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "jose-carlos-bolivar-mejia",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "gardo-antonio-gomez-jimenez",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "david-ignacio-vera-trujillo",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "hugo-roberto-encalada-chumbile",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "oscar-mario-aco-miranda",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "juan-alejandro-palma-aurazo",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "phil-dempster-barriga-vasquez",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "jose-luis-huamani-gonzales",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "sandra-liz-gutierrez-cuba",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "jessica-ofelia-barrera-mendoza",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "renzo-jesus-gutierrez-portillo",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "miguel-angel-ccamac-ortiz",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "jose-luis-flores-llauca",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "genaro-soto-mendoza",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "marcelino-huaman-cano",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "juan-jose-diaz-ayquipa",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "william-dwight-vargas-matos",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "edgard-asuncion-cordero-marichini",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "nils-rene-antonio-siccos",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "clodoaldo-kevin-ynigo-peralta",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "jose-elias-marin-reque",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "migman-pinchi-caro",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "lucero-echevarria-quispe",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "milton-tomas-lluque-sosa",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "sugey-tatiana-bernuy-cueva",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "paul-dino-carrasco-salazar",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "walter-quispe-vilcas",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "alberto-luis-peralta-huatuco",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "roger-edinsson-parra-taboada",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "david-andres-morales-cardenas",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "daniel-fernandez-nunez",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "franklin-villarruel-alvarez",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "carlos-walter-mejia-escajadillo",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "rene-alfredo-yucra-verastegui",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "juan-jose-castillo-angeles",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "luis-angel-yaya-kuba",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "guido-inigo-peralta",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "willy-alberto-ruelas-oropeza",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "juan-carlos-medina-morillo",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "victor-edward-colan-huaman",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "carlos-armando-chavez-montoya",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "cresencio-gonzales-ccapcha",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "edgard-freddy-paucar-calero",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "robert-joel-ludena-guerra",
+      "estado": "sin-foto-oficial"
+    },
+    {
+      "slug": "magaly-rosy-copez-gutierrez",
+      "estado": "sin-foto-oficial"
+    }
+  ]
+}
