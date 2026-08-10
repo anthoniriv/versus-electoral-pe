@@ -123,7 +123,7 @@ export function CandidatosList({
       {filtered.length > 0 ? (
         <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
           {filtered.map((c, i) => (
-            <Link
+            <Link prefetch={false}
               key={c.id}
               href={`${basePath}/${c.slug}`}
               className="group flex items-center gap-4 rounded-xl border border-gray-800/60 bg-gray-900/50 p-4 hover:border-gray-600 hover:bg-gray-900 transition-all duration-200 animate-fade-in-up"

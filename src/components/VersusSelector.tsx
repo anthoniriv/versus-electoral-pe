@@ -500,7 +500,7 @@ export function VersusSelector({
       {!comparing && (
         <section ref={selectorSectionRef} className="py-4 sm:py-10 px-4 scroll-mt-24">
           <div className="mx-auto max-w-5xl">
-            <Link
+            <Link prefetch={false}
               href="/"
               className="inline-flex items-center gap-1.5 text-sm text-gray-400 hover:text-white transition-colors mb-3 sm:mb-4"
             >

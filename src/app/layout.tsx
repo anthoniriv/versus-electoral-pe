@@ -125,7 +125,7 @@ export default function RootLayout({
         <GoogleAnalytics />
         <header className="sticky top-0 z-50 border-b border-gray-800/80 bg-gray-950/80 backdrop-blur-md">
           <div className="mx-auto flex max-w-7xl items-center justify-between gap-3 px-4 py-3 sm:px-6">
-            <Link href="/" className="flex items-center gap-1.5 group shrink-0">
+            <Link prefetch={false} href="/" className="flex items-center gap-1.5 group shrink-0">
               <span className="text-lg sm:text-xl font-black text-red-500 uppercase tracking-wider group-hover:text-red-400 transition-colors">
                 Versus
               </span>
@@ -142,7 +142,7 @@ export default function RootLayout({
           <div className="mx-auto max-w-7xl px-4 sm:px-6 py-8 sm:py-12">
             {/* Mobile: solo branding + apóyanos compacto */}
             <div className="sm:hidden flex flex-col items-center text-center gap-4">
-              <Link href="/" className="flex items-center gap-1.5 group">
+              <Link prefetch={false} href="/" className="flex items-center gap-1.5 group">
                 <span className="text-base font-black text-red-500 uppercase tracking-wider group-hover:text-red-400 transition-colors">
                   Versus
                 </span>
@@ -160,7 +160,7 @@ export default function RootLayout({
             <div className="hidden sm:grid sm:grid-cols-3 gap-8">
               {/* Col 1 - Versus Electoral Perú */}
               <div>
-                <Link href="/" className="flex items-center gap-1.5 group mb-4">
+                <Link prefetch={false} href="/" className="flex items-center gap-1.5 group mb-4">
                   <span className="text-base font-black text-red-500 uppercase tracking-wider group-hover:text-red-400 transition-colors">
                     Versus
                   </span>
@@ -184,22 +184,22 @@ export default function RootLayout({
                   </h4>
                   <ul className="space-y-2.5">
                     <li>
-                      <Link href="/" className="text-sm text-gray-400 hover:text-white transition-colors">
+                      <Link prefetch={false} href="/" className="text-sm text-gray-400 hover:text-white transition-colors">
                         Inicio
                       </Link>
                     </li>
                     <li>
-                      <Link href="/alcaldes/versus" className="text-sm text-gray-400 hover:text-white transition-colors">
+                      <Link prefetch={false} href="/alcaldes/versus" className="text-sm text-gray-400 hover:text-white transition-colors">
                         Versus
                       </Link>
                     </li>
                     <li>
-                      <Link href="/alcaldes" className="text-sm text-gray-400 hover:text-white transition-colors">
+                      <Link prefetch={false} href="/alcaldes" className="text-sm text-gray-400 hover:text-white transition-colors">
                         Candidatos
                       </Link>
                     </li>
                     <li>
-                      <Link href="/#faq" className="text-sm text-gray-400 hover:text-white transition-colors">
+                      <Link prefetch={false} href="/#faq" className="text-sm text-gray-400 hover:text-white transition-colors">
                         Preguntas Frecuentes
                       </Link>
                     </li>

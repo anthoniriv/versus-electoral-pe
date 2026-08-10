@@ -45,7 +45,7 @@ export default async function DistritoPage({ params }: PageProps) {
     <div className="min-h-screen bg-gray-950">
       <section className="py-12 px-4">
         <div className="mx-auto max-w-7xl">
-          <Link
+          <Link prefetch={false}
             href="/alcaldes"
             className="text-xs font-bold uppercase tracking-wider text-gray-500 hover:text-gray-300"
           >

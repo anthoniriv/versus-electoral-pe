@@ -22,7 +22,7 @@ export function CandidatoCard({
   const info = GRAVEDAD[peorGravedad as GravedadKey] || GRAVEDAD.LIMPIO;
 
   return (
-    <Link
+    <Link prefetch={false}
       href={`/candidato/${slug}`}
       className="block rounded-xl border border-gray-200 bg-white p-5 shadow-sm transition-all hover:shadow-md hover:border-gray-300 dark:bg-gray-900 dark:border-gray-700"
     >

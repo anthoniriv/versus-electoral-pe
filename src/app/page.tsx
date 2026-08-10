@@ -110,7 +110,7 @@ export default async function Home() {
 
           {/* CTA Cards */}
           <div className="mt-8 sm:mt-10 grid grid-cols-1 sm:grid-cols-2 gap-4 max-w-2xl mx-auto">
-            <Link
+            <Link prefetch={false}
               href="/alcaldes/versus"
               className="group relative overflow-hidden rounded-2xl border border-red-500/30 bg-gradient-to-br from-red-950/30 to-gray-900/80 p-6 sm:p-8 text-center transition-all duration-300 hover:border-red-500/60 hover:scale-[1.02] hover:shadow-[0_0_60px_rgba(220,38,38,0.15)]"
             >
@@ -128,7 +128,7 @@ export default async function Home() {
               </div>
             </Link>
 
-            <Link
+            <Link prefetch={false}
               href="/alcaldes"
               className="group relative overflow-hidden rounded-2xl border border-gray-700/50 bg-gradient-to-br from-gray-800/30 to-gray-900/80 p-6 sm:p-8 text-center transition-all duration-300 hover:border-gray-500/60 hover:scale-[1.02] hover:shadow-[0_0_60px_rgba(156,163,175,0.08)]"
             >

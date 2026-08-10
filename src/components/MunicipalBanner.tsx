@@ -5,7 +5,7 @@ const MENSAJE =
 
 export function MunicipalBanner() {
   return (
-    <Link
+    <Link prefetch={false}
       href="/alcaldes"
       aria-label="Explorar candidatos y propuestas para las elecciones municipales 2026"
       className="group relative block w-full overflow-hidden border-b border-red-400/30 bg-gradient-to-r from-red-800 via-red-600 to-red-800 transition hover:brightness-110"

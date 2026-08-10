@@ -81,9 +81,9 @@ export function CandidatoDetalleClient({
         <div className="mx-auto max-w-4xl">
           {/* Breadcrumb */}
           <nav className="mb-6 text-xs sm:text-sm text-gray-500 flex items-center gap-1.5 flex-wrap">
-            <Link href="/" className="hover:text-white transition-colors">Inicio</Link>
+            <Link prefetch={false} href="/" className="hover:text-white transition-colors">Inicio</Link>
             <span className="text-gray-700">/</span>
-            <Link href={basePath} className="hover:text-white transition-colors">Candidatos</Link>
+            <Link prefetch={false} href={basePath} className="hover:text-white transition-colors">Candidatos</Link>
             <span className="text-gray-700">/</span>
             <span className="text-gray-300 font-medium truncate max-w-[200px] sm:max-w-none">{nombre}</span>
           </nav>

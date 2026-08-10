@@ -21,7 +21,7 @@ export function EleccionSwitch() {
       {ELECCIONES.map((e) => {
         const active = e.id === activa;
         return (
-          <Link
+          <Link prefetch={false}
             key={e.id}
             href={e.listaPath}
             role="tab"

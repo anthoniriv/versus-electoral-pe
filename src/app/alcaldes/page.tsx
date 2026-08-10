@@ -69,7 +69,7 @@ export default async function AlcaldesPage() {
             {DISTRITOS_LIMA.map((d) => {
               const total = POSTULANTES_POR_AMBITO.get(d.slug) ?? 0;
               return (
-                <Link
+                <Link prefetch={false}
                   key={d.slug}
                   href={`/alcaldes/distrito/${d.slug}`}
                   className={`flex items-center justify-between gap-2 rounded-xl border px-3 py-2.5 text-sm font-semibold transition ${
