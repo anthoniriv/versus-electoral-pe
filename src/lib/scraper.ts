@@ -6,6 +6,7 @@ import { CANDIDATOS_MUNICIPALES, DISTRITO_BY_SLUG } from "./municipales";
 import type { EleccionId } from "./elecciones";
 import { clasificarNoticia, esNoticiaRelevante } from "./clasificador";
 import { clasificarConIA } from "./clasificador-ia";
+import { resolveCandidateAttribution } from "./news-attribution";
 
 // El scraping recorre todas las elecciones cubiertas.
 type CandidatoScrape = CandidatoData & {
@@ -746,32 +747,6 @@ async function buscarCandidatoEnSitios(keyword: string): Promise<NoticiaRaw[]> {
 // LÓGICA PRINCIPAL
 // =====================================================
 
-function matchCandidato(texto: string, keywords: string[]): boolean {
-  const textoLower = texto.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
-  return keywords.some((kw) => {
-    const kwLower = kw.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
-    return textoLower.includes(kwLower);
-  });
-}
-
-/**
- * Google puede devolver "Rosselli Amuruz" aunque el padrón tenga
- * "Yessica Rosselli Amuruz Dulanto". Para una búsqueda ya ligada a un
- * candidato aceptamos dos componentes distintivos del nombre; un solo apellido
- * no basta y evita atribuir homónimos o resultados genéricos del distrito.
- */
-function matchCandidatoSugerido(texto: string, candidato: CandidatoScrape): boolean {
-  if (matchCandidato(texto, candidato.keywords)) return true;
-  const normalizado = texto.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
-  const ignorar = new Set(["de", "del", "la", "las", "los", "y"]);
-  const tokens = [...new Set(
-    candidato.nombre.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "")
-      .split(/[^a-z0-9]+/)
-      .filter((token) => token.length >= 4 && !ignorar.has(token))
-  )];
-  return tokens.filter((token) => normalizado.includes(token)).length >= 2;
-}
-
 // Deduplicar por URL
 function deduplicar(noticias: NoticiaRaw[]): NoticiaRaw[] {
   const porUrl = new Map<string, NoticiaRaw>();
@@ -800,16 +775,6 @@ async function obtenerUrlsExistentes(urls: string[]): Promise<Set<string>> {
   }
 
   return existentes;
-}
-
-function seleccionarCandidato(
-  texto: string,
-  candidatos: CandidatoScrape[]
-): CandidatoScrape | null {
-  for (const candidato of candidatos) {
-    if (matchCandidato(texto, candidato.keywords)) return candidato;
-  }
-  return null;
 }
 
 // Delay para no saturar servidores
@@ -985,9 +950,11 @@ export async function ejecutarScraping(
   for (const noticia of noticiasNuevas) {
     const textoCompleto = `${noticia.titulo} ${noticia.descripcion}`;
     const sugerido = noticia.candidatoSlug ? CANDIDATOS_BY_SLUG.get(noticia.candidatoSlug) : null;
-    const candidato = sugerido && matchCandidatoSugerido(textoCompleto, sugerido)
-      ? sugerido
-      : seleccionarCandidato(textoCompleto, candidatosBusqueda);
+    const candidato = resolveCandidateAttribution(
+      textoCompleto,
+      sugerido ?? null,
+      candidatosBusqueda,
+    );
     if (!candidato) continue;
 
     const candidatoBD = candidatosBySlug.get(candidato.slug);
