@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { CandidatoAvatar } from "./CandidatoAvatar";
+import { SmartlinkLink } from "./SmartlinkLink";
 import { GravedadBadge } from "./GravedadBadge";
 import { NoticiaItem } from "./NoticiaItem";
 import { PlanGobierno } from "./PlanGobierno";
@@ -31,6 +32,10 @@ interface CandidatoDetalleClientProps {
   noticias: NoticiaView[];
   planGobierno?: PlanGobiernoView | null;
   basePath?: string;
+  /** Municipal only: link to the versus flow preselecting this candidate's ámbito. */
+  compareHref?: string;
+  /** Label for the compare link, e.g. "Santiago de Surco" or "Lima Metropolitana". */
+  compareZonaLabel?: string;
 }
 
 export function CandidatoDetalleClient({
@@ -42,6 +47,8 @@ export function CandidatoDetalleClient({
   noticias,
   planGobierno = null,
   basePath = "/candidato",
+  compareHref,
+  compareZonaLabel,
 }: CandidatoDetalleClientProps) {
   const [gravedadSeleccionada, setGravedadSeleccionada] = useState<GravedadKey | null>(null);
   const [busqueda, setBusqueda] = useState("");
@@ -112,6 +119,21 @@ export function CandidatoDetalleClient({
               </div>
             </div>
           </div>
+
+          {compareHref && (
+            <div className="mb-8 text-center sm:text-left">
+              <SmartlinkLink
+                prefetch={false}
+                href={compareHref}
+                className="inline-flex min-h-11 items-center gap-2 rounded-full border border-gray-700 bg-gray-900/70 px-5 py-2.5 text-sm font-bold text-gray-200 transition-colors duration-150 [@media(hover:hover)_and_(pointer:fine)]:hover:border-red-500/60 [@media(hover:hover)_and_(pointer:fine)]:hover:text-white active:scale-[0.97]"
+              >
+                Comparar con otro candidato de {compareZonaLabel}
+                <svg className="h-3.5 w-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M9 5l7 7-7 7" />
+                </svg>
+              </SmartlinkLink>
+            </div>
+          )}
 
           {planGobierno && (
             <section className="mb-10 rounded-2xl border border-gray-800/70 bg-gray-950/60 p-4 sm:p-6">

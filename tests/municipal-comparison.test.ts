@@ -127,3 +127,15 @@ test("plan and news sources retain asymmetric unavailable and empty states", () 
   assert.deepEqual(resolveNewsResponse({ ok: true, body: { noticias: [] } }), { status: "ready", data: [] });
   assert.deepEqual(resolveNewsResponse({ ok: false, body: {} }), { status: "unavailable" });
 });
+
+test("a scope reload keeps a preselected left candidate and clears the rest", () => {
+  const state = viewReducer(
+    { eligibility: { status: "loading" }, left: "a", right: "b", retry: 0, results: null },
+    { type: "scope", eligibility: { status: "loading" }, left: "a" },
+  );
+  assert.equal(state.left, "a");
+  assert.equal(state.right, "");
+
+  const cleared = viewReducer(state, { type: "scope", eligibility: { status: "loading" } });
+  assert.equal(cleared.left, "");
+});

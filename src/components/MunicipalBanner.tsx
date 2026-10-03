@@ -1,7 +1,17 @@
 import Link from "next/link";
+import { ElectionCountdownText } from "./ElectionCountdown";
 
 const MENSAJE =
   "ELECCIONES MUNICIPALES 2026 · 485 CANDIDATOS · LIMA METROPOLITANA Y 42 ALCALDÍAS DISTRITALES · 7,020 PROPUESTAS OFICIALES";
+
+/** One marquee segment: the polling-day reminder followed by the original message. */
+function Segment({ compact = false }: { compact?: boolean }) {
+  return (
+    <span className="pr-8">
+      <ElectionCountdownText compact={compact} /> · {MENSAJE} —
+    </span>
+  );
+}
 
 export function MunicipalBanner() {
   return (
@@ -16,16 +26,21 @@ export function MunicipalBanner() {
           Municipal 2026
         </span>
         <div className="flex-1 overflow-hidden whitespace-nowrap">
+          {/* Two identical halves so the loop has no empty gap; the copy is hidden from screen readers. */}
           <p className="animate-marquee inline-block pl-4 text-[11px] font-bold uppercase tracking-[0.12em] text-white">
-            {MENSAJE} — {MENSAJE}
+            <Segment />
+            <span aria-hidden="true"><Segment /></span>
           </p>
         </div>
       </div>
-      <div className="relative flex items-center justify-center gap-2 py-2 sm:hidden">
+      <div className="relative flex items-center gap-2 py-2 pl-3 sm:hidden">
         <span className="h-2 w-2 shrink-0 rounded-full bg-white" />
-        <p className="truncate text-[11px] font-black uppercase tracking-wider text-white">
-          Municipales 2026 · candidatos y propuestas
-        </p>
+        <div className="flex-1 overflow-hidden whitespace-nowrap">
+          <p className="animate-marquee inline-block text-[11px] font-black uppercase tracking-wider text-white">
+            <Segment compact />
+            <span aria-hidden="true"><Segment compact /></span>
+          </p>
+        </div>
       </div>
     </Link>
   );

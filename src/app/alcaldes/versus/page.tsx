@@ -23,7 +23,11 @@ export const metadata: Metadata = {
   },
 };
 
-type SearchParams = Promise<{ ambito?: string | string[]; prioridad?: string | string[] }>;
+type SearchParams = Promise<{
+  ambito?: string | string[];
+  prioridad?: string | string[];
+  candidato?: string | string[];
+}>;
 
 export default async function AlcaldesVersusPage({
   searchParams,
@@ -63,13 +67,20 @@ export default async function AlcaldesVersusPage({
     );
   }
 
+  const roster = candidatosPorAmbito(query.ambito);
+  // Only preselect a candidate who actually runs in this municipality.
+  const initialLeft = roster.some((candidate) => candidate.slug === query.candidato)
+    ? query.candidato
+    : undefined;
+
   return (
     <div className="min-h-screen bg-gray-950">
       <VersusMunicipal
         key={query.ambito}
         ambito={query.ambito}
         municipalityName={option.nombre}
-        rosterSlugs={candidatosPorAmbito(query.ambito).map((candidate) => candidate.slug)}
+        rosterSlugs={roster.map((candidate) => candidate.slug)}
+        initialLeft={initialLeft}
         options={options}
         priority={query.prioridad}
         notice={query.notice}

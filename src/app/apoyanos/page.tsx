@@ -5,7 +5,7 @@ import { ApoyanosContent } from "@/components/ApoyanosContent";
 export const metadata: Metadata = {
   title: `Apóyanos | ${SITE_NAME}`,
   description:
-    "Conoce al equipo detrás de Versus Electoral Perú, nuestra misión y cómo puedes apoyar el proyecto.",
+    "Apoya a Versus Electoral Perú con Yape, Plin o Ko-fi: un proyecto independiente, sin financiamiento partidario.",
   alternates: {
     canonical: `${SITE_URL}/apoyanos`,
     languages: {
@@ -16,7 +16,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: `Apóyanos | ${SITE_NAME}`,
     description:
-      "Conoce al equipo detrás de Versus Electoral Perú, nuestra misión y cómo puedes apoyar el proyecto.",
+      "Apoya a Versus Electoral Perú con Yape, Plin o Ko-fi: un proyecto independiente, sin financiamiento partidario.",
     url: `${SITE_URL}/apoyanos`,
   },
 };

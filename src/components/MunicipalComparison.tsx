@@ -122,6 +122,8 @@ export interface MunicipalComparisonProps {
   rosterSlugs: readonly string[];
   municipalityName: string;
   priority?: MunicipalPriority;
+  /** Candidate slug preselected on the left; ignored if not in the eligible roster. */
+  initialLeft?: string;
 }
 
 interface ViewState {
@@ -133,7 +135,8 @@ interface ViewState {
 }
 
 type ViewAction =
-  | { type: "scope"; eligibility: EligibilityState }
+  /** `left` keeps a preselected candidate across (re)loads; defaults to clearing it. */
+  | { type: "scope"; eligibility: EligibilityState; left?: string }
   | { type: "eligibility"; eligibility: EligibilityState }
   | { type: "retry" }
   | { type: "left"; value: string }
@@ -152,7 +155,7 @@ function loadingResults(): ComparisonResults {
 export function viewReducer(state: ViewState, action: ViewAction): ViewState {
   switch (action.type) {
     case "scope":
-      return { ...state, eligibility: action.eligibility, left: "", right: "", results: null };
+      return { ...state, eligibility: action.eligibility, left: action.left ?? "", right: "", results: null };
     case "eligibility":
       return { ...state, eligibility: action.eligibility };
     case "retry":
@@ -175,6 +178,7 @@ export function MunicipalComparison({
   rosterSlugs,
   municipalityName,
   priority,
+  initialLeft,
 }: MunicipalComparisonProps) {
   const rosterKey = rosterContentKey(rosterSlugs);
   const stableRoster = useMemo(
@@ -187,7 +191,7 @@ export function MunicipalComparison({
   const resultGenerations = useRef(createRequestGeneration());
   const [view, dispatch] = useReducer(viewReducer, {
     eligibility: rosterSlugs.length === 0 ? { status: "empty" } : { status: "loading" },
-    left: "",
+    left: initialLeft ?? "",
     right: "",
     retry: 0,
     results: null,
@@ -202,13 +206,13 @@ export function MunicipalComparison({
     controller.current?.abort();
 
     if (stableRoster.length === 0) {
-      dispatch({ type: "scope", eligibility: { status: "empty" } });
+      dispatch({ type: "scope", eligibility: { status: "empty" }, left: initialLeft });
       return;
     }
 
     const request = new AbortController();
     controller.current = request;
-    dispatch({ type: "scope", eligibility: { status: "loading" } });
+    dispatch({ type: "scope", eligibility: { status: "loading" }, left: initialLeft });
     const query = new URLSearchParams({ eleccion: "municipal-2026", ambito });
 
     fetch(`/api/candidatos?${query}`, { signal: request.signal })
@@ -223,7 +227,7 @@ export function MunicipalComparison({
       });
 
     return () => request.abort();
-  }, [ambito, stableRoster, view.retry]);
+  }, [ambito, initialLeft, stableRoster, view.retry]);
 
   const candidates = useMemo(
     () => (view.eligibility.status === "ready" ? view.eligibility.candidates : []),
