@@ -55,6 +55,9 @@ test("custom events allow only approved names and fields", () => {
   assert.deepEqual(Object.values(ANALYTICS_EVENTS).sort(), [
     "comparison_completed",
     "comparison_started",
+    "cta_click",
+    "search_performed",
+    "search_result_selected",
   ]);
   const calls: unknown[][] = [];
   const gtag = (...args: unknown[]) => calls.push(args);
@@ -83,6 +86,74 @@ test("custom events allow only approved names and fields", () => {
     ),
     false,
   );
+});
+
+test("CTA clicks send only approved enum values", () => {
+  const calls: unknown[][] = [];
+  const gtag = (...args: unknown[]) => calls.push(args);
+  const base = { pathname: "/", siteOrigin: ORIGIN };
+  assert.equal(
+    dispatchAnalyticsEvent(gtag, ANALYTICS_EVENTS.ctaClicked, {
+      ...base,
+      cta: "voting_place",
+      cta_location: "home_hero",
+      href: "https://consultaelectoral.onpe.gob.pe/inicio",
+    } as Parameters<typeof dispatchAnalyticsEvent<"cta_click">>[2]),
+    true,
+  );
+  assert.deepEqual(calls, [["event", "cta_click", {
+    page_path: "/",
+    page_location: `${ORIGIN}/`,
+    page_title: "Versus Electoral",
+    page_referrer: "",
+    cta: "voting_place",
+    cta_location: "home_hero",
+  }]]);
+  assert.equal(
+    dispatchAnalyticsEvent(gtag, ANALYTICS_EVENTS.ctaClicked, {
+      ...base,
+      cta: "candidate-slug",
+      cta_location: "home_hero",
+    } as unknown as Parameters<typeof dispatchAnalyticsEvent<"cta_click">>[2]),
+    false,
+  );
+  assert.equal(calls.length, 1);
+});
+
+test("search events send counts, never the typed text or selection", () => {
+  const calls: unknown[][] = [];
+  const gtag = (...args: unknown[]) => calls.push(args);
+  const base = { pathname: "/", siteOrigin: ORIGIN };
+  assert.equal(
+    dispatchAnalyticsEvent(gtag, ANALYTICS_EVENTS.searchPerformed, {
+      ...base,
+      query_length: 6,
+      result_count: 3,
+      search_term: "secret",
+    } as Parameters<typeof dispatchAnalyticsEvent<"search_performed">>[2]),
+    true,
+  );
+  assert.equal(
+    dispatchAnalyticsEvent(gtag, ANALYTICS_EVENTS.searchResultSelected, {
+      ...base,
+      result_type: "candidate",
+      result_position: 1,
+      query_length: 6,
+      result_count: 3,
+      href: "/candidato/must-not-leak",
+    } as Parameters<typeof dispatchAnalyticsEvent<"search_result_selected">>[2]),
+    true,
+  );
+  assert.equal(
+    dispatchAnalyticsEvent(gtag, ANALYTICS_EVENTS.searchPerformed, {
+      ...base,
+      query_length: -1,
+      result_count: 3,
+    }),
+    false,
+  );
+  assert.equal(calls.length, 2);
+  assert.equal(/secret|must-not-leak|search_term|href/.test(JSON.stringify(calls)), false);
 });
 
 test("analytics failures never escape", () => {

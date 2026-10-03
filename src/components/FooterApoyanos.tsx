@@ -12,6 +12,8 @@ export function FooterApoyanos() {
     <Link
       prefetch={false}
       href="/apoyanos"
+      data-analytics-cta="support"
+      data-analytics-location="footer"
       className="mt-6 inline-block rounded-lg bg-red-500 px-6 py-2.5 text-sm font-bold text-white uppercase tracking-wider hover:bg-red-400 transition-colors"
     >
       Apóyanos

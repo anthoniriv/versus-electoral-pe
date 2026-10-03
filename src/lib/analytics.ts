@@ -1,6 +1,9 @@
 export const ANALYTICS_EVENTS = {
   comparisonStarted: "comparison_started",
   comparisonCompleted: "comparison_completed",
+  ctaClicked: "cta_click",
+  searchPerformed: "search_performed",
+  searchResultSelected: "search_result_selected",
 } as const;
 
 export type AnalyticsEventName =
@@ -25,14 +28,87 @@ export interface AnalyticsPageContext {
   page_referrer: "";
 }
 
-interface AnalyticsEventMap {
-  comparison_started: AnalyticsEventInput;
-  comparison_completed: AnalyticsEventInput;
+export const ANALYTICS_CTAS = ["compare_candidates", "voting_place", "support"] as const;
+export const ANALYTICS_CTA_LOCATIONS = ["home_hero", "header", "footer"] as const;
+export const ANALYTICS_RESULT_TYPES = ["candidate", "district"] as const;
+
+export type AnalyticsCta = (typeof ANALYTICS_CTAS)[number];
+export type AnalyticsCtaLocation = (typeof ANALYTICS_CTA_LOCATIONS)[number];
+export type AnalyticsResultType = (typeof ANALYTICS_RESULT_TYPES)[number];
+
+/**
+ * Event parameters. Only enums and counts are allowed: never search text,
+ * candidate names, slugs or districts, which could reveal political interest.
+ */
+export interface AnalyticsEventParamsMap {
+  comparison_started: Record<never, never>;
+  comparison_completed: Record<never, never>;
+  cta_click: { cta: AnalyticsCta; cta_location: AnalyticsCtaLocation };
+  search_performed: { query_length: number; result_count: number };
+  search_result_selected: {
+    result_type: AnalyticsResultType;
+    result_position: number;
+    query_length: number;
+    result_count: number;
+  };
 }
 
 export interface AnalyticsEventInput {
   pathname: string;
   siteOrigin: string;
+}
+
+type AnalyticsEventMap = {
+  [EventName in AnalyticsEventName]: AnalyticsEventInput & AnalyticsEventParamsMap[EventName];
+};
+
+type ParamRule = (value: unknown) => boolean;
+
+const MAX_COUNT = 10_000;
+
+function oneOf(values: readonly string[]): ParamRule {
+  return (value) => typeof value === "string" && values.includes(value);
+}
+
+const isCount: ParamRule = (value) =>
+  typeof value === "number" && Number.isInteger(value) && value >= 0 && value <= MAX_COUNT;
+
+const EVENT_PARAM_RULES: Record<AnalyticsEventName, Record<string, ParamRule>> = {
+  comparison_started: {},
+  comparison_completed: {},
+  cta_click: {
+    cta: oneOf(ANALYTICS_CTAS),
+    cta_location: oneOf(ANALYTICS_CTA_LOCATIONS),
+  },
+  search_performed: { query_length: isCount, result_count: isCount },
+  search_result_selected: {
+    result_type: oneOf(ANALYTICS_RESULT_TYPES),
+    result_position: isCount,
+    query_length: isCount,
+    result_count: isCount,
+  },
+};
+
+/** Keeps only the approved fields of an event; returns null if any is missing or invalid. */
+function pickEventParams(
+  eventName: AnalyticsEventName,
+  input: object,
+): Record<string, unknown> | null {
+  const params: Record<string, unknown> = {};
+  for (const [key, isValid] of Object.entries(EVENT_PARAM_RULES[eventName])) {
+    const value = (input as Record<string, unknown>)[key];
+    if (!isValid(value)) return null;
+    params[key] = value;
+  }
+  return params;
+}
+
+export function isAnalyticsCta(value: unknown): value is AnalyticsCta {
+  return oneOf(ANALYTICS_CTAS)(value);
+}
+
+export function isAnalyticsCtaLocation(value: unknown): value is AnalyticsCtaLocation {
+  return oneOf(ANALYTICS_CTA_LOCATIONS)(value);
 }
 
 const EVENT_ALLOWLIST = new Set<AnalyticsEventName>(
@@ -117,20 +193,31 @@ export function dispatchAnalyticsEvent<EventName extends AnalyticsEventName>(
   if (!gtag || !EVENT_ALLOWLIST.has(eventName)) return false;
 
   try {
+    const params = pickEventParams(eventName, input);
+    if (!params) return false;
     const context = createAnalyticsPageContext(input.pathname, input.siteOrigin);
-    gtag("event", eventName, context);
+    gtag("event", eventName, { ...context, ...params });
     return true;
   } catch {
     return false;
   }
 }
 
-export function trackEvent(eventName: AnalyticsEventName): boolean {
+type ParamsArgs<EventName extends AnalyticsEventName> =
+  keyof AnalyticsEventParamsMap[EventName] extends never
+    ? []
+    : [params: AnalyticsEventParamsMap[EventName]];
+
+export function trackEvent<EventName extends AnalyticsEventName>(
+  eventName: EventName,
+  ...[params]: ParamsArgs<EventName>
+): boolean {
   if (typeof window === "undefined") return false;
   return dispatchAnalyticsEvent(window.gtag, eventName, {
+    ...params,
     pathname: window.location.pathname,
     siteOrigin: window.location.origin,
-  });
+  } as AnalyticsEventMap[EventName]);
 }
 
 export function createPageViewTracker(
