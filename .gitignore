@@ -33,6 +33,7 @@ yarn-error.log*
 
 # env files (can opt-in for committing if needed)
 .env*
+!.env.example
 
 # local prisma sqlite artifact
 /prisma/dev.db
@@ -52,3 +53,7 @@ next-env.d.ts
 # indices de herramientas locales (se regeneran, dependen de la ruta del checkout)
 /.codegraph/
 /.atl/
+/.local/
+
+# estado local de agentes por repo (persona, runtime)
+/.pi/
