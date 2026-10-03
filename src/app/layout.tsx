@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import Link from "next/link";
+import Script from "next/script";
 import { SITE_URL, SITE_NAME, SITE_DESCRIPTION } from "@/lib/site";
 import { MunicipalBanner } from "@/components/MunicipalBanner";
 import { FooterApoyanos } from "@/components/FooterApoyanos";
@@ -19,6 +20,11 @@ const geistMono = Geist_Mono({
   variable: "--font-geist-mono",
   subsets: ["latin"],
 });
+
+// Adsterra popunder: opens one ad tab on the first click of a page. Runs only
+// on Vercel production so local and preview sessions are not interrupted.
+const POPUNDER_SRC =
+  "https://pl31632133.profitableratecpmnetwork.com/7f/e1/1d/7fe11d2f1947cc883aff592a8b9ee9ae.js";
 
 const TITLE = `${SITE_NAME} — Candidatos a Alcalde de Lima 2026`;
 const analyticsEnabled = isProductionAnalyticsEnvironment({
@@ -255,6 +261,7 @@ export default function RootLayout({
             </p>
           </div>
         </footer>
+        {analyticsEnabled && <Script src={POPUNDER_SRC} strategy="lazyOnload" />}
       </body>
     </html>
   );
