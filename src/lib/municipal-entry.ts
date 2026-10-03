@@ -17,7 +17,12 @@ export interface MunicipalEntryOption {
 export interface MunicipalEntrySelection {
   ambito: string;
   prioridad?: MunicipalPriority;
+  /** Candidate slug to preselect on the left side of the comparison. */
+  candidato?: string;
 }
+
+/** Candidate slugs are lowercase words joined by hyphens. */
+const CANDIDATE_SLUG = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
 
 export type MunicipalComparisonQueryResult =
   | { status: "needs-selection" }
@@ -27,6 +32,8 @@ export type MunicipalComparisonQueryResult =
       requestedAmbito: string;
       ambito: string;
       prioridad?: MunicipalPriority;
+      /** Syntactically valid slug; the page still checks it belongs to the roster. */
+      candidato?: string;
       notice?: string;
     };
 
@@ -64,6 +71,12 @@ export function buildMunicipalComparisonUrl(
     }
     query.set("prioridad", selection.prioridad);
   }
+  if (selection.candidato !== undefined) {
+    if (!CANDIDATE_SLUG.test(selection.candidato)) {
+      throw new Error("La candidatura seleccionada no es válida.");
+    }
+    query.set("candidato", selection.candidato);
+  }
   return `/alcaldes/versus?${query.toString()}`;
 }
 
@@ -80,7 +93,7 @@ function parsePriority(value: string): MunicipalPriority | undefined {
 }
 
 export function parseMunicipalComparisonQuery(
-  query: { ambito?: string | string[]; prioridad?: string | string[] },
+  query: { ambito?: string | string[]; prioridad?: string | string[]; candidato?: string | string[] },
   validAmbitos: ReadonlySet<string>,
 ): MunicipalComparisonQueryResult {
   if (query.ambito === undefined && query.prioridad === undefined) {
@@ -113,6 +126,13 @@ export function parseMunicipalComparisonQuery(
     }
   }
 
+  // An unusable candidate preselection is dropped rather than failing the page:
+  // the visitor can still pick both sides by hand.
+  const candidato =
+    typeof query.candidato === "string" && CANDIDATE_SLUG.test(query.candidato)
+      ? query.candidato
+      : undefined;
+
   if (requestedAmbito === "lima-cercado") {
     const result: Extract<MunicipalComparisonQueryResult, { status: "valid" }> = {
       status: "valid",
@@ -122,6 +142,7 @@ export function parseMunicipalComparisonQuery(
         "Lima (Cercado) no elige una alcaldía distrital: corresponde comparar la Alcaldía de Lima Metropolitana.",
     };
     if (prioridad) result.prioridad = prioridad;
+    if (candidato) result.candidato = candidato;
     return result;
   }
 
@@ -131,5 +152,6 @@ export function parseMunicipalComparisonQuery(
     ambito: requestedAmbito,
   };
   if (prioridad) result.prioridad = prioridad;
+  if (candidato) result.candidato = candidato;
   return result;
 }

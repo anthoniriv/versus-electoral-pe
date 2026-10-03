@@ -1,8 +1,10 @@
-import Link from "next/link";
 import { prisma } from "@/lib/db";
 import { FaqAccordion } from "@/components/FaqAccordion";
-import { MunicipalEntry } from "@/components/MunicipalEntry";
-import { CANDIDATOS_MUNICIPALES, distritosConCandidatos, obtenerOpcionesMunicipales } from "@/lib/municipales";
+import { HomeSearch } from "@/components/HomeSearch";
+import { SmartlinkLink } from "@/components/SmartlinkLink";
+import { SupportCard } from "@/components/SupportCard";
+import { buildHomeSearchIndex } from "@/lib/home-search";
+import { CANDIDATOS_MUNICIPALES, distritosConCandidatos } from "@/lib/municipales";
 import { METADATA_PLANES } from "@/lib/planes-gobierno";
 
 // El cron invalida estas rutas con revalidatePath cuando el scraping trae algo
@@ -28,10 +30,8 @@ async function obtenerConteoNoticiasHome(): Promise<number> {
 }
 
 export default async function Home() {
-  const stats = {
-    ...HOME_STATS_BASE,
-    noticias: await obtenerConteoNoticiasHome(),
-  };
+  const stats = { ...HOME_STATS_BASE, noticias: await obtenerConteoNoticiasHome() };
+  const searchIndex = buildHomeSearchIndex();
 
   const faqData = [
     {
@@ -73,100 +73,96 @@ export default async function Home() {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(faqStructuredData) }}
       />
 
-      {/* Hero */}
-      <section className="relative py-12 sm:py-16 lg:py-20 px-4 text-center overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-b from-red-950/20 via-gray-950/50 to-gray-950" />
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,rgba(220,38,38,0.08),transparent_70%)]" />
+      {/* Hero: compact so the search box clears the fold at 390x844 */}
+      {/* No overflow-hidden on the section: it would clip the search results popover. */}
+      <section className="relative px-4 pt-8 pb-6 text-center sm:pt-12 sm:pb-8">
+        <div className="pointer-events-none absolute inset-0 overflow-hidden" aria-hidden="true">
+          <div className="absolute inset-0 bg-gradient-to-b from-red-950/20 via-gray-950/50 to-gray-950" />
+          <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,rgba(220,38,38,0.08),transparent_70%)]" />
+        </div>
         <div className="relative mx-auto max-w-4xl">
-          <p className="text-red-500 text-[11px] font-bold uppercase tracking-[0.35em] mb-3 animate-fade-in">
+          <p className="mb-2 animate-fade-in text-[11px] font-bold uppercase tracking-[0.35em] text-red-500">
             Elecciones Municipales · Lima 2026
           </p>
-          <h1 className="text-4xl sm:text-5xl lg:text-7xl font-black tracking-tight leading-[1.05]">
-            <span className="text-white">Versus</span>
-            <br />
+          <h1 className="text-3xl font-black leading-[1.05] tracking-tight sm:text-5xl lg:text-6xl">
+            <span className="text-white">Versus</span>{" "}
             <span className="text-red-500">Electoral Perú</span>
           </h1>
-          <p className="mt-4 text-sm sm:text-base lg:text-lg text-gray-400 max-w-2xl mx-auto leading-relaxed">
-            Compara <strong className="text-white">{stats.candidatos} candidatos</strong> a las alcaldías de Lima,
-            sus propuestas oficiales y noticias verificadas de {stats.fuentes} medios.
+          <p className="mx-auto mt-3 max-w-2xl text-sm leading-snug text-gray-400 sm:text-base">
+            Compara candidatos municipales, sus propuestas oficiales y noticias verificadas.
           </p>
 
+          <div className="mt-6 sm:mt-8">
+            <HomeSearch index={searchIndex} />
+            {/* The one entry point to Versus from the home page, kept next to search so it is reachable without scrolling */}
+            <div className="mt-4 flex flex-wrap justify-center gap-3">
+              <SmartlinkLink
+                prefetch={false}
+                href="/alcaldes/versus"
+                className="group inline-flex min-h-12 items-center gap-2 rounded-full border border-red-500/30 bg-red-950/20 px-6 py-3 text-sm font-bold uppercase tracking-wider text-red-400 transition-[color,background-color,border-color,transform] duration-150 ease-out [@media(hover:hover)_and_(pointer:fine)]:hover:border-red-500/60 [@media(hover:hover)_and_(pointer:fine)]:hover:bg-red-950/30 active:scale-[0.97]"
+              >
+                Comparar candidatos
+                <svg
+                  className="h-3.5 w-3.5 transition-transform duration-150 [@media(hover:hover)_and_(pointer:fine)]:group-hover:translate-x-0.5"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M9 5l7 7-7 7" />
+                </svg>
+              </SmartlinkLink>
+              {/* Official ONPE lookup; we only link to it and never ask for the voter's DNI ourselves */}
+              <a
+                href="https://consultaelectoral.onpe.gob.pe/inicio"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="group inline-flex min-h-12 items-center gap-2 rounded-full border border-gray-600 bg-gray-900/60 px-6 py-3 text-sm font-bold uppercase tracking-wider text-gray-200 transition-[color,background-color,border-color,transform] duration-150 ease-out [@media(hover:hover)_and_(pointer:fine)]:hover:border-gray-400 [@media(hover:hover)_and_(pointer:fine)]:hover:text-white active:scale-[0.97]"
+              >
+                Conoce tu local de votación
+                <svg className="h-3.5 w-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M14 5h5v5M19 5l-8 8M10 7H6a1 1 0 00-1 1v10a1 1 0 001 1h10a1 1 0 001-1v-4" />
+                </svg>
+                <span className="sr-only">(sitio oficial de la ONPE, se abre en otra pestaña)</span>
+              </a>
+            </div>
+          </div>
+
           {/* Stats */}
-          <div className="mt-6 sm:mt-8 inline-grid grid-cols-2 gap-x-6 gap-y-4 rounded-2xl border border-gray-800/60 bg-gray-900/40 px-6 py-4 backdrop-blur-sm sm:grid-cols-4 sm:gap-8 sm:px-8">
+          <div className="mx-auto mt-6 grid w-full max-w-3xl grid-cols-2 gap-x-6 gap-y-4 rounded-2xl border border-gray-800/60 bg-gray-900/40 px-6 py-4 backdrop-blur-sm sm:mt-8 sm:grid-cols-4 sm:gap-8 sm:px-8">
             <div>
-              <p className="text-2xl sm:text-3xl font-black text-white">{stats.candidatos}</p>
-              <p className="text-[10px] sm:text-xs text-gray-500 uppercase tracking-wider mt-0.5">Candidatos</p>
+              <p className="text-2xl font-black text-white sm:text-3xl">{stats.candidatos}</p>
+              <p className="mt-0.5 text-[10px] uppercase tracking-wider text-gray-500 sm:text-xs">Candidatos</p>
             </div>
             <div>
-              <p className="text-2xl sm:text-3xl font-black text-white">{stats.alcaldias}</p>
-              <p className="text-[10px] sm:text-xs text-gray-500 uppercase tracking-wider mt-0.5">Alcaldías</p>
+              <p className="text-2xl font-black text-white sm:text-3xl">{stats.alcaldias}</p>
+              <p className="mt-0.5 text-[10px] uppercase tracking-wider text-gray-500 sm:text-xs">Alcaldías</p>
             </div>
             <div>
-              <p className="text-2xl sm:text-3xl font-black text-white">{stats.propuestas.toLocaleString()}</p>
-              <p className="text-[10px] sm:text-xs text-gray-500 uppercase tracking-wider mt-0.5">Propuestas</p>
+              <p className="text-2xl font-black text-white sm:text-3xl">{stats.propuestas.toLocaleString()}</p>
+              <p className="mt-0.5 text-[10px] uppercase tracking-wider text-gray-500 sm:text-xs">Propuestas</p>
             </div>
             <div>
-              <p className="text-2xl sm:text-3xl font-black text-white">{stats.noticias.toLocaleString()}</p>
-              <p className="text-[10px] sm:text-xs text-gray-500 uppercase tracking-wider mt-0.5">Noticias</p>
+              <p className="text-2xl font-black text-white sm:text-3xl">{stats.noticias.toLocaleString()}</p>
+              <p className="mt-0.5 text-[10px] uppercase tracking-wider text-gray-500 sm:text-xs">Noticias</p>
             </div>
-          </div>
-
-          <div className="mx-auto mt-8 max-w-4xl text-left">
-            <MunicipalEntry options={obtenerOpcionesMunicipales()} />
-          </div>
-
-          {/* CTA Cards */}
-          <div className="mt-8 sm:mt-10 grid grid-cols-1 sm:grid-cols-2 gap-4 max-w-2xl mx-auto">
-            <Link prefetch={false}
-              href="/alcaldes/versus"
-              className="group relative overflow-hidden rounded-2xl border border-red-500/30 bg-gradient-to-br from-red-950/30 to-gray-900/80 p-6 sm:p-8 text-center transition-all duration-300 hover:border-red-500/60 hover:scale-[1.02] hover:shadow-[0_0_60px_rgba(220,38,38,0.15)]"
-            >
-              <div className="absolute inset-0 bg-gradient-to-br from-red-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-              <div className="relative">
-                <div className="text-4xl mb-3 flex justify-center">{/* Static inline SVG icon: next/image adds no value and the optimizer skips SVG. */}
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img src="/ic_versus.svg" alt="" className="w-9 h-9" style={{ filter: "brightness(0) invert(1)" }} /></div>
-                <h2 className="text-lg sm:text-xl font-black text-white uppercase tracking-wider">Versus</h2>
-                <p className="mt-2 text-sm text-gray-400 leading-relaxed">
-                  Compara candidatos de la misma alcaldía, sus propuestas y noticias
-                </p>
-                <div className="mt-5 inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-red-600/20 text-red-400 text-xs font-bold uppercase tracking-wider group-hover:bg-red-600/30 transition-colors">
-                  Comparar ahora
-                  <svg className="w-3 h-3 group-hover:translate-x-0.5 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M9 5l7 7-7 7" /></svg>
-                </div>
-              </div>
-            </Link>
-
-            <Link prefetch={false}
-              href="/alcaldes"
-              className="group relative overflow-hidden rounded-2xl border border-gray-700/50 bg-gradient-to-br from-gray-800/30 to-gray-900/80 p-6 sm:p-8 text-center transition-all duration-300 hover:border-gray-500/60 hover:scale-[1.02] hover:shadow-[0_0_60px_rgba(156,163,175,0.08)]"
-            >
-              <div className="absolute inset-0 bg-gradient-to-br from-white/[0.02] to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-              <div className="relative">
-                <div className="text-4xl mb-3 flex justify-center">{/* Static inline SVG icon: next/image adds no value and the optimizer skips SVG. */}
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img src="/ic_candidate.svg" alt="" className="w-9 h-9" style={{ filter: "brightness(0) invert(1)" }} /></div>
-                <h2 className="text-lg sm:text-xl font-black text-white uppercase tracking-wider">Candidatos</h2>
-                <p className="mt-2 text-sm text-gray-400 leading-relaxed">
-                  Explora Lima Metropolitana y sus 42 alcaldías distritales
-                </p>
-                <div className="mt-5 inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-gray-600/20 text-gray-300 text-xs font-bold uppercase tracking-wider group-hover:bg-gray-600/30 transition-colors">
-                  Ver candidatos
-                  <svg className="w-3 h-3 group-hover:translate-x-0.5 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M9 5l7 7-7 7" /></svg>
-                </div>
-              </div>
-            </Link>
           </div>
         </div>
       </section>
 
+      {/* Support ask placed right after the stats so it is visible without scrolling */}
+      <div className="mx-auto w-full max-w-[50rem] px-4">
+        <SupportCard />
+      </div>
+
       {/* FAQ */}
-      <section id="faq" className="py-20 px-4 border-t border-gray-800/40">
-        <div className="mx-auto max-w-3xl">
-          <h2 className="text-xl font-black mb-10 text-center uppercase tracking-[0.2em] text-white">
+      <section id="faq" className="mt-14 border-t border-gray-800/40 px-4 py-20">
+        <div className="mx-auto max-w-4xl">
+          <h2 className="mb-10 text-center text-xl font-black uppercase tracking-[0.2em] text-white">
             Preguntas Frecuentes
           </h2>
-          <FaqAccordion items={faqData} />
+          <div className="mx-auto max-w-3xl">
+            <FaqAccordion items={faqData} />
+          </div>
         </div>
       </section>
     </div>

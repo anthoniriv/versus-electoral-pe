@@ -1,85 +1,106 @@
 "use client";
 
-import { useState } from "react";
 import { KofiDonateCard } from "./KofiDonateCard";
-import { OnigrowthModal } from "./OnigrowthModal";
 
 export function ApoyanosContent() {
-  const [showOnigrowth, setShowOnigrowth] = useState(false);
-
   return (
     <div className="min-h-screen bg-gray-950 text-white">
-      {/* Hero: quiénes somos + misión */}
-      <section className="relative py-10 sm:py-14 px-4 text-center overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-b from-red-950/20 via-gray-950/50 to-gray-950" />
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,rgba(220,38,38,0.08),transparent_70%)]" />
-        <div className="relative mx-auto max-w-2xl">
-          <p className="text-red-500 text-[11px] font-bold uppercase tracking-[0.35em] mb-3 animate-fade-in">
-            Proyecto independiente
-          </p>
-          <h1 className="text-3xl sm:text-5xl font-black tracking-tight leading-[1.05]">
-            <span className="text-white">Apóyanos</span>
-          </h1>
-          <p className="mt-4 text-sm sm:text-base text-gray-400 max-w-xl mx-auto leading-relaxed">
-            Somos{" "}
-            <a
-              href="https://www.onilabs.site/"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-red-500 hover:text-red-400 font-bold transition-colors"
-            >
-              OniLabs
-            </a>
-            , un equipo de desarrollo enfocado en crear soluciones tecnológicas
-            con impacto social. Conoce nuestro último producto:{" "}
-            <button
-              onClick={() => setShowOnigrowth(true)}
-              className="font-bold text-[#39FF14] hover:text-[#32e012] transition-colors cursor-pointer"
-            >
-              OniGrowth
-            </button>.
-          </p>
-          <p className="mt-3 text-sm sm:text-base text-gray-400 max-w-xl mx-auto leading-relaxed">
-            Con <strong className="text-white">Versus Electoral Perú</strong> buscamos
-            que cada ciudadano acceda de forma rápida y transparente al historial
-            público de los candidatos presidenciales, con información de fuentes
-            periodísticas verificadas, sin sesgos partidarios ni intereses políticos.
-          </p>
+      {/* Hero: the ask comes first, with the donation options right below it */}
+      <section className="relative px-4 pt-10 pb-8 text-center sm:pt-14 sm:pb-10">
+        <div className="pointer-events-none absolute inset-0 overflow-hidden" aria-hidden="true">
+          <div className="absolute inset-0 bg-gradient-to-b from-red-950/20 via-gray-950/50 to-gray-950" />
+          <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,rgba(220,38,38,0.08),transparent_70%)]" />
         </div>
-      </section>
-
-      {/* Apoya el proyecto — inmediatamente visible */}
-      <section className="py-10 sm:py-14 px-4 border-t border-gray-800/40">
-        <div className="mx-auto max-w-3xl">
-          <h2 className="text-xl font-black mb-2 text-center uppercase tracking-[0.2em] text-white">
-            Apoya el Proyecto
-          </h2>
-          <p className="text-gray-400 text-sm text-center mb-6 max-w-lg mx-auto leading-relaxed">
-            Somos <strong className="text-white">100% independientes</strong>. No
-            recibimos financiamiento de ningún partido político ni entidad
-            gubernamental. Tu aporte cubre servidores, desarrollo y mantenimiento.
+        <div className="relative mx-auto max-w-3xl">
+          <p className="mb-3 animate-fade-in text-[11px] font-bold uppercase tracking-[0.35em] text-red-500">
+            Apóyanos
+          </p>
+          <h1 className="text-3xl font-black leading-[1.05] tracking-tight sm:text-5xl">
+            Mantén este proyecto <span className="text-red-500">independiente</span>
+          </h1>
+          <p className="mx-auto mt-4 max-w-xl text-sm leading-relaxed text-gray-400 sm:text-base">
+            Versus Electoral Perú no recibe financiamiento de partidos políticos
+            ni de entidades del Estado. Se sostiene con el aporte de personas como tú.
           </p>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div className="mt-8 grid grid-cols-1 gap-4 text-left sm:grid-cols-2">
             {/* Plin / Yape */}
             <div className="rounded-xl border border-gray-800/60 bg-gray-900/60 p-5 text-center">
-              <h3 className="font-bold text-white text-sm uppercase tracking-wider mb-3">
+              <h2 className="mb-3 text-sm font-bold uppercase tracking-wider text-white">
                 Plin / Yape
-              </h3>
+              </h2>
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
                 src="/yape.jpeg"
-                alt="QR Yape para apoyar el proyecto"
-                className="mx-auto w-48 h-56 object-contain rounded-[15px]"
+                alt="QR de Yape para apoyar el proyecto"
+                className="mx-auto h-56 w-48 rounded-[15px] object-contain"
               />
-              <p className="mt-3 text-gray-400 text-xs leading-relaxed">
-                Escanea el QR desde tu billetera digital favorita.
+              <p className="mt-3 text-xs leading-relaxed text-gray-400">
+                Escanea el QR desde tu billetera digital, desde Perú.
               </p>
             </div>
 
             {/* Ko-fi */}
             <KofiDonateCard />
           </div>
+        </div>
+      </section>
+
+      {/* Where the money goes */}
+      <section className="border-t border-gray-800/40 px-4 py-10 sm:py-14">
+        <div className="mx-auto max-w-3xl">
+          <h2 className="mb-6 text-center text-xl font-black uppercase tracking-[0.2em] text-white">
+            Qué cubre tu aporte
+          </h2>
+          <ul className="grid grid-cols-1 gap-3 sm:grid-cols-3">
+            <li className="rounded-xl border border-gray-800/60 bg-gray-900/40 p-4">
+              <p className="text-sm font-bold text-white">Servidores y base de datos</p>
+              <p className="mt-1 text-xs leading-relaxed text-gray-400">
+                Para que el sitio cargue rápido también en los días de más tráfico.
+              </p>
+            </li>
+            <li className="rounded-xl border border-gray-800/60 bg-gray-900/40 p-4">
+              <p className="text-sm font-bold text-white">Monitoreo de noticias</p>
+              <p className="mt-1 text-xs leading-relaxed text-gray-400">
+                Revisamos medios periodísticos dos veces al día y enlazamos siempre la fuente original.
+              </p>
+            </li>
+            <li className="rounded-xl border border-gray-800/60 bg-gray-900/40 p-4">
+              <p className="text-sm font-bold text-white">Desarrollo y mantenimiento</p>
+              <p className="mt-1 text-xs leading-relaxed text-gray-400">
+                Nuevas funciones, correcciones y datos del JNE al día.
+              </p>
+            </li>
+          </ul>
+        </div>
+      </section>
+
+      {/* Who we are: secondary, after the ask */}
+      <section className="border-t border-gray-800/40 px-4 py-10 sm:py-14">
+        <div className="mx-auto max-w-3xl text-center">
+          <h2 className="mb-4 text-xl font-black uppercase tracking-[0.2em] text-white">
+            Quiénes somos
+          </h2>
+          <p className="mx-auto max-w-xl text-sm leading-relaxed text-gray-400 sm:text-base">
+            Con <strong className="text-white">Versus Electoral Perú</strong> buscamos que cada ciudadano
+            acceda de forma rápida y transparente al historial público de los candidatos, presidenciales y
+            municipales, con información de fuentes periodísticas verificadas, sin sesgos partidarios ni
+            intereses políticos.
+          </p>
+          <p className="mx-auto mt-3 max-w-xl text-sm leading-relaxed text-gray-400 sm:text-base">
+            Es un proyecto independiente de{" "}
+            <a
+              href="https://www.onilabs.site/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="font-bold text-red-500 transition-colors hover:text-red-400"
+            >
+              OniLabs
+            </a>
+            , un laboratorio de programación especializado en desarrollo web, móvil, microservicios y
+            ecommerce. Lo desarrollamos y mantenemos por nuestra cuenta, sin financiamiento de partidos
+            políticos ni de entidades del Estado.
+          </p>
         </div>
       </section>
 
@@ -141,8 +162,6 @@ export function ApoyanosContent() {
         </div>
       </section>
 
-      {/* Onigrowth Modal */}
-      <OnigrowthModal open={showOnigrowth} onClose={() => setShowOnigrowth(false)} />
     </div>
   );
 }

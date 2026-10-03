@@ -13,6 +13,8 @@ export interface VersusMunicipalProps {
   options: MunicipalEntryOption[];
   priority?: MunicipalPriority;
   notice?: string;
+  /** Candidate preselected on the left, e.g. when arriving from a profile. */
+  initialLeft?: string;
 }
 
 /**
@@ -26,6 +28,7 @@ export function VersusMunicipal({
   options,
   priority,
   notice,
+  initialLeft,
 }: VersusMunicipalProps) {
   const router = useRouter();
   const [isChangingSelection, setIsChangingSelection] = useState(false);
@@ -35,8 +38,9 @@ export function VersusMunicipal({
     if (!notice) return;
     const params = new URLSearchParams({ ambito });
     if (priority) params.set("prioridad", priority);
+    if (initialLeft) params.set("candidato", initialLeft);
     router.replace(`/alcaldes/versus?${params.toString()}`);
-  }, [ambito, notice, priority, router]);
+  }, [ambito, initialLeft, notice, priority, router]);
 
   if (isChangingSelection) {
     return (
@@ -75,6 +79,7 @@ export function VersusMunicipal({
         rosterSlugs={rosterSlugs}
         municipalityName={municipalityName}
         priority={priority}
+        initialLeft={initialLeft}
       />
     </>
   );

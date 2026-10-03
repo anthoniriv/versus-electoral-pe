@@ -95,17 +95,18 @@ fieldset {
 }
 
 /* Marquee animation */
+/* Seamless loop: the content is rendered twice, so sliding by half returns to an identical frame. */
 @keyframes marquee {
   from {
-    transform: translateX(100%);
+    transform: translateX(0);
   }
   to {
-    transform: translateX(-100%);
+    transform: translateX(-50%);
   }
 }
 
 .animate-marquee {
-  animation: marquee 30s linear infinite;
+  animation: marquee 45s linear infinite;
 }
 
 /* Fade in */

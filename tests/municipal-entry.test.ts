@@ -146,3 +146,39 @@ test("the URL builder accepts only supported local municipal selections", () => 
     /municipalidad/i,
   );
 });
+
+test("a candidate preselection round-trips through the comparison URL", () => {
+  const url = buildMunicipalComparisonUrl(
+    { ambito: "miraflores", candidato: "ana-perez-gomez" },
+    supportedAmbitos,
+  );
+
+  assert.equal(url, "/alcaldes/versus?ambito=miraflores&candidato=ana-perez-gomez");
+  assert.deepEqual(
+    parseMunicipalComparisonQuery(
+      { ambito: "miraflores", candidato: "ana-perez-gomez" },
+      supportedAmbitos,
+    ),
+    {
+      status: "valid",
+      requestedAmbito: "miraflores",
+      ambito: "miraflores",
+      candidato: "ana-perez-gomez",
+    },
+  );
+});
+
+test("a malformed candidate preselection is dropped without invalidating the district", () => {
+  for (const candidato of ["", "Ana Pérez", "../etc", ["a", "b"]]) {
+    const parsed = parseMunicipalComparisonQuery(
+      { ambito: "miraflores", candidato },
+      supportedAmbitos,
+    );
+    assert.equal(parsed.status, "valid");
+    assert.equal("candidato" in parsed ? parsed.candidato : undefined, undefined);
+  }
+
+  assert.throws(() =>
+    buildMunicipalComparisonUrl({ ambito: "miraflores", candidato: "Ana Pérez" }, supportedAmbitos),
+  );
+});

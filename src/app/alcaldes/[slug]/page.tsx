@@ -10,7 +10,9 @@ import {
   CANDIDATO_MUNICIPAL_BY_SLUG,
   DISTRITO_BY_SLUG,
   AMBITO_PROVINCIAL,
+  obtenerOpcionesMunicipales,
 } from "@/lib/municipales";
+import { buildMunicipalComparisonUrl } from "@/lib/municipal-entry";
 
 // El cron invalida estas rutas con revalidatePath cuando el scraping trae algo
 // nuevo. Este TTL es solo la red de seguridad por si esa invalidación no corre.
@@ -116,6 +118,19 @@ export default async function AlcaldeCandidatoPage({ params }: PageProps) {
   const zona = ambitoLabel(candidato.ambito);
   const planGobierno = await obtenerPlanGobierno(slug);
 
+  // Preselects the versus flow's ámbito; it only accepts ambito/prioridad, so
+  // the candidate itself can't be preselected (the user still picks both
+  // sides from that district's roster).
+  const validAmbitos = new Set(obtenerOpcionesMunicipales().map((option) => option.slug));
+  let compareHref: string | undefined;
+  if (candidato.ambito && validAmbitos.has(candidato.ambito)) {
+    try {
+      compareHref = buildMunicipalComparisonUrl({ ambito: candidato.ambito, candidato: candidato.slug }, validAmbitos);
+    } catch {
+      compareHref = undefined;
+    }
+  }
+
   const personStructuredData = {
     "@context": "https://schema.org",
     "@type": "Person",
@@ -138,6 +153,8 @@ export default async function AlcaldeCandidatoPage({ params }: PageProps) {
         gravedadCounts={gravedadCounts}
         planGobierno={planGobierno}
         basePath="/alcaldes"
+        compareHref={compareHref}
+        compareZonaLabel={zona}
         noticias={candidato.noticias.map((n) => ({
           id: n.id,
           titulo: n.titulo,
