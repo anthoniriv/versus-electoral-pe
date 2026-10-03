@@ -1,8 +1,13 @@
 "use client";
 
-import { useId, useMemo, useRef, useState, type KeyboardEvent } from "react";
+import { useEffect, useId, useMemo, useRef, useState, type KeyboardEvent } from "react";
 import { useRouter } from "next/navigation";
 import { searchHomeWithTotal, type HomeSearchEntry } from "@/lib/home-search";
+import { ANALYTICS_EVENTS, trackEvent } from "@/lib/analytics";
+
+/** Wait for the visitor to stop typing before counting a search. */
+const SEARCH_TRACK_DELAY_MS = 1000;
+const SEARCH_TRACK_MIN_LENGTH = 2;
 
 export interface HomeSearchProps {
   /** Minimal serialized search index built on the server with buildHomeSearchIndex(). */
@@ -29,11 +34,33 @@ export function HomeSearch({ index }: HomeSearchProps) {
   const hasResults = results.length > 0;
   const showListbox = open && query.trim().length > 0;
 
+  // Only the query length and result count are sent, never the typed text.
+  const trimmedLength = query.trim().length;
+  const lastTrackedQuery = useRef("");
+  useEffect(() => {
+    const normalized = query.trim().toLowerCase();
+    if (normalized.length < SEARCH_TRACK_MIN_LENGTH || normalized === lastTrackedQuery.current) return;
+    const timeout = window.setTimeout(() => {
+      lastTrackedQuery.current = normalized;
+      trackEvent(ANALYTICS_EVENTS.searchPerformed, {
+        query_length: normalized.length,
+        result_count: total,
+      });
+    }, SEARCH_TRACK_DELAY_MS);
+    return () => window.clearTimeout(timeout);
+  }, [query, total]);
+
   function optionId(i: number): string {
     return `${listboxId}-option-${i}`;
   }
 
-  function navigateTo(entry: HomeSearchEntry) {
+  function navigateTo(entry: HomeSearchEntry, position: number) {
+    trackEvent(ANALYTICS_EVENTS.searchResultSelected, {
+      result_type: entry.type,
+      result_position: position + 1,
+      query_length: trimmedLength,
+      result_count: total,
+    });
     setOpen(false);
     setActiveIndex(-1);
     router.push(entry.href);
@@ -65,7 +92,7 @@ export function HomeSearch({ index }: HomeSearchProps) {
       case "Enter":
         if (activeIndex >= 0) {
           event.preventDefault();
-          navigateTo(results[activeIndex].entry);
+          navigateTo(results[activeIndex].entry, activeIndex);
         }
         break;
       case "Escape":
@@ -150,7 +177,7 @@ export function HomeSearch({ index }: HomeSearchProps) {
                     href={result.entry.href}
                     onClick={(event) => {
                       event.preventDefault();
-                      navigateTo(result.entry);
+                      navigateTo(result.entry, i);
                     }}
                     onMouseEnter={() => setActiveIndex(i)}
                     className={`flex items-center justify-between gap-3 px-4 py-3 text-sm transition-colors duration-150 ${

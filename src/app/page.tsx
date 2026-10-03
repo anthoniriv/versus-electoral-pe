@@ -99,6 +99,8 @@ export default async function Home() {
               <SmartlinkLink
                 prefetch={false}
                 href="/alcaldes/versus"
+                data-analytics-cta="compare_candidates"
+                data-analytics-location="home_hero"
                 className="group inline-flex min-h-12 items-center gap-2 rounded-full border border-red-500/30 bg-red-950/20 px-6 py-3 text-sm font-bold uppercase tracking-wider text-red-400 transition-[color,background-color,border-color,transform] duration-150 ease-out [@media(hover:hover)_and_(pointer:fine)]:hover:border-red-500/60 [@media(hover:hover)_and_(pointer:fine)]:hover:bg-red-950/30 active:scale-[0.97]"
               >
                 Comparar candidatos
@@ -114,6 +116,8 @@ export default async function Home() {
               {/* Official ONPE lookup; we only link to it and never ask for the voter's DNI ourselves */}
               <a
                 href="https://consultaelectoral.onpe.gob.pe/inicio"
+                data-analytics-cta="voting_place"
+                data-analytics-location="home_hero"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="group inline-flex min-h-12 items-center gap-2 rounded-full border border-gray-600 bg-gray-900/60 px-6 py-3 text-sm font-bold uppercase tracking-wider text-gray-200 transition-[color,background-color,border-color,transform] duration-150 ease-out [@media(hover:hover)_and_(pointer:fine)]:hover:border-gray-400 [@media(hover:hover)_and_(pointer:fine)]:hover:text-white active:scale-[0.97]"
