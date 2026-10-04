@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
+import type { ConteoStanding } from "@/lib/conteo-oficial";
 import type { ExitPollStanding } from "@/lib/exit-poll";
 import { CandidatoAvatar } from "./CandidatoAvatar";
 import { SmartlinkLink } from "./SmartlinkLink";
@@ -39,6 +40,8 @@ interface CandidatoDetalleClientProps {
   compareZonaLabel?: string;
   /** Election night: this candidate's position in each published exit poll. */
   exitPoll?: ExitPollStanding[];
+  /** Election night: this candidate's position in the official ONPE count. */
+  conteo?: ConteoStanding | null;
 }
 
 export function CandidatoDetalleClient({
@@ -53,6 +56,7 @@ export function CandidatoDetalleClient({
   compareHref,
   compareZonaLabel,
   exitPoll = [],
+  conteo = null,
 }: CandidatoDetalleClientProps) {
   const [gravedadSeleccionada, setGravedadSeleccionada] = useState<GravedadKey | null>(null);
   const [busqueda, setBusqueda] = useState("");
@@ -114,13 +118,22 @@ export function CandidatoDetalleClient({
             <div className="text-center sm:text-left">
               <h1 className="text-xl sm:text-3xl font-black text-white">{nombre}</h1>
               <p className="mt-0.5 text-sm sm:text-lg text-gray-400">{partido}</p>
+              {conteo && (
+                <p className="mt-2 flex flex-wrap items-center justify-center gap-x-3 gap-y-1 text-xs sm:justify-start sm:text-sm">
+                  <span className="font-bold uppercase tracking-wider text-red-500">Conteo ONPE</span>
+                  <span className="font-bold tabular-nums text-white">
+                    {conteo.puesto}.º · {formatPct(conteo.porcentaje)}%
+                  </span>
+                  <span className="text-gray-500">{formatPct(conteo.actasPct)}% de actas</span>
+                </p>
+              )}
               {exitPoll.length > 0 && (
                 <p className="mt-2 flex flex-wrap items-center justify-center gap-x-3 gap-y-1 text-xs sm:justify-start sm:text-sm">
                   <span className="font-bold uppercase tracking-wider text-red-500">Boca de urna</span>
                   {exitPoll.map((e) => (
                     <span key={e.fuente} className="text-gray-300">
                       <span className="font-bold tabular-nums text-white">
-                        {e.puesto}.º · {e.porcentaje.toLocaleString("es-PE", { minimumFractionDigits: 1, maximumFractionDigits: 1 })}%
+                        {e.puesto}.º · {formatPct(e.porcentaje)}%
                       </span>{" "}
                       <span className="text-gray-500">{e.fuente}</span>
                     </span>
@@ -244,4 +257,8 @@ export function CandidatoDetalleClient({
       </section>
     </div>
   );
+}
+
+function formatPct(n: number): string {
+  return n.toLocaleString("es-PE", { minimumFractionDigits: 1, maximumFractionDigits: 1 });
 }

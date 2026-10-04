@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useState } from "react";
 import { CandidatoAvatar } from "@/components/CandidatoAvatar";
-import type { ExitPollSourceId, ExitPollSourceView } from "@/lib/exit-poll";
+import type { ExitPollRowView, ExitPollSourceId, ExitPollSourceView } from "@/lib/exit-poll";
 
 interface ExitPollResultsProps {
   sources: ExitPollSourceView[];
@@ -11,14 +11,13 @@ interface ExitPollResultsProps {
   ambito: string;
 }
 
-const pct = (n: number) => `${n.toLocaleString("es-PE", { minimumFractionDigits: 1, maximumFractionDigits: 1 })}%`;
+export const pct = (n: number) => `${n.toLocaleString("es-PE", { minimumFractionDigits: 1, maximumFractionDigits: 1 })}%`;
 
 export function ExitPollResults({ sources, defaultSource, ambito }: ExitPollResultsProps) {
   const [activeId, setActiveId] = useState<ExitPollSourceId>(
     sources.some((s) => s.id === defaultSource) ? defaultSource : sources[0].id
   );
   const active = sources.find((s) => s.id === activeId) ?? sources[0];
-  const max = Math.max(...active.filas.map((f) => f.porcentaje), 1);
 
   return (
     <section
@@ -55,8 +54,33 @@ export function ExitPollResults({ sources, defaultSource, ambito }: ExitPollResu
         )}
       </div>
 
-      <ol className="mt-4 space-y-2" role="tabpanel" aria-label={`Resultados de ${active.nombre}`}>
-        {active.filas.map((fila, i) => {
+      <div role="tabpanel" aria-label={`Resultados de ${active.nombre}`}>
+        <ResultRows filas={active.filas} />
+      </div>
+
+      <p className="mt-4 border-t border-gray-800 pt-3 text-[11px] leading-relaxed text-gray-500">
+        Fuente: {active.nombre}
+        {active.medio ? ` para ${active.medio}` : ""}
+        {active.corte ? ` · ${active.corte.replace(/\.$/, "")}` : ""}. Boca de urna: estimación por muestreo, no es el resultado oficial.
+        {active.url && (
+          <>
+            {" "}
+            <a href={active.url} target="_blank" rel="noopener noreferrer" className="underline underline-offset-2 hover:text-gray-300">
+              Ver publicación original
+            </a>
+          </>
+        )}
+      </p>
+    </section>
+  );
+}
+
+/** Ranked rows with photo, party, percentage and a bar relative to the leader. */
+export function ResultRows({ filas }: { filas: ExitPollRowView[] }) {
+  const max = Math.max(...filas.map((f) => f.porcentaje), 1);
+  return (
+      <ol className="mt-4 space-y-2">
+        {filas.map((fila, i) => {
           const content = (
             <>
               <span className="w-5 shrink-0 text-right text-xs font-bold tabular-nums text-gray-500">{i + 1}</span>
@@ -82,7 +106,7 @@ export function ExitPollResults({ sources, defaultSource, ambito }: ExitPollResu
             </>
           );
           return (
-            <li key={`${active.id}-${fila.nombre}`}>
+            <li key={fila.nombre}>
               {fila.slug ? (
                 <Link
                   href={`/alcaldes/${fila.slug}`}
@@ -98,20 +122,5 @@ export function ExitPollResults({ sources, defaultSource, ambito }: ExitPollResu
           );
         })}
       </ol>
-
-      <p className="mt-4 border-t border-gray-800 pt-3 text-[11px] leading-relaxed text-gray-500">
-        Fuente: {active.nombre}
-        {active.medio ? ` para ${active.medio}` : ""}
-        {active.corte ? ` · ${active.corte.replace(/\.$/, "")}` : ""}. Boca de urna: estimación por muestreo, no es el resultado oficial.
-        {active.url && (
-          <>
-            {" "}
-            <a href={active.url} target="_blank" rel="noopener noreferrer" className="underline underline-offset-2 hover:text-gray-300">
-              Ver publicación original
-            </a>
-          </>
-        )}
-      </p>
-    </section>
   );
 }

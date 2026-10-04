@@ -74,28 +74,34 @@ function matchCandidate(row: ExitPollRow, roll: CandidatoMunicipal[]): Candidato
   return partial.length === 1 ? partial[0] : null;
 }
 
-/** Sorts by percentage, caps at 10 and attaches JNE identity when it matches unambiguously. */
+/** Sorts by percentage, caps the list and attaches JNE identity when a name matches unambiguously. */
+export function resolveRows(
+  filas: ExitPollRow[],
+  roll: CandidatoMunicipal[],
+  max = EXIT_POLL_MAX_FILAS
+): ExitPollRowView[] {
+  return [...filas]
+    .sort((a, b) => b.porcentaje - a.porcentaje)
+    .slice(0, max)
+    .map((row) => {
+      const match = matchCandidate(row, roll);
+      return {
+        nombre: row.nombre,
+        partido: row.partido ?? match?.partido ?? null,
+        porcentaje: row.porcentaje,
+        slug: match?.slug ?? null,
+      };
+    });
+}
+
+/** Published sources only, each sorted and capped at 10. */
 export function buildExitPollView(
   sources: ExitPollSource[] = EXIT_POLL_SOURCES,
   roll: CandidatoMunicipal[] = candidatosPorAmbito(AMBITO_PROVINCIAL)
 ): ExitPollSourceView[] {
   return sources
     .filter((s) => s.filas.length > 0)
-    .map((s) => ({
-      ...s,
-      filas: [...s.filas]
-        .sort((a, b) => b.porcentaje - a.porcentaje)
-        .slice(0, EXIT_POLL_MAX_FILAS)
-        .map((row) => {
-          const match = matchCandidate(row, roll);
-          return {
-            nombre: row.nombre,
-            partido: row.partido ?? match?.partido ?? null,
-            porcentaje: row.porcentaje,
-            slug: match?.slug ?? null,
-          };
-        }),
-    }));
+    .map((s) => ({ ...s, filas: resolveRows(s.filas, roll) }));
 }
 
 export interface ExitPollStanding {

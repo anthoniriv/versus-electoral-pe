@@ -2,8 +2,10 @@ import { ExitPollResults } from "@/components/ExitPollResults";
 import { FaqAccordion } from "@/components/FaqAccordion";
 import { FlashCountdown } from "@/components/FlashCountdown";
 import { HomeSearch } from "@/components/HomeSearch";
+import { OfficialCount } from "@/components/OfficialCount";
 import { SmartlinkLink } from "@/components/SmartlinkLink";
 import { SupportCard } from "@/components/SupportCard";
+import { buildConteoOficialView } from "@/lib/conteo-oficial";
 import { buildExitPollView, EXIT_POLL_AMBITO, EXIT_POLL_DEFAULT } from "@/lib/exit-poll";
 import { buildHomeSearchIndex } from "@/lib/home-search";
 import { distritosConCandidatos } from "@/lib/municipales";
@@ -14,10 +16,11 @@ export const revalidate = 86400;
 
 export default function Home() {
   const searchIndex = buildHomeSearchIndex();
-  // Election night: once a pollster's numbers are loaded the hero swaps its CTAs,
-  // countdown and support card for the results.
+  // Election night: once exit poll or official numbers are loaded the hero swaps
+  // its CTAs, countdown and support card for the results.
   const exitPoll = buildExitPollView();
-  const resultsMode = exitPoll.length > 0;
+  const conteo = buildConteoOficialView();
+  const resultsMode = exitPoll.length > 0 || conteo !== null;
 
   const faqData = [
     {
@@ -74,10 +77,12 @@ export default function Home() {
             <>
               <h1 className="text-3xl font-black leading-[1.05] tracking-tight sm:text-5xl lg:text-6xl">
                 <span className="text-white">Resultados</span>{" "}
-                <span className="text-red-500">boca de urna</span>
+                <span className="text-red-500">{conteo ? "oficiales ONPE" : "boca de urna"}</span>
               </h1>
               <p className="mx-auto mt-3 max-w-2xl text-sm leading-snug text-gray-400 sm:text-base">
-                Estimaciones de las encuestadoras al cierre de la votación. No son resultados oficiales.
+                {conteo
+                  ? "Conteo de actas de Lima Metropolitana y sus distritos. Elige tu distrito para ver su alcaldía."
+                  : "Estimaciones de las encuestadoras al cierre de la votación. No son resultados oficiales."}
               </p>
             </>
           ) : (
@@ -135,9 +140,15 @@ export default function Home() {
 
           {resultsMode ? (
             <>
-              {/* Above the list: with 10 rows the notice would fall far below the fold */}
-              <OfficialCountNotice distritos={distritosConCandidatos().length} />
-              <ExitPollResults sources={exitPoll} defaultSource={EXIT_POLL_DEFAULT} ambito={EXIT_POLL_AMBITO} />
+              {/* Above the exit poll: with 10 rows anything below would fall far below the fold */}
+              {conteo ? (
+                <OfficialCount conteo={conteo} />
+              ) : (
+                <OfficialCountNotice distritos={distritosConCandidatos().length} />
+              )}
+              {exitPoll.length > 0 && (
+                <ExitPollResults sources={exitPoll} defaultSource={EXIT_POLL_DEFAULT} ambito={EXIT_POLL_AMBITO} />
+              )}
             </>
           ) : (
             <FlashCountdown />
