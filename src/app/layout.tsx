@@ -147,19 +147,18 @@ export default function RootLayout({
               </span>
             </Link>
             <div className="flex items-center gap-2 sm:gap-3">
-              {/* Always-visible support link: donations fund the site instead of ads */}
+              {/* Support link from sm up; on mobile it stays in the footer so the header never overflows */}
               <Link
                 prefetch={false}
                 href="/apoyanos"
                 data-analytics-cta="support"
                 data-analytics-location="header"
-                className="inline-flex min-h-9 items-center gap-1.5 rounded-full border border-red-500/40 px-3 text-xs font-bold uppercase tracking-wider text-red-400 transition-[color,border-color,transform] duration-150 ease-out [@media(hover:hover)_and_(pointer:fine)]:hover:border-red-400 [@media(hover:hover)_and_(pointer:fine)]:hover:text-red-300 active:scale-[0.97]"
+                className="hidden min-h-9 sm:inline-flex items-center gap-1.5 rounded-full border border-red-500/40 px-3 text-xs font-bold uppercase tracking-wider text-red-400 transition-[color,border-color,transform] duration-150 ease-out [@media(hover:hover)_and_(pointer:fine)]:hover:border-red-400 [@media(hover:hover)_and_(pointer:fine)]:hover:text-red-300 active:scale-[0.97]"
               >
                 <svg className="h-3.5 w-3.5" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                   <path d="M12 21s-6.7-4.35-9.33-8.1C.6 9.9 2.1 5.5 6.06 5.05 8.2 4.8 9.86 6 12 8.1c2.14-2.1 3.8-3.3 5.94-3.05 3.96.45 5.46 4.85 3.39 7.85C18.7 16.65 12 21 12 21z" />
                 </svg>
-                <span className="hidden min-[400px]:inline">Apóyanos</span>
-                <span className="sr-only min-[400px]:hidden">Apóyanos</span>
+                Apóyanos
               </Link>
               <EleccionSwitch />
             </div>
