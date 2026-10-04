@@ -1,7 +1,7 @@
+import Link from "next/link";
 import { FaqAccordion } from "@/components/FaqAccordion";
 import { FlashCountdown } from "@/components/FlashCountdown";
 import { HomeSearch } from "@/components/HomeSearch";
-import { SmartlinkLink } from "@/components/SmartlinkLink";
 import { SupportCard } from "@/components/SupportCard";
 import { buildHomeSearchIndex } from "@/lib/home-search";
 
@@ -75,7 +75,7 @@ export default function Home() {
             <HomeSearch index={searchIndex} />
             {/* The one entry point to Versus from the home page, kept next to search so it is reachable without scrolling */}
             <div className="mt-4 grid grid-cols-2 gap-2 sm:flex sm:flex-wrap sm:justify-center sm:gap-3">
-              <SmartlinkLink
+              <Link
                 prefetch={false}
                 href="/alcaldes/versus"
                 data-analytics-cta="compare_candidates"
@@ -91,7 +91,7 @@ export default function Home() {
                 >
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M9 5l7 7-7 7" />
                 </svg>
-              </SmartlinkLink>
+              </Link>
               {/* Official ONPE lookup; we only link to it and never ask for the voter's DNI ourselves */}
               <a
                 href="https://consultaelectoral.onpe.gob.pe/inicio"
