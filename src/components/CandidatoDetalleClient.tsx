@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
+import type { ExitPollStanding } from "@/lib/exit-poll";
 import { CandidatoAvatar } from "./CandidatoAvatar";
 import { SmartlinkLink } from "./SmartlinkLink";
 import { GravedadBadge } from "./GravedadBadge";
@@ -36,6 +37,8 @@ interface CandidatoDetalleClientProps {
   compareHref?: string;
   /** Label for the compare link, e.g. "Santiago de Surco" or "Lima Metropolitana". */
   compareZonaLabel?: string;
+  /** Election night: this candidate's position in each published exit poll. */
+  exitPoll?: ExitPollStanding[];
 }
 
 export function CandidatoDetalleClient({
@@ -49,6 +52,7 @@ export function CandidatoDetalleClient({
   basePath = "/candidato",
   compareHref,
   compareZonaLabel,
+  exitPoll = [],
 }: CandidatoDetalleClientProps) {
   const [gravedadSeleccionada, setGravedadSeleccionada] = useState<GravedadKey | null>(null);
   const [busqueda, setBusqueda] = useState("");
@@ -110,6 +114,19 @@ export function CandidatoDetalleClient({
             <div className="text-center sm:text-left">
               <h1 className="text-xl sm:text-3xl font-black text-white">{nombre}</h1>
               <p className="mt-0.5 text-sm sm:text-lg text-gray-400">{partido}</p>
+              {exitPoll.length > 0 && (
+                <p className="mt-2 flex flex-wrap items-center justify-center gap-x-3 gap-y-1 text-xs sm:justify-start sm:text-sm">
+                  <span className="font-bold uppercase tracking-wider text-red-500">Boca de urna</span>
+                  {exitPoll.map((e) => (
+                    <span key={e.fuente} className="text-gray-300">
+                      <span className="font-bold tabular-nums text-white">
+                        {e.puesto}.º · {e.porcentaje.toLocaleString("es-PE", { minimumFractionDigits: 1, maximumFractionDigits: 1 })}%
+                      </span>{" "}
+                      <span className="text-gray-500">{e.fuente}</span>
+                    </span>
+                  ))}
+                </p>
+              )}
               <div className="mt-2 flex items-center gap-2 sm:gap-3 justify-center sm:justify-start">
                 <GravedadBadge gravedad={peorGravedad} />
                 <span className="text-xs sm:text-sm text-gray-500">
