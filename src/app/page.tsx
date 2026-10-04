@@ -1,9 +1,14 @@
 import Link from "next/link";
+import { ExitPollResults } from "@/components/ExitPollResults";
 import { FaqAccordion } from "@/components/FaqAccordion";
 import { FlashCountdown } from "@/components/FlashCountdown";
 import { HomeSearch } from "@/components/HomeSearch";
+import { OfficialCount } from "@/components/OfficialCount";
 import { SupportCard } from "@/components/SupportCard";
+import { buildConteoOficialView } from "@/lib/conteo-oficial";
+import { buildExitPollView, EXIT_POLL_AMBITO, EXIT_POLL_DEFAULT } from "@/lib/exit-poll";
 import { buildHomeSearchIndex } from "@/lib/home-search";
+import { distritosConCandidatos } from "@/lib/municipales";
 
 // El cron invalida estas rutas con revalidatePath cuando el scraping trae algo
 // nuevo. Este TTL es solo la red de seguridad por si esa invalidación no corre.
@@ -11,6 +16,11 @@ export const revalidate = 86400;
 
 export default function Home() {
   const searchIndex = buildHomeSearchIndex();
+  // Election night: once exit poll or official numbers are loaded the hero swaps
+  // its CTAs, countdown and support card for the results.
+  const exitPoll = buildExitPollView();
+  const conteo = buildConteoOficialView();
+  const resultsMode = exitPoll.length > 0 || conteo !== null;
 
   const faqData = [
     {
@@ -63,17 +73,34 @@ export default function Home() {
           <p className="mb-2 hidden animate-fade-in text-[11px] font-bold uppercase tracking-[0.35em] text-red-500 sm:block">
             Elecciones Municipales · Lima 2026
           </p>
-          <h1 className="text-3xl font-black leading-[1.05] tracking-tight sm:text-5xl lg:text-6xl">
-            <span className="text-white">Versus</span>{" "}
-            <span className="text-red-500">Electoral Perú</span>
-          </h1>
-          <p className="mx-auto mt-3 max-w-2xl text-sm leading-snug text-gray-400 sm:text-base">
-            Compara candidatos municipales, sus propuestas oficiales y noticias verificadas.
-          </p>
+          {resultsMode ? (
+            <>
+              <h1 className="text-3xl font-black leading-[1.05] tracking-tight sm:text-5xl lg:text-6xl">
+                <span className="text-white">Resultados</span>{" "}
+                <span className="text-red-500">{conteo ? "oficiales ONPE" : "boca de urna"}</span>
+              </h1>
+              <p className="mx-auto mt-3 max-w-2xl text-sm leading-snug text-gray-400 sm:text-base">
+                {conteo
+                  ? "Conteo de actas de Lima Metropolitana y sus distritos. Elige tu distrito para ver su alcaldía."
+                  : "Estimaciones de las encuestadoras al cierre de la votación. No son resultados oficiales."}
+              </p>
+            </>
+          ) : (
+            <>
+              <h1 className="text-3xl font-black leading-[1.05] tracking-tight sm:text-5xl lg:text-6xl">
+                <span className="text-white">Versus</span>{" "}
+                <span className="text-red-500">Electoral Perú</span>
+              </h1>
+              <p className="mx-auto mt-3 max-w-2xl text-sm leading-snug text-gray-400 sm:text-base">
+                Compara candidatos municipales, sus propuestas oficiales y noticias verificadas.
+              </p>
+            </>
+          )}
 
           <div className="mt-6 sm:mt-8">
             <HomeSearch index={searchIndex} />
             {/* The one entry point to Versus from the home page, kept next to search so it is reachable without scrolling */}
+            {resultsMode ? null : (
             <div className="mt-4 grid grid-cols-2 gap-2 sm:flex sm:flex-wrap sm:justify-center sm:gap-3">
               <Link
                 prefetch={false}
@@ -108,16 +135,33 @@ export default function Home() {
                 <span className="sr-only">(sitio oficial de la ONPE, se abre en otra pestaña)</span>
               </a>
             </div>
+            )}
           </div>
 
-          <FlashCountdown />
+          {resultsMode ? (
+            <>
+              {/* Above the exit poll: with 10 rows anything below would fall far below the fold */}
+              {conteo ? (
+                <OfficialCount conteo={conteo} />
+              ) : (
+                <OfficialCountNotice distritos={distritosConCandidatos().length} />
+              )}
+              {exitPoll.length > 0 && (
+                <ExitPollResults sources={exitPoll} defaultSource={EXIT_POLL_DEFAULT} ambito={EXIT_POLL_AMBITO} />
+              )}
+            </>
+          ) : (
+            <FlashCountdown />
+          )}
         </div>
       </section>
 
       {/* Support ask placed right after the countdown so it is visible without scrolling */}
-      <div className="mx-auto w-full max-w-[50rem] px-4">
-        <SupportCard />
-      </div>
+      {resultsMode ? null : (
+        <div className="mx-auto w-full max-w-[50rem] px-4">
+          <SupportCard />
+        </div>
+      )}
 
       {/* FAQ */}
       <section id="faq" className="mt-10 border-t border-gray-800/40 px-4 py-12 sm:mt-14 sm:py-20">
@@ -130,6 +174,24 @@ export default function Home() {
           </div>
         </div>
       </section>
+    </div>
+  );
+}
+
+function OfficialCountNotice({ distritos }: { distritos: number }) {
+  return (
+    <div className="mx-auto mt-6 flex w-full max-w-3xl items-start gap-3 rounded-2xl border border-dashed border-gray-700 bg-gray-900/20 px-4 py-3 text-left sm:mt-8 sm:px-6">
+      <span className="relative mt-1.5 flex h-2.5 w-2.5 shrink-0" aria-hidden="true">
+        <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-red-500 opacity-60 motion-reduce:animate-none" />
+        <span className="relative inline-flex h-2.5 w-2.5 rounded-full bg-red-500" />
+      </span>
+      <div>
+        <p className="text-sm font-bold text-white">Conteo oficial de la ONPE: en preparación</p>
+        <p className="mt-1 text-xs leading-relaxed text-gray-400">
+          Estamos trabajando para traer aquí el conteo oficial de Lima Metropolitana y de los {distritos} distritos
+          apenas la ONPE publique sus actas procesadas.
+        </p>
+      </div>
     </div>
   );
 }

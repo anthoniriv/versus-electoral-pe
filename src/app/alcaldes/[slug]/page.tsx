@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { prisma } from "@/lib/db";
 import { type GravedadKey } from "@/lib/candidatos";
+import { conteoStandingFor } from "@/lib/conteo-oficial";
+import { exitPollStandingFor } from "@/lib/exit-poll";
 import { CandidatoDetalleClient } from "@/components/CandidatoDetalleClient";
 import { SITE_URL, SITE_NAME } from "@/lib/site";
 import { obtenerPlanGobierno } from "@/lib/planes-gobierno";
@@ -155,6 +157,8 @@ export default async function AlcaldeCandidatoPage({ params }: PageProps) {
         basePath="/alcaldes"
         compareHref={compareHref}
         compareZonaLabel={zona}
+        exitPoll={exitPollStandingFor(slug)}
+        conteo={conteoStandingFor(slug)}
         noticias={candidato.noticias.map((n) => ({
           id: n.id,
           titulo: n.titulo,
