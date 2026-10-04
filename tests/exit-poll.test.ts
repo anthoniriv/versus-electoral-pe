@@ -5,8 +5,19 @@ import { AMBITO_PROVINCIAL, candidatosPorAmbito } from "../src/lib/municipales";
 
 const roll = candidatosPorAmbito(AMBITO_PROVINCIAL);
 
-test("ships with no published exit poll so the home page stays in its normal mode", () => {
-  assert.equal(buildExitPollView(EXIT_POLL_SOURCES, roll).length, 0);
+test("publishes the Datum flash only, matching names against the JNE roll", () => {
+  const view = buildExitPollView(EXIT_POLL_SOURCES, roll);
+  assert.deepEqual(view.map((s) => s.id), ["datum"]);
+  assert.deepEqual(
+    view[0].filas.map((f) => [f.nombre, f.slug]),
+    [
+      ["Rafael López Aliaga", null],
+      ["Francis Allison", "francis-james-allison-oyague"],
+      ["Carlos Bruce", "carlos-ricardo-bruce-montes-de-oca"],
+      ["Daniel Urresti", "daniel-belizario-urresti-elera"],
+    ]
+  );
+  assert.equal(view[0].filas[0].partido, "Renovación Popular");
 });
 
 test("sorts by percentage and caps the list at 10 rows", () => {

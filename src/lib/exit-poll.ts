@@ -37,11 +37,23 @@ export interface ExitPollSource {
 export const EXIT_POLL_AMBITO = "Lima Metropolitana";
 
 /** Source selected when the page loads, if it has data. */
-export const EXIT_POLL_DEFAULT: ExitPollSourceId = "ipsos";
+export const EXIT_POLL_DEFAULT: ExitPollSourceId = "datum";
 
 export const EXIT_POLL_SOURCES: ExitPollSource[] = [
   { id: "ipsos", nombre: "Ipsos Perú", filas: [] },
-  { id: "datum", nombre: "Datum Internacional", filas: [] },
+  {
+    id: "datum",
+    nombre: "Datum Internacional",
+    corte: "Flash electoral",
+    filas: [
+      // Rubio Idrogo resigned on 2026-08-04; López Aliaga (first councilor on the
+      // list) heads the ticket. No slug: the JNE roll still lists Rubio's profile.
+      { nombre: "Rafael López Aliaga", partido: "Renovación Popular", porcentaje: 31.2 },
+      { nombre: "Francis Allison", porcentaje: 25.2 },
+      { nombre: "Carlos Bruce", porcentaje: 15.9 },
+      { nombre: "Daniel Urresti", porcentaje: 9.7 },
+    ],
+  },
 ];
 
 export const EXIT_POLL_MAX_FILAS = 10;
@@ -87,7 +99,8 @@ export function resolveRows(
       const match = matchCandidate(row, roll);
       return {
         nombre: row.nombre,
-        partido: row.partido ?? match?.partido ?? null,
+        // The JNE roll spells parties properly; the source's spelling is the fallback.
+        partido: match?.partido ?? row.partido ?? null,
         porcentaje: row.porcentaje,
         slug: match?.slug ?? null,
       };
