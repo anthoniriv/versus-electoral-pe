@@ -1,36 +1,15 @@
-import { prisma } from "@/lib/db";
 import { FaqAccordion } from "@/components/FaqAccordion";
+import { FlashCountdown } from "@/components/FlashCountdown";
 import { HomeSearch } from "@/components/HomeSearch";
 import { SmartlinkLink } from "@/components/SmartlinkLink";
 import { SupportCard } from "@/components/SupportCard";
 import { buildHomeSearchIndex } from "@/lib/home-search";
-import { CANDIDATOS_MUNICIPALES, distritosConCandidatos } from "@/lib/municipales";
-import { METADATA_PLANES } from "@/lib/planes-gobierno";
 
 // El cron invalida estas rutas con revalidatePath cuando el scraping trae algo
 // nuevo. Este TTL es solo la red de seguridad por si esa invalidación no corre.
 export const revalidate = 86400;
 
-const HOME_STATS_BASE = {
-  candidatos: CANDIDATOS_MUNICIPALES.length,
-  alcaldias: distritosConCandidatos().length + 1,
-  propuestas: METADATA_PLANES.propuestasGuardadas,
-  fuentes: 20,
-};
-
-async function obtenerConteoNoticiasHome(): Promise<number> {
-  try {
-    return await prisma.noticia.count({
-      where: { candidato: { eleccion: "municipal-2026" } },
-    });
-  } catch (error) {
-    console.error("[HOME] Error contando noticias en DB, usando fallback estático:", error);
-    return Number(process.env.NEXT_PUBLIC_HOME_MUNICIPAL_NEWS_COUNT || "0");
-  }
-}
-
-export default async function Home() {
-  const stats = { ...HOME_STATS_BASE, noticias: await obtenerConteoNoticiasHome() };
+export default function Home() {
   const searchIndex = buildHomeSearchIndex();
 
   const faqData = [
@@ -131,29 +110,11 @@ export default async function Home() {
             </div>
           </div>
 
-          {/* Stats */}
-          <div className="mx-auto mt-6 grid w-full max-w-3xl grid-cols-2 gap-x-6 gap-y-4 rounded-2xl border border-gray-800/60 bg-gray-900/40 px-6 py-4 backdrop-blur-sm sm:mt-8 sm:grid-cols-4 sm:gap-8 sm:px-8">
-            <div>
-              <p className="text-2xl font-black text-white sm:text-3xl">{stats.candidatos}</p>
-              <p className="mt-0.5 text-[10px] uppercase tracking-wider text-gray-500 sm:text-xs">Candidatos</p>
-            </div>
-            <div>
-              <p className="text-2xl font-black text-white sm:text-3xl">{stats.alcaldias}</p>
-              <p className="mt-0.5 text-[10px] uppercase tracking-wider text-gray-500 sm:text-xs">Alcaldías</p>
-            </div>
-            <div>
-              <p className="text-2xl font-black text-white sm:text-3xl">{stats.propuestas.toLocaleString()}</p>
-              <p className="mt-0.5 text-[10px] uppercase tracking-wider text-gray-500 sm:text-xs">Propuestas</p>
-            </div>
-            <div>
-              <p className="text-2xl font-black text-white sm:text-3xl">{stats.noticias.toLocaleString()}</p>
-              <p className="mt-0.5 text-[10px] uppercase tracking-wider text-gray-500 sm:text-xs">Noticias</p>
-            </div>
-          </div>
+          <FlashCountdown />
         </div>
       </section>
 
-      {/* Support ask placed right after the stats so it is visible without scrolling */}
+      {/* Support ask placed right after the countdown so it is visible without scrolling */}
       <div className="mx-auto w-full max-w-[50rem] px-4">
         <SupportCard />
       </div>
