@@ -3,7 +3,6 @@
 import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { CandidatoAvatar } from "./CandidatoAvatar";
-import { SmartlinkLink } from "./SmartlinkLink";
 import { GravedadBadge } from "./GravedadBadge";
 import { NoticiaItem } from "./NoticiaItem";
 import { PlanGobierno } from "./PlanGobierno";
@@ -122,7 +121,7 @@ export function CandidatoDetalleClient({
 
           {compareHref && (
             <div className="mb-8 text-center sm:text-left">
-              <SmartlinkLink
+              <Link
                 prefetch={false}
                 href={compareHref}
                 className="inline-flex min-h-11 items-center gap-2 rounded-full border border-gray-700 bg-gray-900/70 px-5 py-2.5 text-sm font-bold text-gray-200 transition-colors duration-150 [@media(hover:hover)_and_(pointer:fine)]:hover:border-red-500/60 [@media(hover:hover)_and_(pointer:fine)]:hover:text-white active:scale-[0.97]"
@@ -131,7 +130,7 @@ export function CandidatoDetalleClient({
                 <svg className="h-3.5 w-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M9 5l7 7-7 7" />
                 </svg>
-              </SmartlinkLink>
+              </Link>
             </div>
           )}
 
