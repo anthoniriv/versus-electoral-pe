@@ -1,15 +1,14 @@
 import { resolveRows, type ExitPollRow, type ExitPollRowView } from "./exit-poll";
 import { AMBITO_PROVINCIAL, candidatosPorAmbito, DISTRITOS_LIMA } from "./municipales";
+import conteoData from "./conteo-oficial-data.json";
 
 /**
- * Official ONPE count, loaded by hand and published with a redeploy.
+ * Official ONPE count, published with a redeploy.
  *
- * ONPE's results site and its JSON backend sit behind an AWS WAF challenge, so
- * the server cannot read them. Copy the figures from
- * https://resultadoelectoral.onpe.gob.pe into `ambitos`, keyed by ámbito slug
- * ("lima-metropolitana" or a district slug such as "ate"). Percentages are of
- * valid votes, as ONPE shows them. Every ámbito is optional; the home page
- * lists the ones still pending.
+ * `npm run sync:onpe` downloads Lima Metropolitana and its 42 districts from
+ * ONPE's JSON backend into conteo-oficial-data.json. Percentages are of valid
+ * votes, as ONPE shows them. Every ámbito is optional; the home page lists the
+ * ones still pending.
  *
  * A redeploy rebuilds the home page once, so frequent updates cost no ISR writes.
  */
@@ -21,9 +20,9 @@ export interface ConteoAmbitoInput {
 }
 
 /** Free-text time of ONPE's last update, e.g. "10:45 p. m.". */
-export const CONTEO_ACTUALIZADO: string | null = null;
+export const CONTEO_ACTUALIZADO: string | null = conteoData.actualizado;
 
-export const CONTEO_OFICIAL: Record<string, ConteoAmbitoInput> = {};
+export const CONTEO_OFICIAL: Record<string, ConteoAmbitoInput> = conteoData.ambitos;
 
 export const CONTEO_MAX_FILAS = 10;
 
