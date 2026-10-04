@@ -60,7 +60,7 @@ export default function Home() {
           <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,rgba(220,38,38,0.08),transparent_70%)]" />
         </div>
         <div className="relative mx-auto max-w-4xl">
-          <p className="mb-2 animate-fade-in text-[11px] font-bold uppercase tracking-[0.35em] text-red-500">
+          <p className="mb-2 hidden animate-fade-in text-[11px] font-bold uppercase tracking-[0.35em] text-red-500 sm:block">
             Elecciones Municipales · Lima 2026
           </p>
           <h1 className="text-3xl font-black leading-[1.05] tracking-tight sm:text-5xl lg:text-6xl">
@@ -74,13 +74,13 @@ export default function Home() {
           <div className="mt-6 sm:mt-8">
             <HomeSearch index={searchIndex} />
             {/* The one entry point to Versus from the home page, kept next to search so it is reachable without scrolling */}
-            <div className="mt-4 flex flex-wrap justify-center gap-3">
+            <div className="mt-4 grid grid-cols-2 gap-2 sm:flex sm:flex-wrap sm:justify-center sm:gap-3">
               <SmartlinkLink
                 prefetch={false}
                 href="/alcaldes/versus"
                 data-analytics-cta="compare_candidates"
                 data-analytics-location="home_hero"
-                className="group inline-flex min-h-12 items-center gap-2 rounded-full border border-red-500/30 bg-red-950/20 px-6 py-3 text-sm font-bold uppercase tracking-wider text-red-400 transition-[color,background-color,border-color,transform] duration-150 ease-out [@media(hover:hover)_and_(pointer:fine)]:hover:border-red-500/60 [@media(hover:hover)_and_(pointer:fine)]:hover:bg-red-950/30 active:scale-[0.97]"
+                className="group inline-flex min-h-12 items-center justify-center gap-1.5 rounded-full border border-red-500/30 bg-red-950/20 px-3 py-2 text-xs font-bold uppercase tracking-wide sm:gap-2 sm:px-6 sm:py-3 sm:text-sm sm:tracking-wider text-red-400 transition-[color,background-color,border-color,transform] duration-150 ease-out [@media(hover:hover)_and_(pointer:fine)]:hover:border-red-500/60 [@media(hover:hover)_and_(pointer:fine)]:hover:bg-red-950/30 active:scale-[0.97]"
               >
                 Comparar candidatos
                 <svg
@@ -99,10 +99,10 @@ export default function Home() {
                 data-analytics-location="home_hero"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="group inline-flex min-h-12 items-center gap-2 rounded-full border border-gray-600 bg-gray-900/60 px-6 py-3 text-sm font-bold uppercase tracking-wider text-gray-200 transition-[color,background-color,border-color,transform] duration-150 ease-out [@media(hover:hover)_and_(pointer:fine)]:hover:border-gray-400 [@media(hover:hover)_and_(pointer:fine)]:hover:text-white active:scale-[0.97]"
+                className="group inline-flex min-h-12 items-center justify-center gap-1.5 rounded-full border border-gray-600 bg-gray-900/60 px-3 py-2 text-xs font-bold uppercase tracking-wide sm:gap-2 sm:px-6 sm:py-3 sm:text-sm sm:tracking-wider text-gray-200 transition-[color,background-color,border-color,transform] duration-150 ease-out [@media(hover:hover)_and_(pointer:fine)]:hover:border-gray-400 [@media(hover:hover)_and_(pointer:fine)]:hover:text-white active:scale-[0.97]"
               >
                 Conoce tu local de votación
-                <svg className="h-3.5 w-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                <svg className="h-3.5 w-3.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M14 5h5v5M19 5l-8 8M10 7H6a1 1 0 00-1 1v10a1 1 0 001 1h10a1 1 0 001-1v-4" />
                 </svg>
                 <span className="sr-only">(sitio oficial de la ONPE, se abre en otra pestaña)</span>
@@ -120,9 +120,9 @@ export default function Home() {
       </div>
 
       {/* FAQ */}
-      <section id="faq" className="mt-14 border-t border-gray-800/40 px-4 py-20">
+      <section id="faq" className="mt-10 border-t border-gray-800/40 px-4 py-12 sm:mt-14 sm:py-20">
         <div className="mx-auto max-w-4xl">
-          <h2 className="mb-10 text-center text-xl font-black uppercase tracking-[0.2em] text-white">
+          <h2 className="mb-6 text-center text-lg font-black sm:mb-10 sm:text-xl uppercase tracking-[0.2em] text-white">
             Preguntas Frecuentes
           </h2>
           <div className="mx-auto max-w-3xl">
