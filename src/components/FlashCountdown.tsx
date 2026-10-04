@@ -42,7 +42,7 @@ export function FlashCountdown() {
       ) : (
         <>
           <p
-            className="mt-2 font-mono text-3xl font-black tabular-nums text-white sm:text-4xl"
+            className="mt-2 text-4xl font-bold tracking-tight tabular-nums text-white sm:text-5xl"
             role="timer"
             aria-live="off"
           >
