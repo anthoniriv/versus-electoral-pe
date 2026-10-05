@@ -18,6 +18,10 @@ export interface ExitPollRow {
   nombre: string;
   partido?: string;
   porcentaje: number;
+  /** Valid votes, when the source publishes them (ONPE does, exit polls do not). */
+  votos?: number;
+  /** Photo slug for a candidate missing from the municipal roll (e.g. a ticket replacement). */
+  foto?: string;
   /** Explicit candidate slug when the published name does not match automatically. */
   slug?: string;
 }
@@ -48,7 +52,7 @@ export const EXIT_POLL_SOURCES: ExitPollSource[] = [
     filas: [
       // Rubio Idrogo resigned on 2026-08-04; López Aliaga (first councilor on the
       // list) heads the ticket. No slug: the JNE roll still lists Rubio's profile.
-      { nombre: "Rafael López Aliaga", partido: "Renovación Popular", porcentaje: 31.2 },
+      { nombre: "Rafael López Aliaga", partido: "Renovación Popular", foto: "rafael-lopez-aliaga", porcentaje: 31.2 },
       { nombre: "Francis Allison", porcentaje: 25.2 },
       { nombre: "Carlos Bruce", porcentaje: 15.9 },
       { nombre: "Daniel Urresti", porcentaje: 9.7 },
@@ -62,7 +66,10 @@ export interface ExitPollRowView {
   nombre: string;
   partido: string | null;
   porcentaje: number;
+  votos: number | null;
   slug: string | null;
+  /** Photo slug: the roll match, or the row's explicit `foto`. */
+  foto: string | null;
 }
 
 export interface ExitPollSourceView extends Omit<ExitPollSource, "filas"> {
@@ -86,6 +93,24 @@ function matchCandidate(row: ExitPollRow, roll: CandidatoMunicipal[]): Candidato
   return partial.length === 1 ? partial[0] : null;
 }
 
+const LOWERCASE_WORDS = new Set(["de", "del", "la", "las", "los", "el", "y", "por", "para", "en"]);
+
+function isAllCaps(text: string): boolean {
+  return /[A-ZÁÉÍÓÚÑ]/.test(text) && text === text.toUpperCase();
+}
+
+/** "PARTIDO DEL BUEN GOBIERNO" -> "Partido del Buen Gobierno"; keeps short acronyms like "PPC". */
+export function titleCase(text: string): string {
+  return text
+    .toLowerCase()
+    .split(/(\s+|-)/)
+    .map((word, i) => {
+      if (i > 0 && LOWERCASE_WORDS.has(word)) return word;
+      return word.charAt(0).toUpperCase() + word.slice(1);
+    })
+    .join("");
+}
+
 /** Sorts by percentage, caps the list and attaches JNE identity when a name matches unambiguously. */
 export function resolveRows(
   filas: ExitPollRow[],
@@ -97,12 +122,16 @@ export function resolveRows(
     .slice(0, max)
     .map((row) => {
       const match = matchCandidate(row, roll);
+      // ONPE publishes names and parties in capitals; prefer the roll's spelling then.
+      const shouting = isAllCaps(row.nombre);
       return {
-        nombre: row.nombre,
+        nombre: shouting ? (match?.nombre ?? titleCase(row.nombre)) : row.nombre,
         // The JNE roll spells parties properly; the source's spelling is the fallback.
-        partido: match?.partido ?? row.partido ?? null,
+        partido: match?.partido ?? (row.partido && isAllCaps(row.partido) ? titleCase(row.partido) : row.partido) ?? null,
         porcentaje: row.porcentaje,
+        votos: row.votos ?? null,
         slug: match?.slug ?? null,
+        foto: match?.slug ?? row.foto ?? null,
       };
     });
 }

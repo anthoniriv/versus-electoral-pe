@@ -24,8 +24,8 @@ const OUT = join(__dirname, "../src/lib/conteo-oficial-data.json");
 
 // Rubio Idrogo resigned on 2026-08-04; ONPE leaves the name blank and López Aliaga
 // (first councilor on the list) heads the ticket.
-const NOMBRE_SIN_CANDIDATO: Record<string, string> = {
-  [`${ELECCION_PROVINCIAL}:RENOVACION POPULAR PERU`]: "Rafael López Aliaga",
+const SIN_CANDIDATO: Record<string, { nombre: string; foto?: string }> = {
+  [`${ELECCION_PROVINCIAL}:RENOVACION POPULAR PERU`]: { nombre: "Rafael López Aliaga", foto: "rafael-lopez-aliaga" },
 };
 
 const HEADERS = {
@@ -48,6 +48,8 @@ interface Participante {
 
 interface Totales {
   actasContabilizadas: number;
+  contabilizadas: number;
+  totalActas: number;
   totalVotosValidos: number;
   fechaActualizacion: string;
 }
@@ -81,17 +83,24 @@ async function ambito(eleccion: number, distrito?: string): Promise<{ input: Con
   ]);
   if (!totales || totales.totalVotosValidos <= 0) return null;
   const filas = participantes.map((p) => {
-    const nombre =
-      p.nombreCandidato.trim() ||
-      NOMBRE_SIN_CANDIDATO[`${eleccion}:${key(p.nombreAgrupacionPolitica)}`] ||
-      p.nombreAgrupacionPolitica;
+    const reemplazo = p.nombreCandidato.trim() ? undefined : SIN_CANDIDATO[`${eleccion}:${key(p.nombreAgrupacionPolitica)}`];
     return {
-      nombre,
+      nombre: p.nombreCandidato.trim() || reemplazo?.nombre || p.nombreAgrupacionPolitica,
+      ...(reemplazo?.foto ? { foto: reemplazo.foto } : {}),
       partido: p.nombreAgrupacionPolitica,
       porcentaje: p.porcentajeVotosValidos,
+      votos: p.totalVotosValidos,
     };
   });
-  return { input: { actasPct: totales.actasContabilizadas, filas }, fecha: totales.fechaActualizacion };
+  return {
+    input: {
+      actasPct: totales.actasContabilizadas,
+      actas: { contabilizadas: totales.contabilizadas, total: totales.totalActas },
+      votosValidos: totales.totalVotosValidos,
+      filas,
+    },
+    fecha: totales.fechaActualizacion,
+  };
 }
 
 async function main() {

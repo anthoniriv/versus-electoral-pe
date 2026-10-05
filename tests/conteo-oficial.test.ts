@@ -1,9 +1,27 @@
 import assert from "node:assert/strict";
 import test from "node:test";
-import { buildConteoOficialView, CONTEO_OFICIAL, conteoStandingFor } from "../src/lib/conteo-oficial";
+import { buildConteoOficialView, conteoStandingFor } from "../src/lib/conteo-oficial";
 
-test("ships without official data so the home page does not show the count", () => {
-  assert.equal(buildConteoOficialView(CONTEO_OFICIAL, null), null);
+test("returns no view until ONPE counts votes so the home page does not show the count", () => {
+  assert.equal(buildConteoOficialView({}, null), null);
+});
+
+test("carries counted and total actas and valid votes into the view", () => {
+  const view = buildConteoOficialView(
+    {
+      "lima-metropolitana": {
+        actasPct: 10,
+        actas: { contabilizadas: 100, total: 1000 },
+        votosValidos: 5000,
+        filas: [{ nombre: "Carlos Bruce", porcentaje: 60, votos: 3000 }],
+      },
+    },
+    null
+  );
+  const lima = view?.ambitos[0];
+  assert.deepEqual(lima?.actas, { contabilizadas: 100, total: 1000 });
+  assert.equal(lima?.votosValidos, 5000);
+  assert.equal(lima?.filas[0].votos, 3000);
 });
 
 test("lists Lima Metropolitana first and every district that elects a mayor, pending ones empty", () => {

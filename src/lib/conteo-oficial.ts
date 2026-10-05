@@ -16,7 +16,15 @@ import conteoData from "./conteo-oficial-data.json";
 export interface ConteoAmbitoInput {
   /** Actas contabilizadas, 0-100, as ONPE shows it. */
   actasPct: number;
+  /** Actas counted and expected; absent in data synced before ONPE exposed them. */
+  actas?: ConteoActas;
+  votosValidos?: number;
   filas: ExitPollRow[];
+}
+
+export interface ConteoActas {
+  contabilizadas: number;
+  total: number;
 }
 
 /** Free-text time of ONPE's last update, e.g. "10:45 p. m.". */
@@ -30,6 +38,8 @@ export interface ConteoAmbitoView {
   slug: string;
   nombre: string;
   actasPct: number | null;
+  actas: ConteoActas | null;
+  votosValidos: number | null;
   filas: ExitPollRowView[];
 }
 
@@ -53,6 +63,8 @@ export function buildConteoOficialView(
       slug,
       nombre,
       actasPct: input && input.filas.length > 0 ? input.actasPct : null,
+      actas: input?.actas ?? null,
+      votosValidos: input?.votosValidos ?? null,
       filas: input ? resolveRows(input.filas, candidatosPorAmbito(slug), CONTEO_MAX_FILAS) : [],
     };
   });

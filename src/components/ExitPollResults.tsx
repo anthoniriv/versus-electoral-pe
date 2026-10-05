@@ -1,8 +1,9 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
+import { useState, type CSSProperties } from "react";
 import { CandidatoAvatar } from "@/components/CandidatoAvatar";
+import { colorPartido } from "@/lib/partido-colores";
 import type { ExitPollRowView, ExitPollSourceId, ExitPollSourceView } from "@/lib/exit-poll";
 
 interface ExitPollResultsProps {
@@ -75,52 +76,86 @@ export function ExitPollResults({ sources, defaultSource, ambito }: ExitPollResu
   );
 }
 
-/** Ranked rows with photo, party, percentage and a bar relative to the leader. */
+const numero = (n: number) => n.toLocaleString("es-PE");
+
+/**
+ * Ranked rows with photo, party colour, percentage and a bar relative to the
+ * leader. Bars grow from the left on first paint (@starting-style), staggered,
+ * and retarget smoothly when the numbers change.
+ */
 export function ResultRows({ filas }: { filas: ExitPollRowView[] }) {
   const max = Math.max(...filas.map((f) => f.porcentaje), 1);
   return (
-      <ol className="mt-4 space-y-2">
-        {filas.map((fila, i) => {
-          const content = (
-            <>
-              <span className="w-5 shrink-0 text-right text-xs font-bold tabular-nums text-gray-500">{i + 1}</span>
+    <ol className="mt-4 space-y-1.5">
+      {filas.map((fila, i) => {
+        const color = colorPartido(fila.partido);
+        const lider = i === 0;
+        const content = (
+          <>
+            <span className="w-5 shrink-0 text-right text-xs font-bold tabular-nums text-gray-500">{i + 1}</span>
+            <span
+              className="shrink-0 rounded-full p-[2px]"
+              style={{ background: lider ? color : `${color}55` }}
+            >
               <CandidatoAvatar
-                slug={fila.slug ?? ""}
+                slug={fila.foto ?? ""}
                 nombre={fila.nombre}
-                size={36}
-                className="shrink-0 rounded-full"
+                size={lider ? 44 : 36}
+                className="block rounded-full bg-gray-950"
               />
-              <div className="min-w-0 flex-1">
-                <div className="flex items-baseline justify-between gap-3">
-                  <p className="truncate text-sm font-bold text-white">{fila.nombre}</p>
-                  <p className="shrink-0 text-base font-black tabular-nums text-white">{pct(fila.porcentaje)}</p>
-                </div>
-                {fila.partido && <p className="truncate text-xs text-gray-500">{fila.partido}</p>}
-                <div className="mt-1.5 h-1.5 overflow-hidden rounded-full bg-gray-800" aria-hidden="true">
-                  <div
-                    className={`h-full rounded-full ${i === 0 ? "bg-red-500" : "bg-gray-500"}`}
-                    style={{ width: `${(fila.porcentaje / max) * 100}%` }}
-                  />
-                </div>
+            </span>
+            <div className="min-w-0 flex-1">
+              <div className="flex items-baseline justify-between gap-3">
+                <p className={`line-clamp-2 font-bold leading-tight text-white ${lider ? "text-base" : "text-sm"}`}>{fila.nombre}</p>
+                <p className={`shrink-0 font-black tabular-nums text-white ${lider ? "text-xl" : "text-base"}`}>
+                  {pct(fila.porcentaje)}
+                </p>
               </div>
-            </>
-          );
-          return (
-            <li key={fila.nombre}>
-              {fila.slug ? (
-                <Link
-                  href={`/alcaldes/${fila.slug}`}
-                  prefetch={false}
-                  className="flex items-center gap-3 rounded-xl px-2 py-2 transition-colors duration-150 [@media(hover:hover)_and_(pointer:fine)]:hover:bg-gray-800/50"
-                >
-                  {content}
-                </Link>
-              ) : (
-                <div className="flex items-center gap-3 px-2 py-2">{content}</div>
-              )}
-            </li>
-          );
-        })}
-      </ol>
+              <div className="flex items-baseline justify-between gap-3 text-xs">
+                <p className="flex min-w-0 items-center gap-1.5 text-gray-400">
+                  <span className="size-2 shrink-0 rounded-full" style={{ background: color }} aria-hidden="true" />
+                  <span className="truncate">{fila.partido ?? "Sin partido registrado"}</span>
+                </p>
+                {fila.votos !== null && (
+                  <p className="shrink-0 tabular-nums text-gray-500">{numero(fila.votos)} votos</p>
+                )}
+              </div>
+              <div className="mt-1.5 h-1.5 overflow-hidden rounded-full bg-gray-800/80" aria-hidden="true">
+                <div
+                  className="h-full origin-left scale-x-(--share) rounded-full transition-[scale] duration-500 ease-[cubic-bezier(0.23,1,0.32,1)] starting:scale-x-0 motion-reduce:transition-none"
+                  style={
+                    {
+                      background: color,
+                      "--share": fila.porcentaje / max,
+                      transitionDelay: `${i * 40}ms`,
+                    } as CSSProperties
+                  }
+                />
+              </div>
+            </div>
+          </>
+        );
+        const rowClass = "flex items-center gap-3 rounded-xl px-2 py-2";
+        const rowStyle = lider ? { background: `linear-gradient(90deg, ${color}1f, transparent 70%)` } : undefined;
+        return (
+          <li key={fila.nombre}>
+            {fila.slug ? (
+              <Link
+                href={`/alcaldes/${fila.slug}`}
+                prefetch={false}
+                style={rowStyle}
+                className={`${rowClass} transition-[background-color,transform] duration-150 ease-out active:scale-[0.99] [@media(hover:hover)_and_(pointer:fine)]:hover:bg-gray-800/50`}
+              >
+                {content}
+              </Link>
+            ) : (
+              <div style={rowStyle} className={rowClass}>
+                {content}
+              </div>
+            )}
+          </li>
+        );
+      })}
+    </ol>
   );
 }
