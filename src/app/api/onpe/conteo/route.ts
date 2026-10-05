@@ -4,6 +4,8 @@ import { AMBITO_PROVINCIAL, DISTRITO_BY_SLUG } from "@/lib/municipales";
 import { fetchOnpeAmbito, horaLima, ONPE_AMBITOS } from "@/lib/onpe";
 
 export const dynamic = "force-dynamic";
+// ONPE's WAF challenges requests from US data centres; São Paulo is the closest region to Lima.
+export const preferredRegion = "gru1";
 
 /**
  * Live ONPE count for one ámbito (?ambito=lima-metropolitana or a district slug).
