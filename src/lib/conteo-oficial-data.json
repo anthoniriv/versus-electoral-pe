@@ -1,4 +1,185 @@
 {
-  "actualizado": null,
-  "ambitos": {}
+  "actualizado": "7:16 p. m.",
+  "ambitos": {
+    "lima-metropolitana": {
+      "actasPct": 0.004,
+      "filas": [
+        {
+          "nombre": "PARTIDO POLÍTICO NACIONAL PERÚ LIBRE",
+          "partido": "PARTIDO POLÍTICO NACIONAL PERÚ LIBRE",
+          "porcentaje": 0
+        },
+        {
+          "nombre": "OSWALDO HERNAN VARGAS CUELLAR",
+          "partido": "JUNTOS POR EL PERÚ",
+          "porcentaje": 0
+        },
+        {
+          "nombre": "ELIZABETH MARIA DEL ROSARIO LEON CHINCHAY",
+          "partido": "PARTIDO FRENTE DE LA ESPERANZA 2021",
+          "porcentaje": 0
+        },
+        {
+          "nombre": "RICARDO PABLO BELMONT CASSINELLI",
+          "partido": "PARTIDO CÍVICO OBRAS",
+          "porcentaje": 0
+        },
+        {
+          "nombre": "YEHUDE SIMON MUNARO",
+          "partido": "COALICIÓN TRANSFORMADORA TIERRA VERDE",
+          "porcentaje": 0
+        },
+        {
+          "nombre": "FLOR DE MARIA HURTADO VALDEZ",
+          "partido": "PARTIDO DEMÓCRATA VERDE",
+          "porcentaje": 0
+        },
+        {
+          "nombre": "SANTIAGO ROSENDO ABARCA LEON",
+          "partido": "VISIÓN PERÚ",
+          "porcentaje": 0
+        },
+        {
+          "nombre": "SEGUNDO VALDEZ ZAVALA",
+          "partido": "FRENTE POPULAR AGRÍCOLA FÍA DEL PERÚ",
+          "porcentaje": 0
+        },
+        {
+          "nombre": "SANDRO CALLER GUTIERREZ",
+          "partido": "PARTIDO PATRIÓTICO DEL PERÚ",
+          "porcentaje": 0
+        },
+        {
+          "nombre": "RUBEN DANIEL BONILLA ESPINOZA",
+          "partido": "FUERZA CIUDADANA",
+          "porcentaje": 0
+        },
+        {
+          "nombre": "SAMIR FRANK QUISPE CABALLERO",
+          "partido": "BATALLA PERÚ",
+          "porcentaje": 0
+        },
+        {
+          "nombre": "LUIS MIGUEL LLANOS CARRILLO",
+          "partido": "PROGRESEMOS",
+          "porcentaje": 0
+        },
+        {
+          "nombre": "LUIS ALBERTO HUETTE TOLENTINO",
+          "partido": "PARTIDO POLÍTICO PUEBLO CONSCIENTE",
+          "porcentaje": 0
+        },
+        {
+          "nombre": "MONICA YADIRA YAYA LUYO",
+          "partido": "PARTIDO APRISTA PERUANO",
+          "porcentaje": 0
+        },
+        {
+          "nombre": "JUAN CARLOS ALVARADO MESTANZA",
+          "partido": "ALIANZA ELECTORAL VENCEREMOS",
+          "porcentaje": 0
+        },
+        {
+          "nombre": "EDGARDO RENAN DE POMAR VIZCARRA",
+          "partido": "PARTIDO POPULAR CRISTIANO - PPC",
+          "porcentaje": 0.426
+        },
+        {
+          "nombre": "SAMUEL MARCOS DAZA TAYPE",
+          "partido": "FUERZA POPULAR",
+          "porcentaje": 0.851
+        },
+        {
+          "nombre": "CARLOS FRANCISCO GALLARDO NEYRA",
+          "partido": "PARTIDO DEL BUEN GOBIERNO",
+          "porcentaje": 0.851
+        },
+        {
+          "nombre": "ELIO FERNANDO RIERA GARRO",
+          "partido": "ALIANZA PARA EL PROGRESO",
+          "porcentaje": 1.277
+        },
+        {
+          "nombre": "DANIEL BELIZARIO URRESTI ELERA",
+          "partido": "PODEMOS PERÚ",
+          "porcentaje": 1.277
+        },
+        {
+          "nombre": "VICTORIA BETZABE LA CRUZ GARCES",
+          "partido": "PARTIDO MORADO",
+          "porcentaje": 1.277
+        },
+        {
+          "nombre": "SUSEL ANA MARIA PAREDES PIQUE",
+          "partido": "AHORA NACIÓN - AN",
+          "porcentaje": 1.702
+        },
+        {
+          "nombre": "CARLOS ALBERTO TEJADA NORIEGA",
+          "partido": "ACCIÓN POPULAR",
+          "porcentaje": 8.936
+        },
+        {
+          "nombre": "FRANCIS JAMES ALLISON OYAGUE",
+          "partido": "AVANZA PAÍS - PARTIDO DE INTEGRACIÓN SOCIAL",
+          "porcentaje": 14.468
+        },
+        {
+          "nombre": "CARLOS RICARDO BRUCE MONTES DE OCA",
+          "partido": "PARTIDO DEMOCRÁTICO SOMOS PERÚ",
+          "porcentaje": 31.915
+        },
+        {
+          "nombre": "Rafael López Aliaga",
+          "partido": "RENOVACIÓN POPULAR PERÚ",
+          "porcentaje": 37.021
+        }
+      ]
+    },
+    "san-borja": {
+      "actasPct": 0.474,
+      "filas": [
+        {
+          "nombre": "JOEL EDMUNDO MIRANDA VILLANUEVA",
+          "partido": "PARTIDO POLÍTICO ADP",
+          "porcentaje": 0.227
+        },
+        {
+          "nombre": "JUAN FERNANDO PILCO CASTAÑEDA",
+          "partido": "PARTIDO APRISTA PERUANO",
+          "porcentaje": 0.68
+        },
+        {
+          "nombre": "EDGARD NUÑEZ QUIPUZCO",
+          "partido": "LIBERTAD POPULAR",
+          "porcentaje": 0.907
+        },
+        {
+          "nombre": "WILLYANS JOSE SORIANO CABRERA",
+          "partido": "PARTIDO POPULAR CRISTIANO - PPC",
+          "porcentaje": 1.134
+        },
+        {
+          "nombre": "ROBERTH EDWUARD MONTOYA PUENTE",
+          "partido": "AVANZA PAÍS - PARTIDO DE INTEGRACIÓN SOCIAL",
+          "porcentaje": 13.832
+        },
+        {
+          "nombre": "GINA VALERIA CASANOVA MERA",
+          "partido": "PARTIDO DEMOCRÁTICO SOMOS PERÚ",
+          "porcentaje": 22.676
+        },
+        {
+          "nombre": "ALBERTO TEJADA CONROY",
+          "partido": "ACCIÓN POPULAR",
+          "porcentaje": 29.705
+        },
+        {
+          "nombre": "JAVIER MARTIN DIEZ GASPARD",
+          "partido": "RENOVACIÓN POPULAR PERÚ",
+          "porcentaje": 30.839
+        }
+      ]
+    }
+  }
 }
