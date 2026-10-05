@@ -5,6 +5,12 @@ import { pct, ResultRows } from "@/components/ExitPollResults";
 import type { ConteoAmbitoView, ConteoOficialView } from "@/lib/conteo-oficial";
 
 const PARAM = "distrito";
+const POLL_MS = 30_000;
+
+interface LiveAmbito {
+  actualizado: string | null;
+  ambito: ConteoAmbitoView;
+}
 
 export function OfficialCount({ conteo }: { conteo: ConteoOficialView }) {
   const selectId = useId();
@@ -28,7 +34,40 @@ export function OfficialCount({ conteo }: { conteo: ConteoOficialView }) {
     window.history.replaceState(null, "", url);
   };
 
-  const ambito = conteo.ambitos.find((a) => a.slug === slug) ?? conteo.ambitos[0];
+  // The static count from the last deploy renders first; the live route then
+  // replaces the selected ámbito and refreshes it every 30 s while the tab is visible.
+  const [live, setLive] = useState<Record<string, LiveAmbito>>({});
+  useEffect(() => {
+    let cancelled = false;
+    const load = async () => {
+      if (document.visibilityState === "hidden") return;
+      try {
+        const res = await fetch(`/api/onpe/conteo?ambito=${encodeURIComponent(slug)}`);
+        if (!res.ok) return;
+        const data = (await res.json()) as LiveAmbito;
+        if (!cancelled && data.ambito) setLive((prev) => ({ ...prev, [slug]: data }));
+      } catch {
+        // Keep showing the last known count.
+      }
+    };
+    load();
+    const timer = setInterval(load, POLL_MS);
+    const onVisible = () => {
+      if (document.visibilityState === "visible") load();
+    };
+    document.addEventListener("visibilitychange", onVisible);
+    return () => {
+      cancelled = true;
+      clearInterval(timer);
+      document.removeEventListener("visibilitychange", onVisible);
+    };
+  }, [slug]);
+
+  const estatico = conteo.ambitos.find((a) => a.slug === slug) ?? conteo.ambitos[0];
+  const vivo = live[estatico.slug];
+  const usarVivo = vivo && (vivo.ambito.actasPct !== null || estatico.actasPct === null);
+  const ambito = usarVivo ? vivo.ambito : estatico;
+  const actualizado = usarVivo ? vivo.actualizado : conteo.actualizado;
 
   return (
     <section
@@ -76,7 +115,7 @@ export function OfficialCount({ conteo }: { conteo: ConteoOficialView }) {
 
       <p className="mt-4 border-t border-gray-800 pt-3 text-[11px] leading-relaxed text-gray-500">
         Fuente: ONPE, resultados de actas contabilizadas
-        {conteo.actualizado ? ` · Actualizado ${conteo.actualizado.replace(/\.$/, "")}` : ""}. Porcentajes sobre
+        {actualizado ? ` · Actualizado ${actualizado.replace(/\.$/, "")}` : ""}. Porcentajes sobre
         votos válidos.{" "}
         <a
           href="https://resultadoelectoral.onpe.gob.pe"
