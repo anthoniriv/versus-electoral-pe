@@ -20,6 +20,17 @@ const sessionCookie = {
 };
 
 /**
+ * Opens the ad Smartlink in a new tab the first time it is called in a browser
+ * session. Call it only from a user gesture (click or key press) so the browser
+ * allows the new tab.
+ */
+export function openSmartlinkOnce(): void {
+  if (claimSmartlinkOpening(sessionCookie)) {
+    window.open(SMARTLINK_URL, "_blank", "noopener,noreferrer");
+  }
+}
+
+/**
  * A normal internal link that, on the first click of the session, also opens
  * the ad Smartlink in a new tab. The visitor's own navigation is never blocked
  * or redirected.
@@ -32,9 +43,7 @@ export function SmartlinkLink({ onClick, ...props }: ComponentProps<typeof Link>
         onClick?.(event);
         // Ignore modified clicks (new tab, etc.): the visitor chose where to go.
         if (event.defaultPrevented || event.metaKey || event.ctrlKey || event.shiftKey || event.button !== 0) return;
-        if (claimSmartlinkOpening(sessionCookie)) {
-          window.open(SMARTLINK_URL, "_blank", "noopener,noreferrer");
-        }
+        openSmartlinkOnce();
       }}
     />
   );

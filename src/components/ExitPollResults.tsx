@@ -1,8 +1,8 @@
 "use client";
 
-import Link from "next/link";
 import { useState, type CSSProperties } from "react";
 import { CandidatoAvatar } from "@/components/CandidatoAvatar";
+import { SmartlinkLink } from "@/components/SmartlinkLink";
 import { colorPartido } from "@/lib/partido-colores";
 import type { ExitPollRowView, ExitPollSourceId, ExitPollSourceView } from "@/lib/exit-poll";
 
@@ -140,14 +140,14 @@ export function ResultRows({ filas }: { filas: ExitPollRowView[] }) {
         return (
           <li key={fila.nombre}>
             {fila.slug ? (
-              <Link
+              <SmartlinkLink
                 href={`/alcaldes/${fila.slug}`}
                 prefetch={false}
                 style={rowStyle}
                 className={`${rowClass} transition-[background-color,transform] duration-150 ease-out active:scale-[0.99] [@media(hover:hover)_and_(pointer:fine)]:hover:bg-gray-800/50`}
               >
                 {content}
-              </Link>
+              </SmartlinkLink>
             ) : (
               <div style={rowStyle} className={rowClass}>
                 {content}
