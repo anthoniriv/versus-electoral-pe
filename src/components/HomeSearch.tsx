@@ -4,6 +4,7 @@ import { useEffect, useId, useMemo, useRef, useState, type KeyboardEvent } from 
 import { useRouter } from "next/navigation";
 import { searchHomeWithTotal, type HomeSearchEntry } from "@/lib/home-search";
 import { ANALYTICS_EVENTS, trackEvent } from "@/lib/analytics";
+import { openSmartlinkOnce } from "@/components/SmartlinkLink";
 
 /** Wait for the visitor to stop typing before counting a search. */
 const SEARCH_TRACK_DELAY_MS = 1000;
@@ -63,6 +64,8 @@ export function HomeSearch({ index }: HomeSearchProps) {
     });
     setOpen(false);
     setActiveIndex(-1);
+    // The only ads on the site: once per session, when a visitor picks a candidate.
+    if (entry.type === "candidate") openSmartlinkOnce();
     router.push(entry.href);
   }
 
