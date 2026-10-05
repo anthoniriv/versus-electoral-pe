@@ -3,14 +3,13 @@ import { AMBITO_PROVINCIAL, candidatosPorAmbito, DISTRITOS_LIMA } from "./munici
 import conteoData from "./conteo-oficial-data.json";
 
 /**
- * Official ONPE count, published with a redeploy.
+ * Official ONPE count.
  *
- * `npm run sync:onpe` downloads Lima Metropolitana and its 42 districts from
- * ONPE's JSON backend into conteo-oficial-data.json. Percentages are of valid
- * votes, as ONPE shows them. Every ámbito is optional; the home page lists the
- * ones still pending.
- *
- * A redeploy rebuilds the home page once, so frequent updates cost no ISR writes.
+ * The home page renders the snapshot committed in conteo-oficial-data.json and
+ * then polls /api/onpe/conteo, which serves the copy `npm run sync:onpe` keeps in
+ * the database, so the count updates every minute without redeploys. The
+ * committed snapshot is the fallback. Percentages are of valid votes, as ONPE
+ * shows them.
  */
 
 export interface ConteoAmbitoInput {
@@ -26,6 +25,15 @@ export interface ConteoActas {
   contabilizadas: number;
   total: number;
 }
+
+/** Shape of conteo-oficial-data.json and of the ConteoOnpe row's `data`. */
+export interface ConteoSnapshot {
+  actualizado: string | null;
+  ambitos: Record<string, ConteoAmbitoInput>;
+}
+
+/** ConteoOnpe row holding the ERM 2026 Lima count. */
+export const CONTEO_ID = "erm-2026-lima";
 
 /** Free-text time of ONPE's last update, e.g. "10:45 p. m.". */
 export const CONTEO_ACTUALIZADO: string | null = conteoData.actualizado;
@@ -57,18 +65,24 @@ export function buildConteoOficialView(
   const ambitos = [
     { slug: AMBITO_PROVINCIAL, nombre: "Lima Metropolitana" },
     ...DISTRITOS_LIMA.filter((d) => !d.sinAlcaldiaPropia),
-  ].map(({ slug, nombre }) => {
-    const input = data[slug];
-    return {
-      slug,
-      nombre,
-      actasPct: input && input.filas.length > 0 ? input.actasPct : null,
-      actas: input?.actas ?? null,
-      votosValidos: input?.votosValidos ?? null,
-      filas: input ? resolveRows(input.filas, candidatosPorAmbito(slug), CONTEO_MAX_FILAS) : [],
-    };
-  });
+  ].map(({ slug, nombre }) => buildConteoAmbitoView(slug, nombre, data[slug]));
   return { actualizado, ambitos };
+}
+
+/** One ámbito's rows, sorted, capped and matched against that ámbito's JNE roll. */
+export function buildConteoAmbitoView(
+  slug: string,
+  nombre: string,
+  input: ConteoAmbitoInput | undefined
+): ConteoAmbitoView {
+  return {
+    slug,
+    nombre,
+    actasPct: input && input.filas.length > 0 ? input.actasPct : null,
+    actas: input?.actas ?? null,
+    votosValidos: input?.votosValidos ?? null,
+    filas: input ? resolveRows(input.filas, candidatosPorAmbito(slug), CONTEO_MAX_FILAS) : [],
+  };
 }
 
 export interface ConteoStanding {

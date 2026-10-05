@@ -60,3 +60,11 @@ model ScrapingLog {
   duracionMs     Int      @default(0)
   createdAt      DateTime @default(now())
 }
+
+/// Latest official ONPE count, written by `npm run sync:onpe` (one row per election)
+/// and read by /api/onpe/conteo so the home page updates without redeploys.
+model ConteoOnpe {
+  id          String   @id
+  data        Json
+  actualizado DateTime @updatedAt
+}
