@@ -5,20 +5,51 @@ import { pct, ResultRows } from "@/components/ExitPollResults";
 import type { ConteoAmbitoView, ConteoOficialView } from "@/lib/conteo-oficial";
 
 const PARAM = "distrito";
+const POLL_MS = 30_000;
 
-export function OfficialCount({ conteo }: { conteo: ConteoOficialView }) {
+export function OfficialCount({ conteo: inicial }: { conteo: ConteoOficialView }) {
   const selectId = useId();
-  const [slug, setSlug] = useState(conteo.ambitos[0].slug);
+
+  // The count committed with the last deploy renders first; /api/onpe/conteo
+  // then serves the copy synced every minute, refreshed every 30 s while visible.
+  const [conteo, setConteo] = useState(inicial);
+  useEffect(() => {
+    let cancelled = false;
+    const load = async () => {
+      if (document.visibilityState === "hidden") return;
+      try {
+        const res = await fetch("/api/onpe/conteo");
+        if (!res.ok) return;
+        const data = (await res.json()) as { conteo: ConteoOficialView | null };
+        if (!cancelled && data.conteo) setConteo(data.conteo);
+      } catch {
+        // Keep showing the last known count.
+      }
+    };
+    load();
+    const timer = setInterval(load, POLL_MS);
+    const onVisible = () => {
+      if (document.visibilityState === "visible") load();
+    };
+    document.addEventListener("visibilitychange", onVisible);
+    return () => {
+      cancelled = true;
+      clearInterval(timer);
+      document.removeEventListener("visibilitychange", onVisible);
+    };
+  }, []);
+
+  const [slug, setSlug] = useState(inicial.ambitos[0].slug);
 
   // The home page is statically cached, so ?distrito= is read after mount
   // instead of through searchParams, which would make the page dynamic.
   useEffect(() => {
     const fromUrl = new URLSearchParams(window.location.search).get(PARAM);
-    if (fromUrl && conteo.ambitos.some((a) => a.slug === fromUrl)) {
+    if (fromUrl && inicial.ambitos.some((a) => a.slug === fromUrl)) {
       // eslint-disable-next-line react-hooks/set-state-in-effect
       setSlug(fromUrl);
     }
-  }, [conteo.ambitos]);
+  }, [inicial.ambitos]);
 
   const select = (next: string) => {
     setSlug(next);
@@ -29,6 +60,7 @@ export function OfficialCount({ conteo }: { conteo: ConteoOficialView }) {
   };
 
   const ambito = conteo.ambitos.find((a) => a.slug === slug) ?? conteo.ambitos[0];
+  const actualizado = conteo.actualizado;
 
   return (
     <section
@@ -76,7 +108,7 @@ export function OfficialCount({ conteo }: { conteo: ConteoOficialView }) {
 
       <p className="mt-4 border-t border-gray-800 pt-3 text-[11px] leading-relaxed text-gray-500">
         Fuente: ONPE, resultados de actas contabilizadas
-        {conteo.actualizado ? ` · Actualizado ${conteo.actualizado.replace(/\.$/, "")}` : ""}. Porcentajes sobre
+        {actualizado ? ` · Actualizado ${actualizado.replace(/\.$/, "")}` : ""}. Porcentajes sobre
         votos válidos.{" "}
         <a
           href="https://resultadoelectoral.onpe.gob.pe"

@@ -6,7 +6,7 @@
     "dev": "next dev",
     "build": "npm run check:site-url && npx prisma generate && npm run gen:fotos-manifest && next build",
     "gen:fotos-manifest": "npx tsx scripts/gen-fotos-manifest.ts",
-    "sync:onpe": "npx tsx scripts/sync-onpe.ts",
+    "sync:onpe": "npx tsx --env-file-if-exists=.env scripts/sync-onpe.ts",
     "start": "next start",
     "lint": "eslint",
     "check:isr": "npx tsx scripts/check-isr-budget.ts",
