@@ -1,13 +1,13 @@
 {
-  "actualizado": "3:00 p. m.",
+  "actualizado": "4:00 p. m.",
   "ambitos": {
     "lima-metropolitana": {
-      "actasPct": 92.862,
+      "actasPct": 92.866,
       "actas": {
-        "contabilizadas": 24470,
+        "contabilizadas": 24471,
         "total": 26351
       },
-      "votosValidos": 5221474,
+      "votosValidos": 5221677,
       "filas": [
         {
           "nombre": "SAMIR FRANK QUISPE CABALLERO",
@@ -25,7 +25,7 @@
           "nombre": "RUBEN DANIEL BONILLA ESPINOZA",
           "partido": "FUERZA CIUDADANA",
           "porcentaje": 0.083,
-          "votos": 4312
+          "votos": 4313
         },
         {
           "nombre": "SANTIAGO ROSENDO ABARCA LEON",
@@ -61,7 +61,7 @@
           "nombre": "VICTORIA BETZABE LA CRUZ GARCES",
           "partido": "PARTIDO MORADO",
           "porcentaje": 0.305,
-          "votos": 15933
+          "votos": 15934
         },
         {
           "nombre": "FLOR DE MARIA HURTADO VALDEZ",
@@ -91,7 +91,7 @@
           "nombre": "ELIZABETH MARIA DEL ROSARIO LEON CHINCHAY",
           "partido": "PARTIDO FRENTE DE LA ESPERANZA 2021",
           "porcentaje": 0.737,
-          "votos": 38474
+          "votos": 38475
         },
         {
           "nombre": "LUIS MIGUEL LLANOS CARRILLO",
@@ -121,7 +121,7 @@
           "nombre": "CARLOS ALBERTO TEJADA NORIEGA",
           "partido": "ACCIÓN POPULAR",
           "porcentaje": 2.416,
-          "votos": 126130
+          "votos": 126139
         },
         {
           "nombre": "SAMUEL MARCOS DAZA TAYPE",
@@ -133,13 +133,13 @@
           "nombre": "SUSEL ANA MARIA PAREDES PIQUE",
           "partido": "AHORA NACIÓN - AN",
           "porcentaje": 3.572,
-          "votos": 186527
+          "votos": 186532
         },
         {
           "nombre": "ELIO FERNANDO RIERA GARRO",
           "partido": "ALIANZA PARA EL PROGRESO",
           "porcentaje": 4.324,
-          "votos": 225756
+          "votos": 225761
         },
         {
           "nombre": "DANIEL BELIZARIO URRESTI ELERA",
@@ -151,20 +151,20 @@
           "nombre": "CARLOS RICARDO BRUCE MONTES DE OCA",
           "partido": "PARTIDO DEMOCRÁTICO SOMOS PERÚ",
           "porcentaje": 15.092,
-          "votos": 788020
+          "votos": 788063
         },
         {
           "nombre": "FRANCIS JAMES ALLISON OYAGUE",
           "partido": "AVANZA PAÍS - PARTIDO DE INTEGRACIÓN SOCIAL",
           "porcentaje": 26.838,
-          "votos": 1401325
+          "votos": 1401370
         },
         {
           "nombre": "Rafael López Aliaga",
           "foto": "rafael-lopez-aliaga",
           "partido": "RENOVACIÓN POPULAR PERÚ",
-          "porcentaje": 27.705,
-          "votos": 1446632
+          "porcentaje": 27.706,
+          "votos": 1446725
         }
       ]
     },
@@ -2518,7 +2518,7 @@
         "contabilizadas": 401,
         "total": 422
       },
-      "votosValidos": 82886,
+      "votosValidos": 82887,
       "filas": [
         {
           "nombre": "EDGARD NUÑEZ QUIPUZCO",
@@ -2535,8 +2535,8 @@
         {
           "nombre": "JUAN FERNANDO PILCO CASTAÑEDA",
           "partido": "PARTIDO APRISTA PERUANO",
-          "porcentaje": 1.063,
-          "votos": 881
+          "porcentaje": 1.064,
+          "votos": 882
         },
         {
           "nombre": "WILLYANS JOSE SORIANO CABRERA",
@@ -2553,7 +2553,7 @@
         {
           "nombre": "GINA VALERIA CASANOVA MERA",
           "partido": "PARTIDO DEMOCRÁTICO SOMOS PERÚ",
-          "porcentaje": 22.114,
+          "porcentaje": 22.113,
           "votos": 18329
         },
         {
@@ -2565,7 +2565,7 @@
         {
           "nombre": "JAVIER MARTIN DIEZ GASPARD",
           "partido": "RENOVACIÓN POPULAR PERÚ",
-          "porcentaje": 35.168,
+          "porcentaje": 35.167,
           "votos": 29149
         }
       ]
